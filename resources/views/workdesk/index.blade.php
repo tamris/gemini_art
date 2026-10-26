@@ -6,17 +6,11 @@
 <div class="space-y-6">
 
     <!-- Header Section -->
-    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b-2 border-black">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200">
         <div>
-            <div class="flex items-center gap-2 mb-1">
-                <span class="w-3 h-3 rounded-full bg-blue-500"></span>
-                <span class="text-xs font-black uppercase tracking-wider text-blue-900">
-                    SOP Tahap 2 & 3: Antrean Workdesk & Upload File Cetak
-                </span>
-            </div>
-            <h1 class="text-2xl font-black text-black">Workdesk Antrean Desainer</h1>
-            <p class="text-xs font-semibold text-slate-600 mt-0.5">
-                Pengerjaan aset desain, penyesuaian spesifikasi cetak, dan upload file final ke penyimpanan cloud terpusat.
+            <h1 class="text-2xl font-black text-slate-900 tracking-tight">Workdesk Antrean Desainer</h1>
+            <p class="text-xs font-semibold text-slate-500 mt-0.5">
+                Pengerjaan aset desain, penyesuaian spesifikasi cetak, dan upload file final siap produksi.
             </p>
         </div>
         <div class="flex items-center gap-2">

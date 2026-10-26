@@ -36,14 +36,14 @@
 
                 <!-- Card 1: Data Pelanggan & Cabang Pelaksana -->
                 <div class="neo-box p-5 bg-white space-y-4">
-                    <h2 class="text-sm font-black text-black pb-3 border-b-2 border-black flex items-center justify-between">
+                    <h2 class="text-sm font-black text-slate-800 pb-3 border-b border-slate-200 flex items-center justify-between">
                         <span class="flex items-center gap-2">
-                            <div class="w-7 h-7 bg-amber-300 border-2 border-black rounded-lg flex items-center justify-center text-black shadow-[1px_1px_0px_0px_#000]">
+                            <div class="w-7 h-7 bg-amber-200 border-[1.5px] border-slate-800 rounded-lg flex items-center justify-center text-slate-900 shadow-[1px_1px_0px_0px_#0f172a]">
                                 <x-icon name="user" class="w-4 h-4" />
                             </div>
                             <span>1. Data Pelanggan & Cabang Pelaksana</span>
                         </span>
-                        <span class="text-[10px] font-bold text-slate-500 uppercase">Wajib Diisi</span>
+                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Wajib Diisi</span>
                     </h2>
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -100,14 +100,14 @@
 
                 <!-- Card 2: Spesifikasi Pengerjaan & Brief Desain -->
                 <div class="neo-box p-5 bg-white space-y-4">
-                    <h2 class="text-sm font-black text-black pb-3 border-b-2 border-black flex items-center justify-between">
+                    <h2 class="text-sm font-black text-slate-800 pb-3 border-b border-slate-200 flex items-center justify-between">
                         <span class="flex items-center gap-2">
-                            <div class="w-7 h-7 bg-blue-300 border-2 border-black rounded-lg flex items-center justify-center text-black shadow-[1px_1px_0px_0px_#000]">
+                            <div class="w-7 h-7 bg-blue-200 border-[1.5px] border-slate-800 rounded-lg flex items-center justify-center text-slate-900 shadow-[1px_1px_0px_0px_#0f172a]">
                                 <x-icon name="palette" class="w-4 h-4" />
                             </div>
                             <span>2. Spesifikasi Desain & Bahan Produksi</span>
                         </span>
-                        <span class="text-[10px] font-bold text-slate-500 uppercase">Detail Teknis</span>
+                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Detail Teknis</span>
                     </h2>
 
                     <div class="space-y-4">
@@ -168,7 +168,7 @@
                                            class="sr-only" 
                                            onchange="handleBriefFileChange(this)">
                                     <label for="brief_file" 
-                                           class="flex items-center justify-between h-10 px-3 bg-white border-2 border-black rounded-xl shadow-[3px_3px_0px_0px_#000] hover:bg-slate-50 cursor-pointer transition-all select-none">
+                                           class="flex items-center justify-between h-10 px-3 bg-white border-[1.5px] border-slate-300 rounded-xl shadow-[1.5px_1.5px_0px_0px_#e2e8f0] hover:border-slate-800 hover:shadow-[2px_2px_0px_0px_#0f172a] cursor-pointer transition-all select-none">
                                         <div class="flex items-center gap-2 min-w-0 flex-1">
                                             <x-icon name="file" class="w-3.5 h-3.5 text-slate-400 shrink-0" />
                                             <span id="brief_file_name" class="text-xs text-slate-400 font-medium truncate pr-1">
@@ -183,7 +183,7 @@
                                                     class="hidden text-slate-400 hover:text-rose-600 font-black text-xs px-1">
                                                 ✕
                                             </button>
-                                            <span class="inline-flex items-center gap-1 px-2.5 py-1 bg-amber-200 hover:bg-amber-300 border border-black rounded-lg text-[10px] font-black uppercase text-black shadow-[1px_1px_0px_0px_#000]">
+                                            <span class="inline-flex items-center gap-1 px-2.5 py-1 bg-amber-200 hover:bg-amber-300 border border-slate-700 rounded-lg text-[10px] font-black uppercase text-slate-900 shadow-[1px_1px_0px_0px_#0f172a]">
                                                 <x-icon name="upload" class="w-3 h-3" />
                                                 <span>Pilih File</span>
                                             </span>
@@ -210,15 +210,15 @@
             <div class="lg:col-span-4 space-y-6 lg:sticky lg:top-24">
 
                 <!-- Card 3: Biaya & Pembayaran Awal -->
-                <div class="neo-box p-5 bg-amber-50 border-2 border-black space-y-4">
-                    <div class="flex items-center justify-between pb-3 border-b-2 border-black">
-                        <h2 class="text-sm font-black text-black flex items-center gap-2">
-                            <div class="w-7 h-7 bg-emerald-400 border-2 border-black rounded-lg flex items-center justify-center text-black shadow-[1px_1px_0px_0px_#000]">
+                <div class="neo-box p-5 bg-amber-50/60 space-y-4">
+                    <div class="flex items-center justify-between pb-3 border-b border-amber-200/80">
+                        <h2 class="text-sm font-black text-slate-800 flex items-center gap-2">
+                            <div class="w-7 h-7 bg-emerald-200 border-[1.5px] border-slate-800 rounded-lg flex items-center justify-center text-slate-900 shadow-[1px_1px_0px_0px_#0f172a]">
                                 <x-icon name="wallet" class="w-4 h-4" />
                             </div>
                             <span>3. Biaya & Kas Awal</span>
                         </h2>
-                        <span class="text-[10px] font-black text-emerald-900 bg-emerald-200 border border-black px-2 py-0.5 rounded">
+                        <span class="text-[10px] font-black text-emerald-950 bg-emerald-100 border border-emerald-300 px-2 py-0.5 rounded">
                             SOP Kasir
                         </span>
                     </div>
@@ -229,8 +229,8 @@
                             <label for="total_amount_display" class="block text-xs font-black uppercase text-black mb-1">
                                 Total Biaya Order *
                             </label>
-                            <div class="flex rounded-xl overflow-hidden border-2 border-black bg-white shadow-[3px_3px_0px_0px_#000] focus-within:shadow-[4px_4px_0px_0px_#000] focus-within:ring-2 focus-within:ring-black transition-all">
-                                <span class="inline-flex items-center px-3.5 bg-amber-300 border-r-2 border-black text-xs font-black text-black select-none">
+                            <div class="flex rounded-xl overflow-hidden border-[1.5px] border-slate-300 bg-white shadow-[1.5px_1.5px_0px_0px_#e2e8f0] focus-within:border-slate-800 focus-within:shadow-[2.5px_2.5px_0px_0px_#0f172a] transition-all">
+                                <span class="inline-flex items-center px-3.5 bg-amber-200 border-r-[1.5px] border-slate-300 text-xs font-black text-slate-800 select-none">
                                     Rp
                                 </span>
                                 <input type="text" 
@@ -257,8 +257,8 @@
                                 </label>
                                 <span class="text-[10px] font-bold text-slate-500">Min. DP / Lunas</span>
                             </div>
-                            <div class="flex rounded-xl overflow-hidden border-2 border-black bg-white shadow-[3px_3px_0px_0px_#000] focus-within:shadow-[4px_4px_0px_0px_#000] focus-within:ring-2 focus-within:ring-black transition-all">
-                                <span class="inline-flex items-center px-3.5 bg-emerald-300 border-r-2 border-black text-xs font-black text-black select-none">
+                            <div class="flex rounded-xl overflow-hidden border-[1.5px] border-slate-300 bg-white shadow-[1.5px_1.5px_0px_0px_#e2e8f0] focus-within:border-slate-800 focus-within:shadow-[2.5px_2.5px_0px_0px_#0f172a] transition-all">
+                                <span class="inline-flex items-center px-3.5 bg-emerald-200 border-r-[1.5px] border-slate-300 text-xs font-black text-slate-800 select-none">
                                     Rp
                                 </span>
                                 <input type="text" 
@@ -279,27 +279,27 @@
                             <div class="flex flex-wrap items-center gap-1.5 mt-2">
                                 <button type="button" 
                                         onclick="setPaidPreset('full')" 
-                                        class="px-2.5 py-1 text-[10px] font-black uppercase bg-emerald-200 hover:bg-emerald-300 text-black border border-black rounded shadow-[1px_1px_0px_0px_#000] transition-transform active:translate-y-0.5 cursor-pointer">
+                                        class="px-2.5 py-1 text-[10px] font-black uppercase bg-emerald-100 hover:bg-emerald-200 text-emerald-950 border border-slate-300 hover:border-slate-700 rounded shadow-[1px_1px_0px_0px_#e2e8f0] transition-all active:translate-y-0.5 cursor-pointer">
                                     Lunas 100%
                                 </button>
                                 <button type="button" 
                                         onclick="setPaidPreset('half')" 
-                                        class="px-2.5 py-1 text-[10px] font-black uppercase bg-amber-200 hover:bg-amber-300 text-black border border-black rounded shadow-[1px_1px_0px_0px_#000] transition-transform active:translate-y-0.5 cursor-pointer">
+                                        class="px-2.5 py-1 text-[10px] font-black uppercase bg-amber-100 hover:bg-amber-200 text-amber-950 border border-slate-300 hover:border-slate-700 rounded shadow-[1px_1px_0px_0px_#e2e8f0] transition-all active:translate-y-0.5 cursor-pointer">
                                     DP 50%
                                 </button>
                                 <button type="button" 
                                         onclick="setPaidPreset(50000)" 
-                                        class="px-2.5 py-1 text-[10px] font-bold bg-white hover:bg-slate-100 text-slate-800 border border-black rounded shadow-[1px_1px_0px_0px_#000] transition-transform active:translate-y-0.5 cursor-pointer">
+                                        class="px-2.5 py-1 text-[10px] font-bold bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 hover:border-slate-700 rounded shadow-[1px_1px_0px_0px_#e2e8f0] transition-all active:translate-y-0.5 cursor-pointer">
                                     DP 50rb
                                 </button>
                                 <button type="button" 
                                         onclick="setPaidPreset(100000)" 
-                                        class="px-2.5 py-1 text-[10px] font-bold bg-white hover:bg-slate-100 text-slate-800 border border-black rounded shadow-[1px_1px_0px_0px_#000] transition-transform active:translate-y-0.5 cursor-pointer">
+                                        class="px-2.5 py-1 text-[10px] font-bold bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 hover:border-slate-700 rounded shadow-[1px_1px_0px_0px_#e2e8f0] transition-all active:translate-y-0.5 cursor-pointer">
                                     DP 100rb
                                 </button>
                                 <button type="button" 
                                         onclick="setPaidPreset(0)" 
-                                        class="px-2.5 py-1 text-[10px] font-bold bg-slate-100 hover:bg-slate-200 text-slate-600 border border-black rounded shadow-[1px_1px_0px_0px_#000] transition-transform active:translate-y-0.5 cursor-pointer">
+                                        class="px-2.5 py-1 text-[10px] font-bold bg-slate-100 hover:bg-slate-200 text-slate-600 border border-slate-300 hover:border-slate-700 rounded shadow-[1px_1px_0px_0px_#e2e8f0] transition-all active:translate-y-0.5 cursor-pointer">
                                     Rp 0 (Belum Bayar)
                                 </button>
                             </div>
@@ -316,33 +316,33 @@
                     </div>
 
                     <!-- Real-time calculation summary -->
-                    <div class="p-3 bg-white border-2 border-black rounded-xl space-y-2">
+                    <div class="p-3.5 bg-white border border-amber-200/90 rounded-xl space-y-2.5 shadow-sm">
                         <div class="flex items-center justify-between text-xs">
                             <span class="text-slate-500 font-bold">Sisa Tagihan:</span>
-                            <span id="remaining-text" class="text-base font-black text-rose-700">Rp 150.000</span>
+                            <span id="remaining-text" class="text-base font-black text-rose-600">Rp 0</span>
                         </div>
-                        <div class="flex items-center justify-between pt-1 border-t border-slate-200 text-xs">
+                        <div class="flex items-center justify-between pt-1 border-t border-slate-100 text-xs">
                             <span class="text-slate-500 font-medium">Status Order:</span>
-                            <span id="status-badge" class="px-2 py-0.5 rounded-full border border-black font-black uppercase text-[10px] bg-yellow-300">
-                                DP (Sebagian)
+                            <span id="status-badge" class="px-2.5 py-0.5 rounded-full border border-rose-300 font-black uppercase text-[10px] bg-rose-100 text-rose-800 shadow-[1px_1px_0px_0px_#0f172a]">
+                                BELUM BAYAR
                             </span>
                         </div>
                     </div>
 
                     <!-- SOP Info Note -->
-                    <div class="text-[11px] font-semibold text-slate-700 bg-white p-2.5 rounded-lg border border-black flex items-start gap-2">
+                    <div class="text-[11px] font-medium text-slate-700 bg-white/80 p-2.5 rounded-lg border border-amber-200/90 flex items-start gap-2">
                         <x-icon name="info" class="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
                         <span>Pembayaran awal otomatis tercatat di <strong>Buku Kas</strong> cabang hari ini dan tiket langsung masuk antrean workdesk.</span>
                     </div>
 
                     <!-- Action Buttons -->
-                    <div class="space-y-2 pt-2 border-t-2 border-black">
-                        <button type="submit" class="w-full neo-btn bg-emerald-400 hover:bg-emerald-300 text-black font-black text-sm py-3 px-4 shadow-[3px_3px_0px_0px_#000] flex items-center justify-center gap-2 cursor-pointer">
+                    <div class="space-y-2 pt-2 border-t border-amber-200/80">
+                        <button type="submit" class="w-full neo-btn bg-emerald-400 hover:bg-emerald-300 text-slate-900 font-black text-sm py-3 px-4 shadow-[2.5px_2.5px_0px_0px_#0f172a] flex items-center justify-center gap-2 cursor-pointer">
                             <x-icon name="check" class="w-4 h-4" stroke-width="2.5" />
                             <span>Terbitkan Tiket & Catat Kas</span>
                         </button>
 
-                        <a href="{{ route('orders.index') }}" class="w-full neo-btn bg-slate-200 hover:bg-slate-300 text-xs py-2 text-center block font-bold text-slate-700">
+                        <a href="{{ route('orders.index') }}" class="w-full neo-btn bg-slate-100 hover:bg-slate-200 text-xs py-2 text-center block font-bold text-slate-600 shadow-[1.5px_1.5px_0px_0px_#e2e8f0]">
                             Batal
                         </a>
                     </div>
@@ -440,7 +440,7 @@ function calculateRemaining() {
         if (remaining === 0 && total > 0) {
             remainingEl.className = 'text-base font-black text-emerald-600';
         } else {
-            remainingEl.className = 'text-base font-black text-rose-700';
+            remainingEl.className = 'text-base font-black text-rose-600';
         }
     }
 
@@ -448,13 +448,13 @@ function calculateRemaining() {
     if (badge) {
         if (paid >= total && total > 0) {
             badge.innerText = 'LUNAS PENUH';
-            badge.className = 'px-2 py-0.5 rounded-full border border-black font-black uppercase text-[10px] bg-emerald-400 text-black shadow-[1px_1px_0px_0px_#000]';
+            badge.className = 'px-2.5 py-0.5 rounded-full border border-emerald-400 font-black uppercase text-[10px] bg-emerald-100 text-emerald-900 shadow-[1px_1px_0px_0px_#0f172a]';
         } else if (paid > 0) {
             badge.innerText = 'DP (SEBAGIAN)';
-            badge.className = 'px-2 py-0.5 rounded-full border border-black font-black uppercase text-[10px] bg-yellow-300 text-black shadow-[1px_1px_0px_0px_#000]';
+            badge.className = 'px-2.5 py-0.5 rounded-full border border-yellow-400 font-black uppercase text-[10px] bg-yellow-100 text-yellow-900 shadow-[1px_1px_0px_0px_#0f172a]';
         } else {
             badge.innerText = 'BELUM BAYAR';
-            badge.className = 'px-2 py-0.5 rounded-full border border-black font-black uppercase text-[10px] bg-rose-300 text-black shadow-[1px_1px_0px_0px_#000]';
+            badge.className = 'px-2.5 py-0.5 rounded-full border border-rose-300 font-black uppercase text-[10px] bg-rose-100 text-rose-800 shadow-[1px_1px_0px_0px_#0f172a]';
         }
     }
 }

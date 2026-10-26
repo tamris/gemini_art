@@ -25,14 +25,20 @@ class PrintingManagementSystemTest extends TestCase
         Storage::fake('public');
     }
 
-    public function test_login_page_renders_with_demo_accounts(): void
+    public function test_login_page_renders_production_ready(): void
     {
         $response = $this->get('/login');
         $response->assertStatus(200);
         $response->assertSee('GEMINI ART');
-        $response->assertSee('Budi Pratama (Owner)');
-        $response->assertSee('Siti Kasir Solo');
-        $response->assertSee('Rian Desainer Solo');
+        $response->assertSee('Masuk Akun');
+        $response->assertSee('Alamat Email');
+        $response->assertSee('Kata Sandi');
+        $response->assertDontSee('Akses Cepat Demo');
+
+        // Quick login switcher route remains active for authenticated user internal switcher modal
+        $owner = User::where('role', 'owner')->first();
+        $quickSwitchResponse = $this->post(route('quick-login'), ['user_id' => $owner->id]);
+        $quickSwitchResponse->assertRedirect(route('dashboard'));
     }
 
     public function test_owner_dashboard_shows_multi_branch_data(): void
