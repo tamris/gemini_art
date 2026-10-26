@@ -8,12 +8,12 @@
     <!-- Header Section -->
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b-2 border-black">
         <div>
-            <div class="flex items-center gap-2 mb-1">
+            <!-- <div class="flex items-center gap-2 mb-1">
                 <span class="w-3 h-3 rounded-full bg-yellow-400"></span>
                 <span class="text-xs font-black uppercase tracking-wider text-amber-900">
                     SOP Tahap 3 & 6: Sinkronisasi Arsip File Cetak Cloud (S3/R2)
                 </span>
-            </div>
+            </div> -->
             <h1 class="text-2xl font-black text-black">Pusat Arsip File Desain Terpusat</h1>
             <p class="text-xs font-semibold text-slate-600 mt-0.5">
                 Penyimpanan terstruktur multi-cabang tanpa rekap manual email. File cetak langsung siap diakses Owner dan tim produksi.

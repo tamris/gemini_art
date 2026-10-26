@@ -157,9 +157,36 @@
                             </select>
                         </div>
                         <div>
-                            <label class="block text-[11px] font-black uppercase text-black mb-1">Uang Diterima (Rp)</label>
-                            <input type="number" id="cash-received" oninput="calculateChange()" placeholder="0" class="neo-input text-xs py-1.5 font-bold">
+                            <label class="block text-[11px] font-black uppercase text-black mb-1">Uang Diterima</label>
+                            <div class="flex rounded-lg overflow-hidden border-2 border-black bg-white shadow-[2px_2px_0px_0px_#000] focus-within:ring-2 focus-within:ring-black">
+                                <span class="inline-flex items-center px-2 bg-emerald-200 border-r-2 border-black text-[11px] font-black text-black select-none">
+                                    Rp
+                                </span>
+                                <input type="text" 
+                                       id="cash-received" 
+                                       inputmode="numeric" 
+                                       oninput="formatCashReceived(this)" 
+                                       placeholder="0" 
+                                       autocomplete="off"
+                                       class="w-full px-2 py-1 text-xs font-bold text-black bg-transparent focus:outline-none">
+                            </div>
                         </div>
+                    </div>
+
+                    <!-- Fast Cash Presets -->
+                    <div class="flex flex-wrap items-center gap-1">
+                        <button type="button" onclick="setCashPreset('exact')" class="px-2 py-0.5 text-[10px] font-black uppercase bg-emerald-100 hover:bg-emerald-200 text-emerald-900 border border-black rounded shadow-[1px_1px_0px_0px_#000] cursor-pointer">
+                            ⚡ Pas
+                        </button>
+                        <button type="button" onclick="setCashPreset(50000)" class="px-2 py-0.5 text-[10px] font-bold bg-white hover:bg-slate-100 text-slate-800 border border-black rounded shadow-[1px_1px_0px_0px_#000] cursor-pointer">
+                            50rb
+                        </button>
+                        <button type="button" onclick="setCashPreset(100000)" class="px-2 py-0.5 text-[10px] font-bold bg-white hover:bg-slate-100 text-slate-800 border border-black rounded shadow-[1px_1px_0px_0px_#000] cursor-pointer">
+                            100rb
+                        </button>
+                        <button type="button" onclick="setCashPreset(200000)" class="px-2 py-0.5 text-[10px] font-bold bg-white hover:bg-slate-100 text-slate-800 border border-black rounded shadow-[1px_1px_0px_0px_#000] cursor-pointer">
+                            200rb
+                        </button>
                     </div>
 
                     <!-- Change Calculation Box -->
@@ -304,12 +331,41 @@ function renderCart() {
     calculateChange();
 }
 
+function formatCashReceived(input) {
+    const raw = input.value.replace(/\D/g, '');
+    if (!raw) {
+        input.value = '';
+    } else {
+        const num = parseInt(raw, 10);
+        input.value = num.toLocaleString('id-ID');
+    }
+    calculateChange();
+}
+
+function setCashPreset(preset) {
+    let total = 0;
+    cart.forEach(i => total += (i.qty * i.price));
+    const input = document.getElementById('cash-received');
+    if (!input) return;
+
+    let val = 0;
+    if (preset === 'exact') {
+        val = total;
+    } else if (typeof preset === 'number') {
+        val = preset;
+    }
+
+    input.value = val > 0 ? val.toLocaleString('id-ID') : '0';
+    calculateChange();
+}
+
 function calculateChange() {
     let total = 0;
     cart.forEach(i => total += (i.qty * i.price));
 
     const receivedInput = document.getElementById('cash-received');
-    const received = parseFloat(receivedInput.value) || 0;
+    const raw = receivedInput ? receivedInput.value.replace(/\D/g, '') : '';
+    const received = raw ? parseInt(raw, 10) : 0;
     const change = Math.max(0, received - total);
 
     document.getElementById('change-amount-text').innerText = 'Rp ' + change.toLocaleString('id-ID');

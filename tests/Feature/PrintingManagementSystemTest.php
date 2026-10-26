@@ -94,6 +94,28 @@ class PrintingManagementSystemTest extends TestCase
         $response->assertRedirect(route('orders.show', $order->id));
     }
 
+    public function test_cashier_can_create_design_order_with_formatted_idr_nominal(): void
+    {
+        $cashier = User::where('email', 'kasir.solo@geminiart.test')->first();
+
+        // Submit with dot thousand separators and "Rp" prefix as formatted by user / UI
+        $response = $this->actingAs($cashier)->post(route('orders.store-design'), [
+            'customer_name' => 'Toko Buku Cerdas',
+            'customer_phone' => '081234567890',
+            'title' => 'Brosur Penerimaan Siswa Baru',
+            'total_amount' => 'Rp 350.000',
+            'paid_amount' => '150.000',
+            'payment_method' => 'cash',
+        ]);
+
+        $order = Order::where('customer_name', 'Toko Buku Cerdas')->first();
+        $this->assertNotNull($order);
+        $this->assertEquals(350000, (float) $order->total_amount);
+        $this->assertEquals(150000, (float) $order->paid_amount);
+        $this->assertEquals('partial_dp', $order->payment_status);
+        $this->assertEquals(200000, (float) $order->remaining_amount);
+    }
+
     public function test_designer_upload_print_asset_automates_ready_to_print_status(): void
     {
         $designer = User::where('email', 'desain.solo@geminiart.test')->first();

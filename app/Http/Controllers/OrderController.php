@@ -73,6 +73,18 @@ class OrderController extends Controller
     {
         $user = Auth::user();
 
+        // Sanitize nominal inputs before validation (removes dots, spaces, or currency prefixes)
+        if ($request->has('total_amount')) {
+            $request->merge([
+                'total_amount' => preg_replace('/[^\d]/', '', (string) $request->input('total_amount')),
+            ]);
+        }
+        if ($request->has('paid_amount')) {
+            $request->merge([
+                'paid_amount' => preg_replace('/[^\d]/', '', (string) $request->input('paid_amount')),
+            ]);
+        }
+
         $rules = [
             'customer_name' => 'required|string|max:100',
             'customer_phone' => 'nullable|string|max:20',

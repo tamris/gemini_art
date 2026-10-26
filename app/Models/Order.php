@@ -82,11 +82,11 @@ class Order extends Model
     public function getStatusLabelAttribute(): string
     {
         return match ($this->work_status) {
-            'draft' => 'Draft / Antrean',
-            'in_progress' => 'Proses Pengerjaan',
+            'draft' => 'Draft',
+            'in_progress' => 'Proses',
             'revision' => 'Revisi',
             'ready_to_print' => 'Siap Cetak',
-            'completed' => 'Selesai / Diambil',
+            'completed' => 'Selesai',
             'canceled' => 'Dibatalkan',
             default => $this->work_status,
         };

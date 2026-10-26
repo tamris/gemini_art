@@ -19,29 +19,27 @@
            class="fixed inset-y-0 left-0 z-50 w-72 bg-white border-r-2 border-black flex flex-col justify-between transform -translate-x-full lg:translate-x-0 transition-transform duration-200 ease-in-out">
         
         <!-- Top: Brand Header -->
-        <div class="p-5 border-b-2 border-black bg-white">
-            <div class="flex items-center justify-between">
-                <a href="{{ route('dashboard') }}" class="flex items-center gap-3 group text-decoration-none">
-                    <div class="w-11 h-11 bg-amber-300 border-2 border-black rounded-xl shadow-[3px_3px_0px_0px_#000] flex items-center justify-center font-black text-xl group-hover:translate-x-[1px] group-hover:translate-y-[1px] transition-transform text-black">
-                        GA
+        <div class="h-20 px-5 border-b-2 border-black bg-white flex items-center justify-between">
+            <a href="{{ route('dashboard') }}" class="flex items-center gap-3 group text-decoration-none">
+                <div class="w-11 h-11 bg-amber-300 border-2 border-black rounded-xl shadow-[3px_3px_0px_0px_#000] flex items-center justify-center font-black text-xl group-hover:translate-x-[1px] group-hover:translate-y-[1px] transition-transform text-black">
+                    GA
+                </div>
+                <div>
+                    <div class="flex items-center gap-1.5">
+                        <span class="font-black text-lg tracking-tight text-black">GEMINI ART</span>
                     </div>
-                    <div>
-                        <div class="flex items-center gap-1.5">
-                            <span class="font-black text-lg tracking-tight text-black">GEMINI ART</span>
-                        </div>
-                        <p class="text-[10px] font-bold uppercase tracking-wider text-slate-500">
-                            Studio & Percetakan
-                        </p>
-                    </div>
-                </a>
+                    <p class="text-[10px] font-bold uppercase tracking-wider text-slate-500">
+                        Studio & Percetakan
+                    </p>
+                </div>
+            </a>
 
-                <!-- Mobile Close Button -->
-                <button type="button" 
-                        onclick="toggleSidebar()" 
-                        class="lg:hidden p-1.5 rounded-lg border-2 border-black bg-rose-200 hover:bg-rose-300 font-black text-sm cursor-pointer">
-                    <x-icon name="x" class="w-4 h-4 text-black" stroke-width="2.5" />
-                </button>
-            </div>
+            <!-- Mobile Close Button -->
+            <button type="button" 
+                    onclick="toggleSidebar()" 
+                    class="lg:hidden p-1.5 rounded-lg border-2 border-black bg-rose-200 hover:bg-rose-300 font-black text-sm cursor-pointer">
+                <x-icon name="x" class="w-4 h-4 text-black" stroke-width="2.5" />
+            </button>
         </div>
 
         <!-- Middle: Navigation Menus -->
@@ -223,7 +221,7 @@
     <div class="flex-1 lg:pl-72 flex flex-col min-h-screen min-w-0">
         
         <!-- Top Minimal Utility Bar -->
-        <header class="bg-white border-b-2 border-black sticky top-0 z-30 px-4 sm:px-8 py-3.5 flex items-center justify-between">
+        <header class="h-20 bg-white border-b-2 border-black sticky top-0 z-30 px-4 sm:px-8 flex items-center justify-between">
             
             <!-- Left: Mobile Toggle & Page Title -->
             <div class="flex items-center gap-3">
@@ -240,35 +238,18 @@
                 </div>
             </div>
 
-            <!-- Right: Quick Shortcuts & Date -->
-            <div class="flex items-center gap-2 sm:gap-3">
-                <span class="hidden md:inline-flex items-center gap-1.5 text-xs font-bold text-slate-500 bg-slate-100 border border-black px-2.5 py-1 rounded-lg">
-                    <x-icon name="calendar" class="w-3.5 h-3.5 text-slate-400" />
-                    {{ \Carbon\Carbon::now()->translatedFormat('l, d M Y') }}
+            <!-- Right: Indonesian Date Only -->
+            <div>
+                <span class="inline-flex items-center gap-1.5 text-xs font-bold text-slate-700 bg-slate-100 border-2 border-black px-3 py-1.5 rounded-xl shadow-[2px_2px_0px_0px_#000]">
+                    <x-icon name="calendar" class="w-3.5 h-3.5 text-slate-500" />
+                    <span>{{ \Carbon\Carbon::now('Asia/Jakarta')->locale('id')->isoFormat('dddd, D MMMM Y') }}</span>
                 </span>
-
-                <a href="{{ route('orders.create-design') }}" class="neo-btn bg-sky-400 hover:bg-sky-300 text-xs py-1.5 px-3 text-black font-black hidden sm:inline-flex items-center gap-1.5">
-                    <x-icon name="plus" class="w-3.5 h-3.5" stroke-width="2.5" />
-                    <span>Order Desain</span>
-                </a>
-
-                <a href="{{ route('pos.index') }}" class="neo-btn bg-emerald-300 hover:bg-emerald-400 text-xs py-1.5 px-3 text-black font-black flex items-center gap-1.5">
-                    <x-icon name="shopping-cart" class="w-3.5 h-3.5" />
-                    <span>Kasir POS</span>
-                </a>
-
-                <button type="button" 
-                        onclick="document.getElementById('quick-switch-modal').showModal()"
-                        class="neo-btn bg-white hover:bg-amber-100 text-xs py-1.5 px-2.5 text-black font-bold flex items-center gap-1.5">
-                    <x-icon name="user" class="w-3.5 h-3.5 text-purple-700" />
-                    Role: <span class="uppercase font-black text-purple-700">{{ Auth::user()->role }}</span>
-                </button>
             </div>
 
         </header>
 
-        <!-- Main Workspace Area -->
-        <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-8 py-6">
+        <!-- Main Workspace Area (Full-Width Fluid Responsive) -->
+        <main class="flex-1 w-full px-4 sm:px-8 py-6">
 
             <!-- Flash Notifications -->
             @if(session('success'))
@@ -320,7 +301,7 @@
 
         <!-- Minimal Footer -->
         <footer class="bg-white border-t-2 border-black py-4 mt-auto">
-            <div class="max-w-7xl mx-auto px-4 sm:px-8 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs font-semibold text-slate-500">
+            <div class="w-full px-4 sm:px-8 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs font-semibold text-slate-500">
                 <div>
                     <strong>Gemini Art Multi-Cabang</strong> &bull; ERP Percetakan & Studio Desain
                 </div>

@@ -275,8 +275,21 @@
             </div>
 
             <div>
-                <label class="block text-xs font-black uppercase text-black mb-1">Nominal (Rp)</label>
-                <input type="number" name="amount" min="1000" placeholder="50000" required class="neo-input text-sm font-black">
+                <label for="cash_amount_display" class="block text-xs font-black uppercase text-black mb-1">Nominal (Rp) *</label>
+                <div class="flex rounded-xl overflow-hidden border-2 border-black bg-white shadow-[3px_3px_0px_0px_#000] focus-within:shadow-[4px_4px_0px_0px_#000] focus-within:ring-2 focus-within:ring-black transition-all">
+                    <span class="inline-flex items-center px-3.5 bg-amber-300 border-r-2 border-black text-xs font-black text-black select-none">
+                        Rp
+                    </span>
+                    <input type="text" 
+                           id="cash_amount_display" 
+                           inputmode="numeric"
+                           placeholder="0" 
+                           required 
+                           autocomplete="off"
+                           class="w-full px-3 py-2 text-sm font-black text-black bg-transparent focus:outline-none placeholder:text-slate-300 tracking-wide">
+                </div>
+                <input type="hidden" name="amount" id="cash_amount" value="">
+                <span class="text-[10px] text-slate-500 font-semibold mt-1 block">Otomatis terformat rupiah (contoh: 50.000).</span>
             </div>
 
             <div>
@@ -304,4 +317,50 @@
         </form>
     </div>
 </dialog>
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const displayEl = document.getElementById('cash_amount_display');
+    const hiddenEl = document.getElementById('cash_amount');
+    if (!displayEl || !hiddenEl) return;
+
+    displayEl.addEventListener('keydown', function(e) {
+        if (e.key === 'Backspace') {
+            const cursor = displayEl.selectionStart;
+            if (cursor > 1 && displayEl.value[cursor - 1] === '.') {
+                e.preventDefault();
+                const val = displayEl.value;
+                const newVal = val.slice(0, cursor - 2) + val.slice(cursor - 1);
+                displayEl.value = newVal;
+                displayEl.setSelectionRange(cursor - 2, cursor - 2);
+                displayEl.dispatchEvent(new Event('input'));
+            }
+        }
+    });
+
+    displayEl.addEventListener('input', function() {
+        const cursor = displayEl.selectionStart;
+        const oldVal = displayEl.value;
+        const rawDigits = oldVal.replace(/\D/g, '');
+
+        if (!rawDigits) {
+            displayEl.value = '';
+            hiddenEl.value = '';
+        } else {
+            const num = parseInt(rawDigits, 10);
+            const formatted = num.toLocaleString('id-ID');
+            displayEl.value = formatted;
+            hiddenEl.value = num;
+
+            const diff = formatted.length - oldVal.length;
+            let newCursor = cursor + diff;
+            if (newCursor < 0) newCursor = 0;
+            if (newCursor > formatted.length) newCursor = formatted.length;
+            displayEl.setSelectionRange(newCursor, newCursor);
+        }
+    });
+});
+</script>
+@endpush
 @endsection

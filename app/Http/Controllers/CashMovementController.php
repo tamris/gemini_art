@@ -63,6 +63,12 @@ class CashMovementController extends Controller
     {
         $user = Auth::user();
 
+        if ($request->has('amount')) {
+            $request->merge([
+                'amount' => preg_replace('/[^\d]/', '', (string) $request->input('amount')),
+            ]);
+        }
+
         $rules = [
             'type' => 'required|in:in,out',
             'amount' => 'required|numeric|min:1',
