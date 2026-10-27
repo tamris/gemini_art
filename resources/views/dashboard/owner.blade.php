@@ -13,9 +13,9 @@
                 <span class="text-[11px] font-black uppercase tracking-wider text-purple-900">Owner Command Center</span>
             </div>
             <h1 class="text-xl md:text-2xl font-black text-black">Monitor Omset & Operasional Multi-Cabang</h1>
-            <p class="text-xs font-semibold text-slate-700 mt-0.5">
+            <!-- <p class="text-xs font-semibold text-slate-700 mt-0.5">
                 Data real-time gabungan seluruh cabang dan sinkronisasi arsip desain terpusat.
-            </p>
+            </p> -->
         </div>
         <div class="flex items-center gap-2 shrink-0">
             <a href="{{ route('orders.create-design') }}" class="neo-btn bg-amber-300 hover:bg-amber-400 text-xs py-2 px-3.5 text-black flex items-center gap-1.5">

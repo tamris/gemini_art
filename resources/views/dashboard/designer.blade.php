@@ -15,9 +15,9 @@
                 </span>
             </div>
             <h1 class="text-2xl md:text-3xl font-black text-black">Antrean Pengerjaan & Upload File Cetak</h1>
-            <p class="text-xs md:text-sm font-semibold text-slate-700 mt-1">
+            <!-- <p class="text-xs md:text-sm font-semibold text-slate-700 mt-1">
                 Kerjakan brief desain, sesuaikan dimensi & bahan, lalu unggah file cetak final (PDF/TIFF/JPG) untuk otomatisasi arsip cloud.
-            </p>
+            </p> -->
         </div>
         <div class="flex items-center gap-3">
             <a href="{{ route('workdesk.index') }}" class="neo-btn bg-white hover:bg-slate-100 text-xs py-2.5 px-4 text-black flex items-center gap-2">
@@ -191,7 +191,7 @@
             
             <div>
                 <label class="block text-xs font-black uppercase text-black mb-1">Tipe File Yang Diunggah</label>
-                <select name="file_type" required class="neo-input text-xs font-bold">
+                <select name="file_type" required class="neo-select">
                     <option value="final_print" selected>File Cetak Siap Produksi (Otomatis Ubah Status ke Siap Cetak)</option>
                     <option value="preview_proof">Preview / Proofing ke Customer</option>
                     <option value="brief_ref">Referensi / Dokumen Brief Tambahan</option>

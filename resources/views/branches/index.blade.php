@@ -15,9 +15,9 @@
                 </span>
             </div>
             <h1 class="text-2xl font-black text-black">Daftar Cabang & Outlet Percetakan</h1>
-            <p class="text-xs font-semibold text-slate-600 mt-0.5">
+            <!-- <p class="text-xs font-semibold text-slate-600 mt-0.5">
                 Kelola kode cabang (contoh: CBA, CBB) untuk otomatisasi penomoran order dan struktur path arsip cloud.
-            </p>
+            </p> -->
         </div>
         <button type="button" 
                 onclick="document.getElementById('add-branch-modal').showModal()"

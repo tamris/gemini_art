@@ -15,9 +15,9 @@
                 </span>
             </div>
             <h1 class="text-2xl font-black text-black">Buku Kas Harian & Audit Operasional</h1>
-            <p class="text-xs font-semibold text-slate-600 mt-0.5">
+            <!-- <p class="text-xs font-semibold text-slate-600 mt-0.5">
                 Pencatatan kas masuk DP/pelunasan/POS dan kas keluar operasional untuk mencegah kebocoran omset.
-            </p>
+            </p> -->
         </div>
         <button type="button" 
                 onclick="document.getElementById('add-expense-modal').showModal()"
@@ -82,14 +82,14 @@
 
     </div>
 
-    <!-- Filter Card -->
-    <div class="neo-box p-4 bg-white">
-        <form method="GET" action="{{ route('cash.index') }}" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-3 items-end">
+    <!-- Filter Card (Instant Auto-Filter) -->
+    <div class="neo-box p-4 bg-white relative overflow-visible z-20">
+        <form method="GET" action="{{ route('cash.index') }}" data-auto-submit class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-3 items-end">
             
             @if(Auth::user()->isOwner())
             <div>
-                <label class="block text-[11px] font-black uppercase text-black mb-1">Cabang</label>
-                <select name="branch_id" class="neo-input text-xs py-2 font-bold">
+                <label class="block text-[11px] font-black uppercase text-slate-800 mb-1 tracking-wider">Cabang</label>
+                <select name="branch_id" class="neo-select">
                     <option value="">Semua Cabang</option>
                     @foreach($branches as $b)
                         <option value="{{ $b->id }}" {{ request('branch_id') == $b->id ? 'selected' : '' }}>
@@ -101,8 +101,8 @@
             @endif
 
             <div>
-                <label class="block text-[11px] font-black uppercase text-black mb-1">Arah Kas</label>
-                <select name="type" class="neo-input text-xs py-2 font-bold">
+                <label class="block text-[11px] font-black uppercase text-slate-800 mb-1 tracking-wider">Arah Kas</label>
+                <select name="type" class="neo-select">
                     <option value="">Semua (Masuk & Keluar)</option>
                     <option value="in" {{ request('type') == 'in' ? 'selected' : '' }}>Kas Masuk (+)</option>
                     <option value="out" {{ request('type') == 'out' ? 'selected' : '' }}>Kas Keluar (-)</option>
@@ -110,8 +110,8 @@
             </div>
 
             <div>
-                <label class="block text-[11px] font-black uppercase text-black mb-1">Kategori</label>
-                <select name="category" class="neo-input text-xs py-2 font-bold">
+                <label class="block text-[11px] font-black uppercase text-slate-800 mb-1 tracking-wider">Kategori</label>
+                <select name="category" class="neo-select">
                     <option value="">Semua Kategori</option>
                     <option value="order_dp" {{ request('category') == 'order_dp' ? 'selected' : '' }}>DP Order Desain</option>
                     <option value="order_settlement" {{ request('category') == 'order_settlement' ? 'selected' : '' }}>Pelunasan Order</option>
@@ -122,8 +122,8 @@
             </div>
 
             <div>
-                <label class="block text-[11px] font-black uppercase text-black mb-1">Metode Bayar</label>
-                <select name="payment_method" class="neo-input text-xs py-2 font-bold">
+                <label class="block text-[11px] font-black uppercase text-slate-800 mb-1 tracking-wider">Metode Bayar</label>
+                <select name="payment_method" class="neo-select">
                     <option value="">Semua Metode</option>
                     <option value="cash" {{ request('payment_method') == 'cash' ? 'selected' : '' }}>Tunai / Cash</option>
                     <option value="qris" {{ request('payment_method') == 'qris' ? 'selected' : '' }}>QRIS</option>
@@ -132,28 +132,28 @@
             </div>
 
             <div>
-                <label class="block text-[11px] font-black uppercase text-black mb-1">Tanggal</label>
-                <input type="date" name="date" value="{{ request('date') }}" class="neo-input text-xs py-2 font-bold">
+                <label class="block text-[11px] font-black uppercase text-slate-800 mb-1 tracking-wider">Tanggal</label>
+                <input type="date" name="date" value="{{ request('date') }}" class="neo-input text-xs py-2 font-bold cursor-pointer">
             </div>
 
-            <div class="flex items-center gap-2">
-                <button type="submit" class="flex-1 neo-btn bg-amber-300 hover:bg-amber-400 text-xs py-2 cursor-pointer font-black">
-                    Filter
-                </button>
-                <a href="{{ route('cash.index') }}" class="neo-btn bg-slate-200 hover:bg-slate-300 text-xs py-2 px-3">
-                    Reset
+            <div>
+                <a href="{{ route('cash.index') }}" class="w-full neo-btn {{ request()->anyFilled(['branch_id', 'type', 'category', 'payment_method', 'date']) ? 'bg-amber-200 hover:bg-amber-300 text-slate-900 border-slate-800 font-black' : 'bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold' }} text-xs py-2 px-3 shadow-[1.5px_1.5px_0px_0px_#0f172a] flex items-center justify-center gap-1.5 transition-all">
+                    <x-icon name="rotate-ccw" class="w-3.5 h-3.5" />
+                    <span>Reset Filter</span>
                 </a>
             </div>
 
         </form>
     </div>
 
-    <!-- Movements Table -->
-    <div class="neo-box bg-white overflow-hidden">
-        <div class="overflow-x-auto">
-            <table class="w-full text-left text-xs">
-                <thead>
-                    <tr class="bg-slate-100 border-b-2 border-black text-black font-black uppercase tracking-wider">
+    <!-- Filter Results Container (Live Smooth Replacement) -->
+    <div id="filter-results-container">
+        <!-- Movements Table -->
+        <div class="neo-box bg-white overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs">
+                    <thead>
+                        <tr class="bg-slate-50 border-b border-slate-200 text-slate-800 font-black uppercase tracking-wider">
                         <th class="py-3 px-4">Waktu</th>
                         <th class="py-3 px-4">Cabang</th>
                         <th class="py-3 px-4">Kategori & Keterangan</th>
@@ -223,10 +223,11 @@
         </div>
 
         @if($movements->hasPages())
-        <div class="p-4 border-t-2 border-black bg-slate-50">
+        <div class="p-4 border-t border-slate-200 bg-slate-50">
             {{ $movements->links() }}
         </div>
         @endif
+    </div>
     </div>
 
 </div>
@@ -249,7 +250,7 @@
             @if(Auth::user()->isOwner())
             <div>
                 <label class="block text-xs font-black uppercase text-black mb-1">Cabang</label>
-                <select name="branch_id" required class="neo-input text-xs font-bold">
+                <select name="branch_id" required class="neo-select">
                     @foreach($branches as $b)
                         <option value="{{ $b->id }}">{{ $b->code }} - {{ $b->name }}</option>
                     @endforeach
@@ -260,14 +261,14 @@
             <div class="grid grid-cols-2 gap-3">
                 <div>
                     <label class="block text-xs font-black uppercase text-black mb-1">Jenis Mutasi</label>
-                    <select name="type" required class="neo-input text-xs font-bold">
+                    <select name="type" required class="neo-select">
                         <option value="out">Kas Keluar (-)</option>
                         <option value="in">Kas Masuk (+)</option>
                     </select>
                 </div>
                 <div>
                     <label class="block text-xs font-black uppercase text-black mb-1">Kategori</label>
-                    <select name="category" required class="neo-input text-xs font-bold">
+                    <select name="category" required class="neo-select">
                         <option value="petty_cash_expense">Pengeluaran Operasional / Petty Cash</option>
                         <option value="initial_balance">Modal Kas Awal</option>
                     </select>
@@ -294,7 +295,7 @@
 
             <div>
                 <label class="block text-xs font-black uppercase text-black mb-1">Metode Pembayaran</label>
-                <select name="payment_method" required class="neo-input text-xs font-bold">
+                <select name="payment_method" required class="neo-select">
                     <option value="cash">Tunai (Cash Laci)</option>
                     <option value="qris">QRIS</option>
                     <option value="transfer">Transfer Bank</option>

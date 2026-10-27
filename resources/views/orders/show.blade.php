@@ -211,7 +211,7 @@
                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
                                 </svg>
-                                <span>Download</span>
+                                <!-- <span>Download</span> -->
                             </a>
                         </div>
                     </div>
@@ -309,7 +309,7 @@
                         @csrf
                         <div>
                             <label class="block text-[11px] font-black uppercase text-black mb-1">Metode Pelunasan</label>
-                            <select name="payment_method" required class="neo-input text-xs font-bold py-1.5">
+                            <select name="payment_method" required class="neo-select">
                                 <option value="cash">Tunai (Cash Laci)</option>
                                 <option value="qris">QRIS Statis/Dinamis</option>
                                 <option value="transfer">Transfer Bank</option>
@@ -347,7 +347,7 @@
                     @csrf
                     <div>
                         <label class="block text-[11px] font-black uppercase text-black mb-1">Ubah Status Tiket</label>
-                        <select name="work_status" class="neo-input text-xs font-bold">
+                        <select name="work_status" class="neo-select">
                             <option value="draft" {{ $order->work_status === 'draft' ? 'selected' : '' }}>Draft / Antrean</option>
                             <option value="in_progress" {{ $order->work_status === 'in_progress' ? 'selected' : '' }}>Proses Pengerjaan</option>
                             <option value="revision" {{ $order->work_status === 'revision' ? 'selected' : '' }}>Revisi</option>
@@ -386,7 +386,7 @@
             @csrf
             <div>
                 <label class="block text-xs font-black uppercase text-black mb-1">Tipe File</label>
-                <select name="file_type" required class="neo-input text-xs font-bold">
+                <select name="file_type" required class="neo-select">
                     <option value="final_print" selected>File Cetak Siap Produksi (Status → Siap Cetak)</option>
                     <option value="preview_proof">Preview Proofing ke Pelanggan</option>
                     <option value="brief_ref">Referensi Brief / Lampiran</option>

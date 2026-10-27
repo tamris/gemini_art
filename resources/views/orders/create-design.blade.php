@@ -15,9 +15,9 @@
                 </span>
             </div> -->
             <h1 class="text-2xl font-black text-black">Input Tiket Order Desain & Cetak</h1>
-            <p class="text-xs font-semibold text-slate-600 mt-0.5">
+            <!-- <p class="text-xs font-semibold text-slate-600 mt-0.5">
                 Data spesifikasi pengerjaan, deadline, dan komitmen DP/Lunas yang otomatis tercatat ke buku kas cabang.
-            </p>
+            </p> -->
         </div>
         <a href="{{ route('orders.index') }}" class="neo-btn bg-slate-200 hover:bg-slate-300 text-xs py-2 px-3.5 flex items-center gap-1.5 self-start sm:self-center">
             <x-icon name="arrow-left" class="w-3.5 h-3.5" stroke-width="2.5" />
@@ -51,7 +51,7 @@
                         @if(Auth::user()->isOwner())
                         <div>
                             <label class="block text-xs font-black uppercase text-black mb-1">Pilih Cabang Pelaksana *</label>
-                            <select name="branch_id" required class="neo-input text-xs font-bold">
+                            <select name="branch_id" required class="neo-select">
                                 @foreach($branches as $b)
                                     <option value="{{ $b->id }}">{{ $b->code }} - {{ $b->name }}</option>
                                 @endforeach
@@ -85,7 +85,7 @@
 
                         <div>
                             <label class="block text-xs font-black uppercase text-black mb-1">Tugaskan ke Desainer (Opsional)</label>
-                            <select name="designer_id" class="neo-input text-xs font-medium">
+                            <select name="designer_id" class="neo-select">
                                 <option value="">-- Masuk Antrean Umum Cabang (Draft) --</option>
                                 @foreach($designers as $d)
                                     <option value="{{ $d->id }}" {{ old('designer_id') == $d->id ? 'selected' : '' }}>
@@ -307,7 +307,7 @@
 
                         <div>
                             <label class="block text-xs font-black uppercase text-black mb-1">Metode Pembayaran *</label>
-                            <select name="payment_method" required class="neo-input text-xs font-bold">
+                            <select name="payment_method" required class="neo-select">
                                 <option value="cash">Tunai (Cash Laci)</option>
                                 <option value="qris">QRIS Statis/Dinamis</option>
                                 <option value="transfer">Transfer Bank Cabang</option>

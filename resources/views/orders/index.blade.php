@@ -9,9 +9,9 @@
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
             <h1 class="text-2xl font-black text-black">Manajemen Order & Antrean Tiket</h1>
-            <p class="text-xs font-semibold text-slate-600 mt-0.5">
+            <!-- <p class="text-xs font-semibold text-slate-600 mt-0.5">
                 Semua pesanan desain kustom dan transaksi kasir ritel cepat di cabang.
-            </p>
+            </p> -->
         </div>
         <div class="flex items-center gap-3">
             <a href="{{ route('orders.create-design') }}" class="neo-btn bg-sky-400 hover:bg-sky-300 text-xs py-2 px-3.5 text-black font-black flex items-center gap-2">
@@ -25,25 +25,30 @@
         </div>
     </div>
 
-    <!-- Filter Card (Soft Neo-Brutalism) -->
-    <div class="neo-box p-4 bg-white">
-        <form method="GET" action="{{ route('orders.index') }}" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-3 items-end">
+    <!-- Filter Card (Soft Neo-Brutalism Instant Filter) -->
+    <div class="neo-box p-4 bg-white relative overflow-visible z-20">
+        <form method="GET" action="{{ route('orders.index') }}" data-auto-submit class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-3 items-end">
             
             <!-- Search -->
             <div class="lg:col-span-2">
-                <label class="block text-[11px] font-black uppercase text-black mb-1">Cari Order / Customer</label>
-                <input type="text" 
-                       name="search" 
-                       value="{{ request('search') }}" 
-                       placeholder="No. Order (ORD-...), Nama, No. HP..."
-                       class="neo-input text-xs py-2 font-bold">
+                <label class="block text-[11px] font-black uppercase text-slate-800 mb-1 tracking-wider">Cari Order / Customer</label>
+                <div class="flex items-center rounded-xl border-[1.5px] border-slate-300 shadow-[1.5px_1.5px_0px_0px_#e2e8f0] focus-within:border-slate-800 focus-within:shadow-[2.5px_2.5px_0px_0px_#0f172a] bg-white transition-all overflow-hidden">
+                    <button type="submit" aria-label="Cari" class="pl-3 pr-2 text-slate-400 hover:text-slate-800 flex items-center justify-center shrink-0 cursor-pointer transition-colors">
+                        <x-icon name="search" class="w-3.5 h-3.5" />
+                    </button>
+                    <input type="text" 
+                           name="search" 
+                           value="{{ request('search') }}" 
+                           placeholder="No. Order (ORD-...), Nama, No. HP... (Tekan Enter)"
+                           class="w-full py-2 pr-3 text-xs font-bold text-slate-800 placeholder:text-slate-400 outline-none bg-transparent">
+                </div>
             </div>
 
             <!-- Branch Filter (for owner) -->
             @if(Auth::user()->isOwner())
             <div>
-                <label class="block text-[11px] font-black uppercase text-black mb-1">Cabang</label>
-                <select name="branch_id" class="neo-input text-xs py-2 font-bold">
+                <label class="block text-[11px] font-black uppercase text-slate-800 mb-1 tracking-wider">Cabang</label>
+                <select name="branch_id" class="neo-select">
                     <option value="">Semua Cabang</option>
                     @foreach($branches as $b)
                         <option value="{{ $b->id }}" {{ request('branch_id') == $b->id ? 'selected' : '' }}>
@@ -56,8 +61,8 @@
 
             <!-- Work Status Filter -->
             <div>
-                <label class="block text-[11px] font-black uppercase text-black mb-1">Status Kerja</label>
-                <select name="work_status" class="neo-input text-xs py-2 font-bold">
+                <label class="block text-[11px] font-black uppercase text-slate-800 mb-1 tracking-wider">Status Kerja</label>
+                <select name="work_status" class="neo-select">
                     <option value="">Semua Status</option>
                     <option value="draft" {{ request('work_status') == 'draft' ? 'selected' : '' }}>Draft / Antrean</option>
                     <option value="in_progress" {{ request('work_status') == 'in_progress' ? 'selected' : '' }}>Proses Pengerjaan</option>
@@ -70,8 +75,8 @@
 
             <!-- Payment Status Filter -->
             <div>
-                <label class="block text-[11px] font-black uppercase text-black mb-1">Status Bayar</label>
-                <select name="payment_status" class="neo-input text-xs py-2 font-bold">
+                <label class="block text-[11px] font-black uppercase text-slate-800 mb-1 tracking-wider">Status Bayar</label>
+                <select name="payment_status" class="neo-select">
                     <option value="">Semua</option>
                     <option value="paid" {{ request('payment_status') == 'paid' ? 'selected' : '' }}>Lunas</option>
                     <option value="partial_dp" {{ request('payment_status') == 'partial_dp' ? 'selected' : '' }}>DP (Sebagian)</option>
@@ -79,26 +84,27 @@
                 </select>
             </div>
 
-            <!-- Buttons -->
-            <div class="flex items-center gap-2">
-                <button type="submit" class="flex-1 neo-btn bg-amber-300 hover:bg-amber-400 text-xs py-2 font-black flex items-center justify-center gap-1.5 cursor-pointer">
-                    <x-icon name="sliders-horizontal" class="w-3.5 h-3.5" />
-                    <span>Filter</span>
-                </button>
-                <a href="{{ route('orders.index') }}" class="neo-btn bg-slate-200 hover:bg-slate-300 text-xs py-2 px-3">
-                    Reset
+            <!-- Reset Action -->
+            <div>
+                <a href="{{ route('orders.index') }}" 
+                   title="Reset semua filter"
+                   class="w-full neo-btn {{ request()->anyFilled(['search', 'branch_id', 'work_status', 'payment_status']) ? 'bg-amber-200 hover:bg-amber-300 text-slate-900 border-slate-800 font-black' : 'bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold' }} text-xs py-2 px-3 flex items-center justify-center gap-1.5 shadow-[1.5px_1.5px_0px_0px_#0f172a] transition-all">
+                    <x-icon name="rotate-ccw" class="w-3.5 h-3.5" />
+                    <span>Reset Filter</span>
                 </a>
             </div>
 
         </form>
     </div>
 
-    <!-- Orders Table (Soft Neo-Brutalism) -->
-    <div class="neo-box bg-white overflow-hidden">
-        <div class="overflow-x-auto">
-            <table class="w-full text-left text-xs">
-                <thead>
-                    <tr class="bg-slate-100 border-b-2 border-black text-black font-black uppercase tracking-wider">
+    <!-- Filter Results Container (Live Smooth Replacement) -->
+    <div id="filter-results-container">
+        <!-- Orders Table (Soft Neo-Brutalism) -->
+        <div class="neo-box bg-white overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs">
+                    <thead>
+                        <tr class="bg-slate-50 border-b border-slate-200 text-slate-800 font-black uppercase tracking-wider">
                         <th class="py-3 px-4">No. Order</th>
                         <th class="py-3 px-4">Cabang</th>
                         <th class="py-3 px-4">Customer & Rincian</th>
@@ -207,10 +213,11 @@
         </div>
 
         @if($orders->hasPages())
-        <div class="p-4 border-t-2 border-black bg-slate-50">
+        <div class="p-4 border-t border-slate-200 bg-slate-50">
             {{ $orders->links() }}
         </div>
         @endif
+    </div>
     </div>
 
 </div>

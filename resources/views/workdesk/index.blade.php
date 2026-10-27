@@ -9,9 +9,9 @@
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200">
         <div>
             <h1 class="text-2xl font-black text-slate-900 tracking-tight">Workdesk Antrean Desainer</h1>
-            <p class="text-xs font-semibold text-slate-500 mt-0.5">
+            <!-- <p class="text-xs font-semibold text-slate-500 mt-0.5">
                 Pengerjaan aset desain, penyesuaian spesifikasi cetak, dan upload file final siap produksi.
-            </p>
+            </p> -->
         </div>
         <div class="flex items-center gap-2">
             <a href="{{ route('archive.index') }}" class="neo-btn bg-yellow-200 hover:bg-yellow-300 text-xs py-2 px-3.5 text-black flex items-center gap-2 font-black">
@@ -21,13 +21,13 @@
         </div>
     </div>
 
-    <!-- Filter Bar -->
-    <div class="neo-box p-4 bg-white">
-        <form method="GET" action="{{ route('workdesk.index') }}" class="flex flex-wrap items-center gap-3">
+    <!-- Filter Bar (Instant Auto-Filter) -->
+    <div class="neo-box p-4 bg-white relative overflow-visible z-20">
+        <form method="GET" action="{{ route('workdesk.index') }}" data-auto-submit class="flex flex-wrap items-center gap-3">
             
             @if(Auth::user()->isOwner())
-            <div>
-                <select name="branch_id" class="neo-input text-xs py-2">
+            <div class="min-w-[190px]">
+                <select name="branch_id" class="neo-select">
                     <option value="">Semua Cabang</option>
                     @foreach($branches as $b)
                         <option value="{{ $b->id }}" {{ request('branch_id') == $b->id ? 'selected' : '' }}>
@@ -38,8 +38,8 @@
             </div>
             @endif
 
-            <div>
-                <select name="status" class="neo-input text-xs py-2">
+            <div class="min-w-[190px]">
+                <select name="status" class="neo-select">
                     <option value="">Semua Status Aktif</option>
                     <option value="in_progress" {{ request('status') == 'in_progress' ? 'selected' : '' }}>Proses Pengerjaan</option>
                     <option value="revision" {{ request('status') == 'revision' ? 'selected' : '' }}>Revisi</option>
@@ -48,22 +48,22 @@
                 </select>
             </div>
 
-            <label class="flex items-center gap-2 text-xs font-black text-black cursor-pointer bg-slate-50 border-2 border-black rounded-lg px-3 py-2">
-                <input type="checkbox" name="my_jobs" value="1" {{ request('my_jobs') ? 'checked' : '' }} class="w-4 h-4 border-2 border-black rounded accent-black">
+            <label class="flex items-center gap-2 text-xs font-bold text-slate-800 cursor-pointer bg-white border-[1.5px] border-slate-300 rounded-xl px-3 py-2 shadow-[1.5px_1.5px_0px_0px_#e2e8f0] hover:border-slate-800 transition-all select-none">
+                <input type="checkbox" name="my_jobs" value="1" {{ request('my_jobs') ? 'checked' : '' }} class="w-4 h-4 rounded border-slate-400 text-amber-500 focus:ring-amber-400 cursor-pointer">
                 <span>Hanya Tiket Saya</span>
             </label>
 
-            <button type="submit" class="neo-btn bg-amber-300 hover:bg-amber-400 text-xs py-2 px-4 cursor-pointer">
-                Terapkan
-            </button>
-            <a href="{{ route('workdesk.index') }}" class="neo-btn bg-slate-200 hover:bg-slate-300 text-xs py-2 px-3">
-                Reset
+            <a href="{{ route('workdesk.index') }}" class="neo-btn {{ request()->anyFilled(['branch_id', 'status', 'my_jobs']) ? 'bg-amber-200 hover:bg-amber-300 text-slate-900 border-slate-800 font-black' : 'bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold' }} text-xs py-2 px-3 shadow-[1.5px_1.5px_0px_0px_#0f172a] flex items-center gap-1.5 transition-all">
+                <x-icon name="rotate-ccw" class="w-3.5 h-3.5" />
+                <span>Reset Filter</span>
             </a>
         </form>
     </div>
 
-    <!-- Jobs Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <!-- Filter Results Container (Live Smooth Replacement) -->
+    <div id="filter-results-container" class="space-y-6">
+        <!-- Jobs Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         @forelse($jobs as $job)
         <div class="neo-box p-5 bg-white flex flex-col justify-between hover:translate-y-[-2px] transition-transform">
             <div>
@@ -180,6 +180,7 @@
         {{ $jobs->links() }}
     </div>
     @endif
+    </div>
 
 </div>
 
@@ -204,7 +205,7 @@
             @csrf
             <div>
                 <label class="block text-xs font-black uppercase text-black mb-1">Tipe File</label>
-                <select name="file_type" required class="neo-input text-xs font-bold">
+                <select name="file_type" required class="neo-select">
                     <option value="final_print" selected>File Cetak Siap Produksi (Otomatis Ubah Status ke Siap Cetak)</option>
                     <option value="preview_proof">Preview Proofing ke Pelanggan</option>
                     <option value="brief_ref">Referensi Brief Tambahan</option>

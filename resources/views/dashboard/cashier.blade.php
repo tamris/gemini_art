@@ -15,9 +15,9 @@
                 </span>
             </div>
             <h1 class="text-2xl md:text-3xl font-black text-black">{{ $branch->name ?? 'Cabang' }}</h1>
-            <p class="text-xs md:text-sm font-semibold text-slate-700 mt-1">
+            <!-- <p class="text-xs md:text-sm font-semibold text-slate-700 mt-1">
                 Pencatatan order desain kustom, transaksi kasir ritel cepat (fotokopi/ATK), dan serah terima pesanan.
-            </p>
+            </p> -->
         </div>
         <div class="flex flex-wrap items-center gap-3">
             <a href="{{ route('orders.create-design') }}" class="neo-btn bg-sky-400 hover:bg-sky-300 text-black text-xs py-2.5 px-4 flex items-center gap-2">

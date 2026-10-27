@@ -15,9 +15,9 @@
                 </span>
             </div>
             <h1 class="text-2xl font-black text-black">Terminal Kasir POS (FC, ATK & Cetak Lembaran)</h1>
-            <p class="text-xs font-semibold text-slate-600 mt-0.5">
+            <!-- <p class="text-xs font-semibold text-slate-600 mt-0.5">
                 Pencatatan ritel mandiri untuk mencegah omset tercecer saat toko ramai.
-            </p>
+            </p> -->
         </div>
         <div class="flex items-center gap-2">
             <span class="text-xs font-black uppercase px-2.5 py-1 rounded-lg border-2 border-black bg-white shadow-[2px_2px_0px_0px_#000]">
@@ -127,7 +127,7 @@
                     @if(Auth::user()->isOwner())
                     <div>
                         <label class="block text-[11px] font-black uppercase text-black mb-1">Cabang Transaksi</label>
-                        <select name="branch_id" class="neo-input text-xs py-1.5 font-bold">
+                        <select name="branch_id" class="neo-select">
                             @foreach($branches as $b)
                                 <option value="{{ $b->id }}">{{ $b->code }} - {{ $b->name }}</option>
                             @endforeach
@@ -150,7 +150,7 @@
                     <div class="grid grid-cols-2 gap-3">
                         <div>
                             <label class="block text-[11px] font-black uppercase text-black mb-1">Metode Bayar</label>
-                            <select name="payment_method" id="payment-method" required class="neo-input text-xs font-bold py-1.5">
+                            <select name="payment_method" id="payment-method" required class="neo-select">
                                 <option value="cash">Tunai (Cash Laci)</option>
                                 <option value="qris">QRIS</option>
                                 <option value="transfer">Transfer Bank</option>

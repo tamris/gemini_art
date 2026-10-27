@@ -112,3 +112,92 @@ dialog::backdrop {
     backdrop-filter: blur(4px);
 }
 
+/* Prevent FOUC: Give uninitialized native select identical height and soft neo-brutal styling */
+select.neo-select,
+select.neo-input {
+    width: 100%;
+    height: 38px;
+    background-color: #ffffff;
+    border: 1.5px solid #cbd5e1;
+    border-radius: 0.75rem;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #1e293b;
+    box-shadow: 1.5px 1.5px 0px 0px #e2e8f0;
+}
+
+select[data-neo-select-initialized="true"] {
+    display: none !important;
+}
+
+/* Neo-Select Smooth Dropdown Animations */
+.neo-select-wrapper {
+    position: relative;
+    width: 100%;
+    user-select: none;
+}
+
+.neo-select-trigger {
+    transition: border-color 150ms ease, box-shadow 150ms ease, background-color 150ms ease;
+}
+
+.neo-select-menu {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-5px) scale(0.98);
+    pointer-events: none;
+    transform-origin: top center;
+    will-change: opacity, transform;
+    transition: opacity 150ms cubic-bezier(0.16, 1, 0.3, 1),
+                transform 150ms cubic-bezier(0.16, 1, 0.3, 1),
+                visibility 0s linear 150ms;
+}
+
+.neo-select-menu.is-open {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0) scale(1);
+    pointer-events: auto;
+    transition: opacity 180ms cubic-bezier(0.16, 1, 0.3, 1),
+                transform 180ms cubic-bezier(0.16, 1, 0.3, 1),
+                visibility 0s linear 0s;
+}
+
+.neo-select-chevron {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 180ms cubic-bezier(0.16, 1, 0.3, 1);
+    transform-origin: center center;
+}
+
+.neo-select-option {
+    border-left-width: 4px;
+    border-left-style: solid;
+    transition: background-color 120ms ease, color 120ms ease;
+}
+
+/* Neo-Select Dropdown Custom Scrollbar */
+.neo-select-menu::-webkit-scrollbar {
+    width: 6px;
+}
+.neo-select-menu::-webkit-scrollbar-track {
+    background: #f8fafc;
+}
+.neo-select-menu::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 9999px;
+}
+.neo-select-menu::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
+/* Filter Results Live Container */
+#filter-results-container {
+    transition: opacity 180ms ease;
+}
+
+
+
+

@@ -15,9 +15,9 @@
                 </span>
             </div> -->
             <h1 class="text-2xl font-black text-black">Pusat Arsip File Desain Terpusat</h1>
-            <p class="text-xs font-semibold text-slate-600 mt-0.5">
+            <!-- <p class="text-xs font-semibold text-slate-600 mt-0.5">
                 Penyimpanan terstruktur multi-cabang tanpa rekap manual email. File cetak langsung siap diakses Owner dan tim produksi.
-            </p>
+            </p> -->
         </div>
 
         <!-- Storage Stat Badges -->
@@ -57,23 +57,28 @@
         </p>
     </div>
 
-    <!-- Filter Card -->
-    <div class="neo-box p-4 bg-white">
-        <form method="GET" action="{{ route('archive.index') }}" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 items-end">
+    <!-- Filter Card (Instant Auto-Filter) -->
+    <div class="neo-box p-4 bg-white relative overflow-visible z-20">
+        <form method="GET" action="{{ route('archive.index') }}" data-auto-submit class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 items-end">
             
             <div class="lg:col-span-2">
-                <label class="block text-[11px] font-black uppercase text-black mb-1">Cari File / Order</label>
-                <input type="text" 
-                       name="search" 
-                       value="{{ request('search') }}" 
-                       placeholder="Nama file, No. Order (ORD-...), Customer..."
-                       class="neo-input text-xs py-2 font-bold">
+                <label class="block text-[11px] font-black uppercase text-slate-800 mb-1 tracking-wider">Cari File / Order</label>
+                <div class="flex items-center rounded-xl border-[1.5px] border-slate-300 shadow-[1.5px_1.5px_0px_0px_#e2e8f0] focus-within:border-slate-800 focus-within:shadow-[2.5px_2.5px_0px_0px_#0f172a] bg-white transition-all overflow-hidden">
+                    <button type="submit" aria-label="Cari" class="pl-3 pr-2 text-slate-400 hover:text-slate-800 flex items-center justify-center shrink-0 cursor-pointer transition-colors">
+                        <x-icon name="search" class="w-3.5 h-3.5" />
+                    </button>
+                    <input type="text" 
+                           name="search" 
+                           value="{{ request('search') }}" 
+                           placeholder="Nama file, No. Order (ORD-...), Customer... (Tekan Enter)"
+                           class="w-full py-2 pr-3 text-xs font-bold text-slate-800 placeholder:text-slate-400 outline-none bg-transparent">
+                </div>
             </div>
 
             @if(Auth::user()->isOwner())
             <div>
-                <label class="block text-[11px] font-black uppercase text-black mb-1">Cabang</label>
-                <select name="branch_id" class="neo-input text-xs py-2 font-bold">
+                <label class="block text-[11px] font-black uppercase text-slate-800 mb-1 tracking-wider">Cabang</label>
+                <select name="branch_id" class="neo-select">
                     <option value="">Semua Cabang</option>
                     @foreach($branches as $b)
                         <option value="{{ $b->id }}" {{ request('branch_id') == $b->id ? 'selected' : '' }}>
@@ -85,8 +90,8 @@
             @endif
 
             <div>
-                <label class="block text-[11px] font-black uppercase text-black mb-1">Tipe File</label>
-                <select name="file_type" class="neo-input text-xs py-2 font-bold">
+                <label class="block text-[11px] font-black uppercase text-slate-800 mb-1 tracking-wider">Tipe File</label>
+                <select name="file_type" class="neo-select">
                     <option value="">Semua Tipe File</option>
                     <option value="final_print" {{ request('file_type') == 'final_print' ? 'selected' : '' }}>File Cetak Final (Print Ready)</option>
                     <option value="preview_proof" {{ request('file_type') == 'preview_proof' ? 'selected' : '' }}>Preview / Proofing</option>
@@ -94,20 +99,20 @@
                 </select>
             </div>
 
-            <div class="flex items-center gap-2">
-                <button type="submit" class="flex-1 neo-btn bg-amber-300 hover:bg-amber-400 text-xs py-2 font-black cursor-pointer">
-                    Cari File
-                </button>
-                <a href="{{ route('archive.index') }}" class="neo-btn bg-slate-200 hover:bg-slate-300 text-xs py-2 px-3">
-                    Reset
+            <div>
+                <a href="{{ route('archive.index') }}" class="w-full neo-btn {{ request()->anyFilled(['search', 'branch_id', 'file_type']) ? 'bg-amber-200 hover:bg-amber-300 text-slate-900 border-slate-800 font-black' : 'bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold' }} text-xs py-2 px-3 shadow-[1.5px_1.5px_0px_0px_#0f172a] flex items-center justify-center gap-1.5 transition-all">
+                    <x-icon name="rotate-ccw" class="w-3.5 h-3.5" />
+                    <span>Reset Filter</span>
                 </a>
             </div>
 
         </form>
     </div>
 
-    <!-- Assets Gallery / Card Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <!-- Filter Results Container (Live Smooth Replacement) -->
+    <div id="filter-results-container" class="space-y-6">
+        <!-- Assets Gallery / Card Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         @forelse($assets as $asset)
         <div class="neo-box p-5 bg-white flex flex-col justify-between hover:translate-y-[-2px] transition-transform">
             <div>
@@ -183,6 +188,7 @@
         {{ $assets->links() }}
     </div>
     @endif
+    </div>
 
 </div>
 @endsection
