@@ -151,7 +151,7 @@ export function initNeoSelect() {
 
         // 3. Build Dropdown Menu
         const menu = document.createElement('div');
-        menu.className = 'neo-select-menu absolute top-[calc(100%+6px)] left-0 w-full min-w-[210px] max-h-64 overflow-y-auto bg-white border-[1.5px] border-slate-800 rounded-xl shadow-[3.5px_3.5px_0px_0px_#0f172a] py-1.5 z-50';
+        menu.className = 'neo-select-menu absolute top-[calc(100%+6px)] left-0 w-full min-w-full max-h-60 overflow-y-auto bg-white border-[1.5px] border-slate-800 rounded-xl shadow-[3.5px_3.5px_0px_0px_#0f172a] py-1.5 z-50';
         menu.setAttribute('role', 'listbox');
 
         // Store pre-built option DOM elements for instant, stable updates (no innerHTML clearing)
@@ -437,10 +437,24 @@ window.addEventListener('popstate', () => {
 
 // Automatic MutationObserver to initialize any newly mounted selects (e.g. dialogs, modals, dynamic forms)
 if (typeof window !== 'undefined' && typeof MutationObserver !== 'undefined') {
-    const observer = new MutationObserver(() => {
-        initNeoSelect();
+    const observer = new MutationObserver((mutations) => {
+        let hasNewSelect = false;
+        for (const mutation of mutations) {
+            for (const node of mutation.addedNodes) {
+                if (node.nodeType === 1) {
+                    if (node.matches && (node.matches('select.neo-select, select.neo-input') || node.querySelector('select.neo-select, select.neo-input'))) {
+                        hasNewSelect = true;
+                        break;
+                    }
+                }
+            }
+            if (hasNewSelect) break;
+        }
+        if (hasNewSelect) {
+            initNeoSelect();
+        }
     });
-    // Start observing when document is ready
+
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', () => {
             observer.observe(document.body, { childList: true, subtree: true });
@@ -449,3 +463,4 @@ if (typeof window !== 'undefined' && typeof MutationObserver !== 'undefined') {
         observer.observe(document.body, { childList: true, subtree: true });
     }
 }
+

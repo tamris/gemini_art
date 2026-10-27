@@ -132,8 +132,15 @@
                     </div>
                     <span>Arsip Cloud</span>
                 </a>
+            </div>
 
-                @if(Auth::user()->isOwner())
+            <!-- Group 4: Administrasi & Cabang (Khusus Owner) -->
+            @if(Auth::user()->isOwner())
+            <div class="space-y-1.5 pt-1">
+                <div class="px-3 text-[10px] font-black uppercase tracking-wider text-slate-400">
+                    Administrasi & Cabang
+                </div>
+
                 <!-- Kelola Cabang -->
                 <a href="{{ route('branches.index') }}" 
                    class="group flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-black border-[1.5px] transition-all {{ request()->routeIs('branches.*') ? 'bg-rose-300 border-slate-800 shadow-[2px_2px_0px_0px_#0f172a] text-slate-900' : 'border-transparent text-slate-600 hover:border-slate-300 hover:bg-slate-100 hover:text-slate-900' }}">
@@ -142,8 +149,17 @@
                     </div>
                     <span>Kelola Cabang</span>
                 </a>
-                @endif
+
+                <!-- Kelola Staf / Karyawan -->
+                <a href="{{ route('users.index') }}" 
+                   class="group flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-black border-[1.5px] transition-all {{ request()->routeIs('users.*') ? 'bg-indigo-300 border-slate-800 shadow-[2px_2px_0px_0px_#0f172a] text-slate-900' : 'border-transparent text-slate-600 hover:border-slate-300 hover:bg-slate-100 hover:text-slate-900' }}">
+                    <div class="w-7 h-7 rounded-lg border-[1.5px] border-slate-800 flex items-center justify-center text-slate-900 shrink-0 transition-transform group-hover:scale-105 {{ request()->routeIs('users.*') ? 'bg-white shadow-[1px_1px_0px_0px_#0f172a]' : 'bg-indigo-200' }}">
+                        <x-icon name="users" class="w-4 h-4" />
+                    </div>
+                    <span>Kelola Staf</span>
+                </a>
             </div>
+            @endif
 
         </div>
 
@@ -253,39 +269,42 @@
 
             <!-- Flash Notifications -->
             @if(session('success'))
-            <div class="mb-6 p-4 bg-emerald-50 border-[1.5px] border-emerald-600/80 rounded-xl shadow-[2px_2px_0px_0px_#059669] flex items-center justify-between">
-                <div class="flex items-center gap-3">
-                    <div class="w-8 h-8 rounded-lg bg-emerald-400 border-[1.5px] border-slate-800 shadow-[1px_1px_0px_0px_#0f172a] flex items-center justify-center text-slate-900">
-                        <x-icon name="check-circle-2" class="w-5 h-5 text-slate-900" stroke-width="2.5" />
+            <div class="mb-5 p-3 bg-emerald-100 border-[1.5px] border-slate-900 rounded-xl shadow-[2px_2px_0px_0px_#0f172a] flex items-center justify-between gap-3">
+                <div class="flex items-center gap-2.5 min-w-0">
+                    <div class="w-7 h-7 rounded-lg bg-emerald-400 border border-slate-900 shadow-[1px_1px_0px_0px_#0f172a] flex items-center justify-center text-slate-950 shrink-0">
+                        <x-icon name="check-circle-2" class="w-4 h-4" stroke-width="2.5" />
                     </div>
-                    <p class="font-bold text-sm text-emerald-950">{{ session('success') }}</p>
+                    <p class="font-extrabold text-xs sm:text-sm text-slate-900 truncate">{{ session('success') }}</p>
                 </div>
-                <button type="button" onclick="this.parentElement.remove()" class="font-bold text-slate-600 hover:text-slate-900 px-2 cursor-pointer">✕</button>
+                <button type="button" onclick="this.parentElement.remove()" class="w-6 h-6 rounded-md border border-slate-900 bg-white hover:bg-slate-100 font-black text-xs text-slate-700 flex items-center justify-center cursor-pointer shadow-[1px_1px_0px_0px_#0f172a] active:translate-x-[0.5px] active:translate-y-[0.5px]">✕</button>
             </div>
             @endif
 
             @if(session('info'))
-            <div class="mb-6 p-4 bg-sky-50 border-[1.5px] border-sky-600/80 rounded-xl shadow-[2px_2px_0px_0px_#0284c7] flex items-center justify-between">
-                <div class="flex items-center gap-3">
-                    <div class="w-8 h-8 rounded-lg bg-sky-300 border-[1.5px] border-slate-800 shadow-[1px_1px_0px_0px_#0f172a] flex items-center justify-center text-slate-900">
-                        <x-icon name="info" class="w-5 h-5 text-slate-900" stroke-width="2.5" />
+            <div class="mb-5 p-3 bg-sky-100 border-[1.5px] border-slate-900 rounded-xl shadow-[2px_2px_0px_0px_#0f172a] flex items-center justify-between gap-3">
+                <div class="flex items-center gap-2.5 min-w-0">
+                    <div class="w-7 h-7 rounded-lg bg-sky-300 border border-slate-900 shadow-[1px_1px_0px_0px_#0f172a] flex items-center justify-center text-slate-950 shrink-0">
+                        <x-icon name="info" class="w-4 h-4" stroke-width="2.5" />
                     </div>
-                    <p class="font-bold text-sm text-sky-950">{{ session('info') }}</p>
+                    <p class="font-extrabold text-xs sm:text-sm text-slate-900 truncate">{{ session('info') }}</p>
                 </div>
-                <button type="button" onclick="this.parentElement.remove()" class="font-bold text-slate-600 hover:text-slate-900 px-2 cursor-pointer">✕</button>
+                <button type="button" onclick="this.parentElement.remove()" class="w-6 h-6 rounded-md border border-slate-900 bg-white hover:bg-slate-100 font-black text-xs text-slate-700 flex items-center justify-center cursor-pointer shadow-[1px_1px_0px_0px_#0f172a] active:translate-x-[0.5px] active:translate-y-[0.5px]">✕</button>
             </div>
             @endif
 
             @if(session('error') || $errors->any())
-            <div class="mb-6 p-4 bg-rose-50 border-[1.5px] border-rose-500/80 rounded-xl shadow-[2px_2px_0px_0px_#e11d48]">
-                <div class="flex items-center gap-3 mb-2">
-                    <div class="w-8 h-8 rounded-lg bg-rose-400 border-[1.5px] border-slate-800 shadow-[1px_1px_0px_0px_#0f172a] flex items-center justify-center text-white">
-                        <x-icon name="alert-triangle" class="w-5 h-5 text-white" stroke-width="2.5" />
+            <div class="mb-5 p-3.5 bg-rose-100 border-[1.5px] border-slate-900 rounded-xl shadow-[2px_2px_0px_0px_#0f172a]">
+                <div class="flex items-center justify-between gap-3 mb-2">
+                    <div class="flex items-center gap-2.5 min-w-0">
+                        <div class="w-7 h-7 rounded-lg bg-rose-400 border border-slate-900 shadow-[1px_1px_0px_0px_#0f172a] flex items-center justify-center text-white shrink-0">
+                            <x-icon name="alert-triangle" class="w-4 h-4 text-white" stroke-width="2.5" />
+                        </div>
+                        <p class="font-black text-xs sm:text-sm text-slate-900">{{ session('error') ?? 'Terjadi kesalahan pada input data:' }}</p>
                     </div>
-                    <p class="font-bold text-sm text-rose-950">{{ session('error') ?? 'Terjadi kesalahan pada input data:' }}</p>
+                    <button type="button" onclick="this.closest('.mb-5').remove()" class="w-6 h-6 rounded-md border border-slate-900 bg-white hover:bg-slate-100 font-black text-xs text-slate-700 flex items-center justify-center cursor-pointer shadow-[1px_1px_0px_0px_#0f172a] active:translate-x-[0.5px] active:translate-y-[0.5px]">✕</button>
                 </div>
                 @if($errors->any())
-                <ul class="list-disc list-inside text-xs font-semibold text-rose-900 pl-11 space-y-1">
+                <ul class="list-disc list-inside text-xs font-bold text-rose-950 pl-9 space-y-1">
                     @foreach($errors->all() as $err)
                     <li>{{ $err }}</li>
                     @endforeach
@@ -321,8 +340,8 @@
     </div>
 
     <!-- Quick Role Switcher Modal (Accessible Native <dialog>) -->
-    <dialog id="quick-switch-modal" closedby="any" class="p-0 bg-transparent max-w-lg w-full m-auto">
-        <div class="neo-box p-6 bg-white max-w-md w-full mx-auto">
+    <dialog id="quick-switch-modal" closedby="any" class="p-0 bg-transparent max-w-md w-full m-auto border-none outline-none overflow-visible">
+        <div class="neo-box p-6 bg-white w-full mx-auto shadow-[4px_4px_0px_0px_#0f172a] rounded-2xl border-2 border-slate-900 overflow-visible">
             <div class="flex items-center justify-between pb-3 border-b border-slate-200 mb-4">
                 <div class="flex items-center gap-2">
                     <div class="w-7 h-7 bg-amber-300 border-[1.5px] border-slate-800 shadow-[1px_1px_0px_0px_#0f172a] rounded-lg flex items-center justify-center text-slate-900">

@@ -165,8 +165,8 @@
 </div>
 
 <!-- Upload Dialog Modal for Designers (Native HTML <dialog>) -->
-<dialog id="upload-dialog" closedby="any" class="p-0 bg-transparent max-w-lg w-full m-auto">
-    <div class="neo-box p-6 bg-white max-w-md w-full mx-auto">
+<dialog id="upload-dialog" closedby="any" class="p-0 bg-transparent max-w-md w-full m-auto border-none outline-none overflow-visible">
+    <div class="neo-box p-6 bg-white w-full mx-auto shadow-[4px_4px_0px_0px_#0f172a] rounded-2xl border-2 border-slate-900 overflow-visible">
         <div class="flex items-center justify-between pb-3 border-b-2 border-black mb-4">
             <div class="flex items-center gap-2.5">
                 <div class="w-7 h-7 bg-emerald-300 border-2 border-black rounded-lg flex items-center justify-center text-black shadow-[1px_1px_0px_0px_#000]">

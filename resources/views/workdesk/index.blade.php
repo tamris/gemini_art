@@ -175,18 +175,16 @@
         @endforelse
     </div>
 
-    @if($jobs->hasPages())
-    <div class="neo-box p-4 bg-white">
+    <div class="neo-box overflow-hidden bg-white shadow-[2px_2px_0px_0px_#0f172a]">
         {{ $jobs->links() }}
     </div>
-    @endif
     </div>
 
 </div>
 
 <!-- Upload Dialog Modal -->
-<dialog id="upload-dialog" closedby="any" class="p-0 bg-transparent max-w-lg w-full m-auto">
-    <div class="neo-box p-6 bg-white max-w-md w-full mx-auto">
+<dialog id="upload-dialog" closedby="any" class="p-0 bg-transparent max-w-md w-full m-auto border-none outline-none overflow-visible">
+    <div class="neo-box p-6 bg-white w-full mx-auto shadow-[4px_4px_0px_0px_#0f172a] rounded-2xl border-2 border-slate-900 overflow-visible">
         <div class="flex items-center justify-between pb-3 border-b-2 border-black mb-4">
             <h3 class="font-black text-base text-black">Upload File Cetak Final</h3>
             <form method="dialog">

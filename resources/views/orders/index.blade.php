@@ -212,11 +212,8 @@
             </table>
         </div>
 
-        @if($orders->hasPages())
-        <div class="p-4 border-t border-slate-200 bg-slate-50">
-            {{ $orders->links() }}
-        </div>
-        @endif
+        <!-- Pagination & Counter Footer -->
+        {{ $orders->links() }}
     </div>
     </div>
 

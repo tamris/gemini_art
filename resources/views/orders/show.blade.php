@@ -295,12 +295,12 @@
                 @if($order->remaining_amount > 0)
                 <!-- Pelunasan Form (SOP 4: Customer Ambil Pesanan & Kasir Catat Pelunasan) -->
                 <div class="p-4 bg-emerald-50 border-2 border-black rounded-xl space-y-3">
-                    <div class="flex items-center gap-2">
+                    <!-- <div class="flex items-center gap-2">
                         <span class="w-2 h-2 rounded-full bg-emerald-600"></span>
                         <span class="text-xs font-black uppercase tracking-wider text-emerald-900">
                             SOP 4: Catat Pelunasan Sisa
                         </span>
-                    </div>
+                    </div> -->
                     <p class="text-[11px] font-semibold text-slate-600">
                         Customer mengambil pesanan. Masukkan metode pembayaran pelunasan untuk menandai order selesai & mencatat kas masuk.
                     </p>
@@ -371,8 +371,8 @@
 
 <!-- Upload Asset Modal for this order -->
 @if($order->designJob)
-<dialog id="upload-modal" closedby="any" class="p-0 bg-transparent max-w-lg w-full m-auto">
-    <div class="neo-box p-6 bg-white max-w-md w-full mx-auto">
+<dialog id="upload-modal" closedby="any" class="p-0 bg-transparent max-w-md w-full m-auto border-none outline-none overflow-visible">
+    <div class="neo-box p-6 bg-white w-full mx-auto shadow-[4px_4px_0px_0px_#0f172a] rounded-2xl border-2 border-slate-900 overflow-visible">
         <div class="flex items-center justify-between pb-3 border-b-2 border-black mb-4">
             <h3 class="font-black text-base text-black">Unggah File Tiket {{ $order->order_number }}</h3>
             <form method="dialog">

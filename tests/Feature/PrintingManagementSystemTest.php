@@ -225,4 +225,175 @@ class PrintingManagementSystemTest extends TestCase
         $this->assertEquals('out', $mv->type);
         $this->assertEquals(25000, (float) $mv->amount);
     }
+
+    public function test_operational_routes_render_successfully_for_owner_and_cashier(): void
+    {
+        $owner = User::where('role', 'owner')->first();
+        $this->actingAs($owner)->get('/orders/create-design')
+            ->assertStatus(200)
+            ->assertSee('Input Tiket Order Desain');
+        $this->actingAs($owner)->get('/pos')
+            ->assertStatus(200)
+            ->assertSee('Terminal Kasir POS');
+        $this->actingAs($owner)->get('/workdesk')
+            ->assertStatus(200)
+            ->assertSee('Workdesk Antrean Desainer');
+
+        $cashier = User::where('email', 'kasir.solo@geminiart.test')->first();
+        $this->actingAs($cashier)->get('/orders/create-design')
+            ->assertStatus(200)
+            ->assertSee('Input Tiket Order Desain');
+        $this->actingAs($cashier)->get('/pos')
+            ->assertStatus(200)
+            ->assertSee('Terminal Kasir POS');
+        $this->actingAs($cashier)->get('/workdesk')
+            ->assertStatus(200)
+            ->assertSee('Workdesk Antrean Desainer');
+    }
+
+    public function test_owner_can_view_staff_management_page(): void
+    {
+        $owner = User::where('role', 'owner')->first();
+        $response = $this->actingAs($owner)->get(route('users.index'));
+
+        $response->assertStatus(200);
+        $response->assertSee('Kelola Tim & Staf Percetakan');
+        $response->assertSee('Siti Kasir Solo');
+        $response->assertSee('Rian Desainer Solo');
+        $response->assertSee('Menampilkan');
+        $response->assertSee('total data');
+
+        $orderResponse = $this->actingAs($owner)->get(route('orders.index'));
+        $orderResponse->assertStatus(200);
+        $orderResponse->assertSee('Menampilkan');
+        $orderResponse->assertSee('total data');
+    }
+
+    public function test_non_owner_cannot_access_staff_management(): void
+    {
+        $cashier = User::where('role', 'cashier')->first();
+        $response = $this->actingAs($cashier)->get(route('users.index'));
+        $response->assertStatus(403);
+    }
+
+    public function test_owner_can_create_new_staff(): void
+    {
+        $owner = User::where('role', 'owner')->first();
+        $branch = Branch::first();
+
+        $response = $this->actingAs($owner)->post(route('users.store'), [
+            'name' => 'Doni Kasir Baru',
+            'email' => 'doni.kasir@geminiart.test',
+            'phone' => '081234567899',
+            'role' => 'cashier',
+            'branch_id' => $branch->id,
+            'password' => 'secret123',
+        ]);
+
+        $response->assertRedirect(route('users.index'));
+        $response->assertSessionHas('success');
+
+        $user = User::where('email', 'doni.kasir@geminiart.test')->first();
+        $this->assertNotNull($user);
+        $this->assertEquals('Doni Kasir Baru', $user->name);
+        $this->assertEquals('cashier', $user->role);
+        $this->assertEquals($branch->id, $user->branch_id);
+        $this->assertTrue($user->is_active);
+    }
+
+    public function test_owner_can_update_staff_and_transfer_branch(): void
+    {
+        $owner = User::where('role', 'owner')->first();
+        $cashier = User::where('email', 'kasir.solo@geminiart.test')->first();
+        $branchB = Branch::where('code', 'CBB')->first();
+
+        $response = $this->actingAs($owner)->put(route('users.update', $cashier->id), [
+            'name' => 'Siti Kasir Pindah Jogja',
+            'email' => 'siti.jogja@geminiart.test',
+            'phone' => '08199988877',
+            'role' => 'cashier',
+            'branch_id' => $branchB->id,
+        ]);
+
+        $response->assertRedirect(route('users.index'));
+        $response->assertSessionHas('success');
+
+        $cashier->refresh();
+        $this->assertEquals('Siti Kasir Pindah Jogja', $cashier->name);
+        $this->assertEquals('siti.jogja@geminiart.test', $cashier->email);
+        $this->assertEquals($branchB->id, $cashier->branch_id);
+    }
+
+    public function test_owner_can_reset_staff_password(): void
+    {
+        $owner = User::where('role', 'owner')->first();
+        $cashier = User::where('email', 'kasir.solo@geminiart.test')->first();
+
+        $response = $this->actingAs($owner)->post(route('users.reset-password', $cashier->id), [
+            'new_password' => 'newpassword123',
+        ]);
+
+        $response->assertRedirect(route('users.index'));
+        $response->assertSessionHas('success');
+
+        // Test login with new password
+        $this->assertTrue(auth()->attempt([
+            'email' => 'kasir.solo@geminiart.test',
+            'password' => 'newpassword123',
+        ]));
+    }
+
+    public function test_owner_can_toggle_staff_active_status(): void
+    {
+        $owner = User::where('role', 'owner')->first();
+        $cashier = User::where('email', 'kasir.solo@geminiart.test')->first();
+        $this->assertTrue($cashier->is_active);
+
+        // Deactivate
+        $response = $this->actingAs($owner)->post(route('users.toggle-status', $cashier->id));
+        $response->assertRedirect(route('users.index'));
+
+        $cashier->refresh();
+        $this->assertFalse($cashier->is_active);
+
+        // Deactivated user cannot log in
+        $loginResponse = $this->post(route('login.post'), [
+            'email' => $cashier->email,
+            'password' => 'password',
+        ]);
+        $loginResponse->assertSessionHasErrors('email');
+    }
+
+    public function test_owner_can_update_branch_data(): void
+    {
+        $owner = User::where('role', 'owner')->first();
+        $branch = Branch::where('code', 'CBA')->first();
+
+        $response = $this->actingAs($owner)->put(route('branches.update', $branch->id), [
+            'name' => 'Gemini Art - Cabang Solo Baru',
+            'code' => 'CBA',
+            'address' => 'Jl. Slamet Riyadi No. 999, Surakarta',
+            'phone' => '0812-9999-8888',
+        ]);
+
+        $response->assertSessionHas('success');
+
+        $branch->refresh();
+        $this->assertEquals('Gemini Art - Cabang Solo Baru', $branch->name);
+        $this->assertEquals('Jl. Slamet Riyadi No. 999, Surakarta', $branch->address);
+        $this->assertEquals('0812-9999-8888', $branch->phone);
+    }
+
+    public function test_non_owner_cannot_update_branch(): void
+    {
+        $cashier = User::where('role', 'cashier')->first();
+        $branch = Branch::first();
+
+        $response = $this->actingAs($cashier)->put(route('branches.update', $branch->id), [
+            'name' => 'Hacked Branch',
+            'code' => 'HCK',
+        ]);
+
+        $response->assertStatus(403);
+    }
 }

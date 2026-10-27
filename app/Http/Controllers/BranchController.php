@@ -6,6 +6,7 @@ use App\Models\Branch;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
 class BranchController extends Controller
 {
@@ -42,5 +43,24 @@ class BranchController extends Controller
         Branch::create($data);
 
         return back()->with('success', "Cabang {$data['name']} ({$data['code']}) berhasil ditambahkan!");
+    }
+
+    public function update(Request $request, Branch $branch)
+    {
+        $user = Auth::user();
+        if (!$user->isOwner()) {
+            abort(403, 'Hanya Owner yang dapat mengedit cabang.');
+        }
+
+        $data = $request->validate([
+            'name' => 'required|string|max:100',
+            'code' => ['required', 'string', 'max:10', 'uppercase', Rule::unique('branches', 'code')->ignore($branch->id)],
+            'address' => 'nullable|string',
+            'phone' => 'nullable|string|max:20',
+        ]);
+
+        $branch->update($data);
+
+        return back()->with('success', "Data Cabang {$branch->name} ({$branch->code}) berhasil diperbarui!");
     }
 }

@@ -48,7 +48,8 @@ class OrderController extends Controller
             });
         }
 
-        $orders = $query->paginate(15)->withQueryString();
+        $perPage = in_array((int) $request->per_page, [10, 25, 50, 100]) ? (int) $request->per_page : 10;
+        $orders = $query->paginate($perPage)->withQueryString();
         $branches = Branch::all();
 
         return view('orders.index', compact('orders', 'branches'));

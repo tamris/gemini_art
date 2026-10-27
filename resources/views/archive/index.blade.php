@@ -183,11 +183,9 @@
         @endforelse
     </div>
 
-    @if($assets->hasPages())
-    <div class="neo-box p-4 bg-white">
+    <div class="neo-box overflow-hidden bg-white shadow-[2px_2px_0px_0px_#0f172a]">
         {{ $assets->links() }}
     </div>
-    @endif
     </div>
 
 </div>

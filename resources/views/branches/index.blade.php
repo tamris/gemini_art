@@ -43,16 +43,30 @@
                     </div>
                     <p class="text-xs text-slate-500 font-medium mt-1">{{ $b->address ?? 'Alamat belum diatur' }}</p>
                 </div>
-                <span class="text-xs font-bold text-slate-700 bg-slate-100 border border-black px-2 py-1 rounded">
-                    {{ $b->phone ?? '-' }}
-                </span>
+                <div class="flex items-center gap-2 shrink-0">
+                    <span class="text-xs font-bold text-slate-700 bg-slate-100 border border-black px-2.5 py-1 rounded-lg">
+                        {{ $b->phone ?? '-' }}
+                    </span>
+                    <button type="button" 
+                            onclick="document.getElementById('edit-branch-modal-{{ $b->id }}').showModal()"
+                            title="Edit data cabang {{ $b->name }}"
+                            aria-label="Edit Cabang"
+                            class="w-8 h-8 rounded-lg border-[1.5px] border-slate-800 bg-white hover:bg-slate-100 text-slate-800 shadow-[1.5px_1.5px_0px_0px_#0f172a] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none flex items-center justify-center transition-all cursor-pointer">
+                        <x-icon name="pencil" class="w-3.5 h-3.5" />
+                    </button>
+                </div>
             </div>
 
             <div class="grid grid-cols-3 gap-3">
-                <div class="p-3 bg-slate-50 border-2 border-black rounded-lg text-center">
-                    <span class="text-[10px] font-black uppercase text-slate-500 block">Karyawan</span>
-                    <span class="text-base font-black text-black">{{ $b->users_count }} Orang</span>
-                </div>
+                <a href="{{ route('users.index', ['branch_id' => $b->id]) }}" 
+                   title="Lihat dan kelola staf cabang {{ $b->code }}"
+                   class="p-3 bg-slate-50 hover:bg-amber-100/70 border-2 border-black rounded-lg text-center transition-all block group cursor-pointer shadow-[1px_1px_0px_0px_#000]">
+                    <span class="text-[10px] font-black uppercase text-slate-500 group-hover:text-amber-900 block flex items-center justify-center gap-1">
+                        <span>Karyawan</span>
+                        <x-icon name="arrow-right" class="w-2.5 h-2.5 opacity-0 group-hover:opacity-100 transition-opacity" />
+                    </span>
+                    <span class="text-base font-black text-black group-hover:text-amber-950">{{ $b->users_count }} Orang</span>
+                </a>
                 <div class="p-3 bg-slate-50 border-2 border-black rounded-lg text-center">
                     <span class="text-[10px] font-black uppercase text-slate-500 block">Total Order</span>
                     <span class="text-base font-black text-black">{{ $b->orders_count }} Order</span>
@@ -70,14 +84,66 @@
                 </a>
             </div>
         </div>
+
+        <!-- Edit Branch Modal -->
+        <dialog id="edit-branch-modal-{{ $b->id }}" closedby="any" class="p-0 bg-transparent max-w-md w-full m-auto border-none outline-none overflow-visible">
+            <div class="neo-box p-6 bg-white w-full mx-auto shadow-[4px_4px_0px_0px_#0f172a] rounded-2xl border-2 border-slate-900 overflow-visible">
+                <div class="flex items-center justify-between pb-3 border-b-2 border-black mb-4">
+                    <div>
+                        <h3 class="font-black text-base text-black">Edit Data Cabang</h3>
+                        <span class="text-xs font-mono text-slate-500 font-bold">{{ $b->code }} - {{ $b->name }}</span>
+                    </div>
+                    <form method="dialog">
+                        <button class="w-8 h-8 rounded-lg border-2 border-black bg-rose-200 hover:bg-rose-300 font-black text-base flex items-center justify-center cursor-pointer">
+                            ✕
+                        </button>
+                    </form>
+                </div>
+
+                <form method="POST" action="{{ route('branches.update', $b->id) }}" class="space-y-4">
+                    @csrf
+                    @method('PUT')
+
+                    <div>
+                        <label class="block text-xs font-black uppercase text-black mb-1">Nama Cabang *</label>
+                        <input type="text" name="name" value="{{ old('name', $b->name) }}" required placeholder="Contoh: Gemini Art - Cabang Solo" class="neo-input text-xs font-bold">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-black uppercase text-black mb-1">Kode Cabang (Maks 10 Huruf, Unik) *</label>
+                        <input type="text" name="code" value="{{ old('code', $b->code) }}" required maxlength="10" class="neo-input text-xs font-mono font-bold uppercase">
+                        <span class="text-[10px] text-slate-500 font-medium">Digunakan untuk format order (e.g. ORD-{{ $b->code }}-...) dan direktori storage cloud.</span>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-black uppercase text-black mb-1">Alamat Lengkap</label>
+                        <textarea name="address" rows="2" placeholder="Jl. Pandanaran No. 10..." class="neo-input text-xs">{{ old('address', $b->address) }}</textarea>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-black uppercase text-black mb-1">No. Telepon / WhatsApp Cabang</label>
+                        <input type="text" name="phone" value="{{ old('phone', $b->phone) }}" placeholder="0812-..." class="neo-input text-xs">
+                    </div>
+
+                    <div class="pt-3 border-t-2 border-black flex items-center justify-end gap-2">
+                        <button type="button" onclick="document.getElementById('edit-branch-modal-{{ $b->id }}').close()" class="neo-btn bg-slate-200 text-xs py-2 px-4 cursor-pointer font-bold">
+                            Batal
+                        </button>
+                        <button type="submit" class="neo-btn bg-amber-300 hover:bg-amber-400 text-xs py-2 px-4 font-black text-black cursor-pointer shadow-[2px_2px_0px_0px_#0f172a]">
+                            Simpan Perubahan
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </dialog>
         @endforeach
     </div>
 
 </div>
 
 <!-- Add Branch Modal -->
-<dialog id="add-branch-modal" closedby="any" class="p-0 bg-transparent max-w-lg w-full m-auto">
-    <div class="neo-box p-6 bg-white max-w-md w-full mx-auto">
+<dialog id="add-branch-modal" closedby="any" class="p-0 bg-transparent max-w-md w-full m-auto border-none outline-none overflow-visible">
+    <div class="neo-box p-6 bg-white w-full mx-auto shadow-[4px_4px_0px_0px_#0f172a] rounded-2xl border-2 border-slate-900 overflow-visible">
         <div class="flex items-center justify-between pb-3 border-b-2 border-black mb-4">
             <h3 class="font-black text-base text-black">Tambah Cabang Baru</h3>
             <form method="dialog">

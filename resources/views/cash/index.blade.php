@@ -222,19 +222,16 @@
             </table>
         </div>
 
-        @if($movements->hasPages())
-        <div class="p-4 border-t border-slate-200 bg-slate-50">
-            {{ $movements->links() }}
-        </div>
-        @endif
+        <!-- Pagination & Counter Footer -->
+        {{ $movements->links() }}
     </div>
     </div>
 
 </div>
 
 <!-- Modal Catat Kas Keluar / Kas Masuk Manual -->
-<dialog id="add-expense-modal" closedby="any" class="p-0 bg-transparent max-w-lg w-full m-auto">
-    <div class="neo-box p-6 bg-white max-w-md w-full mx-auto">
+<dialog id="add-expense-modal" closedby="any" class="p-0 bg-transparent max-w-md w-full m-auto border-none outline-none overflow-visible">
+    <div class="neo-box p-6 bg-white w-full mx-auto shadow-[4px_4px_0px_0px_#0f172a] rounded-2xl border-2 border-slate-900 overflow-visible">
         <div class="flex items-center justify-between pb-3 border-b-2 border-black mb-4">
             <h3 class="font-black text-base text-black">Catat Mutasi Kas Manual</h3>
             <form method="dialog">

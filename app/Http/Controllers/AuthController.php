@@ -25,7 +25,14 @@ class AuthController extends Controller
             'password' => ['required'],
         ]);
 
-        if (Auth::attempt($credentials, $request->boolean('remember'))) {
+        $user = User::where('email', $credentials['email'])->first();
+        if ($user && ! $user->is_active) {
+            return back()->withErrors([
+                'email' => 'Akun staf ini telah dinonaktifkan oleh Owner.',
+            ])->onlyInput('email');
+        }
+
+        if (Auth::attempt(array_merge($credentials, ['is_active' => true]), $request->boolean('remember'))) {
             $request->session()->regenerate();
             return redirect()->intended(route('dashboard'))
                 ->with('success', 'Selamat datang kembali, ' . Auth::user()->name . '!');

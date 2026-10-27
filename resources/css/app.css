@@ -106,7 +106,13 @@
     background: #64748b;
 }
 
-/* Dialog Backdrop styling */
+/* Dialog Backdrop & Container styling */
+dialog {
+    border: none;
+    outline: none;
+    overflow: visible !important;
+}
+
 dialog::backdrop {
     background-color: rgba(15, 23, 42, 0.45);
     backdrop-filter: blur(4px);
