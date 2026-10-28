@@ -60,7 +60,7 @@ class WorkdeskController extends Controller
         }
 
         $request->validate([
-            'file' => 'required|file|max:102400', // max 100MB
+            'file' => 'required|file|max:512000', // max 500MB
             'file_type' => 'required|in:final_print,preview_proof,brief_ref',
         ]);
 
@@ -78,14 +78,15 @@ class WorkdeskController extends Controller
         $cleanOriginalName = preg_replace('/[^a-zA-Z0-9_\.-]/', '_', $file->getClientOriginalName());
         $fileName = "{$prefix}_{$cleanOriginalName}";
         $folder = "designs/{$branch->code}/{$ym}/{$order->order_number}";
-
-        $path = $file->storeAs($folder, $fileName, 'public');
+        $disk = config('filesystems.archive_disk', 'public');
+        $path = $file->storeAs($folder, $fileName, $disk);
 
         $asset = DesignAsset::create([
             'design_job_id' => $job->id,
             'uploaded_by' => $user->id,
             'file_type' => $request->file_type,
             'file_path' => $path,
+            'disk' => $disk,
             'file_name' => $fileName,
             'file_size' => $file->getSize(),
         ]);
@@ -94,6 +95,16 @@ class WorkdeskController extends Controller
         if ($request->file_type === 'final_print') {
             $order->work_status = 'ready_to_print';
             $order->save();
+        }
+
+        if ($request->expectsJson() || $request->ajax()) {
+            session()->flash('success', "File {$fileName} berhasil diunggah! Status tiket otomatis diperbarui.");
+            return response()->json([
+                'success' => true,
+                'message' => "File {$fileName} berhasil diunggah! Status tiket otomatis diperbarui.",
+                'file_name' => $fileName,
+                'asset_id' => $asset->id,
+            ]);
         }
 
         return back()->with('success', "File {$fileName} berhasil diunggah! Status tiket otomatis diperbarui.");

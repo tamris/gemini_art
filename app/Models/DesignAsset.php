@@ -16,6 +16,7 @@ class DesignAsset extends Model
         'uploaded_by',
         'file_type',
         'file_path',
+        'disk',
         'file_name',
         'file_size',
     ];
@@ -54,7 +55,12 @@ class DesignAsset extends Model
 
     public function getFileUrlAttribute(): string
     {
-        return Storage::disk('public')->url($this->file_path);
+        $disk = $this->disk ?: config('filesystems.archive_disk', 'public');
+        try {
+            return Storage::disk($disk)->url($this->file_path);
+        } catch (\Throwable $e) {
+            return Storage::disk('public')->url($this->file_path);
+        }
     }
 
     public function getIsImageAttribute(): bool

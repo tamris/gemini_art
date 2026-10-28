@@ -62,10 +62,40 @@ class ArchiveController extends Controller
             abort(403, 'Akses file ditolak.');
         }
 
-        if (!Storage::disk('public')->exists($asset->file_path)) {
-            abort(404, 'File tidak ditemukan di disk penyimpanan.');
+        $disk = $asset->disk ?: config('filesystems.archive_disk', 'public');
+
+        if (!Storage::disk($disk)->exists($asset->file_path)) {
+            // Fallback check to public local disk if file was stored locally
+            if ($disk !== 'public' && Storage::disk('public')->exists($asset->file_path)) {
+                $disk = 'public';
+            } else {
+                abort(404, 'File tidak ditemukan di disk penyimpanan.');
+            }
         }
 
-        return Storage::disk('public')->download($asset->file_path, $asset->file_name);
+        return Storage::disk($disk)->download($asset->file_path, $asset->file_name);
+    }
+
+    public function preview(DesignAsset $asset)
+    {
+        $user = Auth::user();
+        $order = $asset->designJob->order;
+
+        if (!$user->isOwner() && $order->branch_id !== $user->branch_id) {
+            abort(403, 'Akses file ditolak.');
+        }
+
+        $disk = $asset->disk ?: config('filesystems.archive_disk', 'public');
+
+        if (!Storage::disk($disk)->exists($asset->file_path)) {
+            // Fallback check to public local disk if file was stored locally
+            if ($disk !== 'public' && Storage::disk('public')->exists($asset->file_path)) {
+                $disk = 'public';
+            } else {
+                abort(404, 'File tidak ditemukan di disk penyimpanan.');
+            }
+        }
+
+        return Storage::disk($disk)->response($asset->file_path, $asset->file_name);
     }
 }

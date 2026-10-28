@@ -186,34 +186,38 @@
             <div class="font-bold text-slate-700 mt-0.5" id="modal-job-title">-</div>
         </div>
 
-        <form id="upload-form" method="POST" action="" enctype="multipart/form-data" class="space-y-4">
+        <form id="upload-form" method="POST" action="" enctype="multipart/form-data" data-ajax-upload class="space-y-4">
             @csrf
             
-            <div>
-                <label class="block text-xs font-black uppercase text-black mb-1">Tipe File Yang Diunggah</label>
-                <select name="file_type" required class="neo-select">
-                    <option value="final_print" selected>File Cetak Siap Produksi (Otomatis Ubah Status ke Siap Cetak)</option>
-                    <option value="preview_proof">Preview / Proofing ke Customer</option>
-                    <option value="brief_ref">Referensi / Dokumen Brief Tambahan</option>
-                </select>
-            </div>
+            <x-upload-progress />
 
-            <div>
-                <label class="block text-xs font-black uppercase text-black mb-1">Pilih File (PDF, TIFF, JPG, CDR, PSD, ZIP)</label>
-                <input type="file" name="file" required class="neo-input text-xs file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-2 file:border-black file:bg-amber-300 file:font-black file:text-xs">
-                <p class="text-[11px] text-slate-500 font-semibold mt-1">
-                    Sistem otomatis mengarsipkan ke cloud path: <code>designs/{branch}/{YYYY-MM}/{order}/...</code>
-                </p>
-            </div>
+            <div class="upload-fields-container space-y-4">
+                <div>
+                    <label class="block text-xs font-black uppercase text-black mb-1">Tipe File Yang Diunggah</label>
+                    <select name="file_type" required class="neo-select">
+                        <option value="final_print" selected>File Cetak Siap Produksi (Otomatis Ubah Status ke Siap Cetak)</option>
+                        <option value="preview_proof">Preview / Proofing ke Customer</option>
+                        <option value="brief_ref">Referensi / Dokumen Brief Tambahan</option>
+                    </select>
+                </div>
 
-            <div class="pt-3 border-t-2 border-black flex items-center justify-end gap-2">
-                <button type="button" onclick="document.getElementById('upload-dialog').close()" class="neo-btn bg-slate-200 text-xs py-2 px-4 cursor-pointer">
-                    Batal
-                </button>
-                <button type="submit" class="neo-btn bg-emerald-400 hover:bg-emerald-300 text-xs py-2 px-4 font-black flex items-center gap-2 cursor-pointer">
-                    <x-icon name="upload-cloud" class="w-3.5 h-3.5" />
-                    <span>Unggah & Sinkronkan</span>
-                </button>
+                <div>
+                    <label class="block text-xs font-black uppercase text-black mb-1">Pilih File (PDF, TIFF, JPG, CDR, PSD, ZIP)</label>
+                    <input type="file" name="file" required class="neo-input text-xs file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-2 file:border-black file:bg-amber-300 file:font-black file:text-xs">
+                    <p class="text-[11px] text-slate-500 font-semibold mt-1">
+                        Aset otomatis tersimpan aman di cloud storage.
+                    </p>
+                </div>
+
+                <div class="pt-3 border-t-2 border-black flex items-center justify-end gap-2">
+                    <button type="button" onclick="document.getElementById('upload-dialog').close()" class="neo-btn bg-slate-200 text-xs py-2 px-4 cursor-pointer">
+                        Batal
+                    </button>
+                    <button type="submit" class="neo-btn bg-emerald-400 hover:bg-emerald-300 text-xs py-2 px-4 font-black flex items-center gap-2 cursor-pointer">
+                        <x-icon name="upload-cloud" class="w-3.5 h-3.5" />
+                        <span>Unggah & Sinkronkan</span>
+                    </button>
+                </div>
             </div>
         </form>
     </div>
@@ -222,9 +226,11 @@
 @push('scripts')
 <script>
 function openUploadDialog(jobId, orderNumber, jobTitle) {
+    const form = document.getElementById('upload-form');
+    if (window.resetUploadForm) window.resetUploadForm(form);
     document.getElementById('modal-order-number').innerText = orderNumber;
     document.getElementById('modal-job-title').innerText = jobTitle;
-    document.getElementById('upload-form').action = "/workdesk/" + jobId + "/upload";
+    form.action = "/workdesk/" + jobId + "/upload";
     document.getElementById('upload-dialog').showModal();
 }
 </script>

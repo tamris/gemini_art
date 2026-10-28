@@ -50,6 +50,7 @@ Route::middleware(['auth'])->group(function () {
     // Cloud Design Archive
     Route::get('/archive', [ArchiveController::class, 'index'])->name('archive.index');
     Route::get('/archive/{asset}/download', [ArchiveController::class, 'download'])->name('archive.download');
+    Route::get('/archive/{asset}/preview', [ArchiveController::class, 'preview'])->name('archive.preview');
 
     // Multi-branch settings (Owner only)
     Route::get('/branches', [BranchController::class, 'index'])->name('branches.index');

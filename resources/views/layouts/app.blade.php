@@ -326,12 +326,18 @@
                 </div>
                 <div class="flex items-center gap-3">
                     <span class="flex items-center gap-1.5">
-                        <x-icon name="cloud" class="w-3.5 h-3.5 text-blue-600" />
-                        Cloud Storage: <strong class="text-blue-700">Active</strong>
+                        <x-icon name="cloud" class="w-3.5 h-3.5 {{ config('filesystems.archive_disk') === 'r2' ? 'text-sky-600' : 'text-slate-500' }}" />
+                        <span>Storage:</span>
+                        @if(config('filesystems.archive_disk') === 'r2')
+                            <strong class="text-sky-700">Cloud Storage</strong>
+                        @else
+                            <strong class="text-slate-700">Lokal (Public Disk)</strong>
+                        @endif
                     </span>
                     <span class="flex items-center gap-1.5">
                         <x-icon name="hard-drive" class="w-3.5 h-3.5 text-emerald-600" />
-                        Database: <strong class="text-emerald-700">SQLite Connected</strong>
+                        <span>Database:</span>
+                        <strong class="text-emerald-700">SQLite Connected</strong>
                     </span>
                 </div>
             </div>
@@ -394,7 +400,114 @@
         </div>
     </dialog>
 
-    <!-- Mobile Sidebar Toggle Script -->
+    <!-- Global File Preview Modal (Soft Neo-Brutalism Lightbox) -->
+    <dialog id="file-preview-modal" closedby="any" class="p-0 bg-transparent max-w-4xl w-full m-auto border-none outline-none overflow-visible">
+        <div class="neo-box p-5 bg-white w-full mx-auto shadow-[6px_6px_0px_0px_#0f172a] rounded-2xl border-2 border-slate-900 overflow-hidden flex flex-col max-h-[90vh]">
+            
+            <!-- Modal Header -->
+            <div class="flex items-center justify-between pb-3.5 border-b-2 border-slate-900 gap-3 shrink-0">
+                <div class="flex items-center gap-2.5 min-w-0">
+                    <span id="preview-badge" class="text-[10px] font-black uppercase px-2 py-0.5 rounded border border-slate-900 bg-amber-200 shrink-0">
+                        File Arsip
+                    </span>
+                    <div class="min-w-0">
+                        <h3 id="preview-filename" class="font-black font-mono text-sm sm:text-base text-slate-900 truncate">
+                            filename.ext
+                        </h3>
+                        <span id="preview-filesize" class="text-xs font-mono text-slate-500 font-bold block mt-0.5">
+                            0 KB
+                        </span>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-2 shrink-0">
+                    <!-- Open in new tab button -->
+                    <a id="preview-tab-btn" href="#" target="_blank" title="Buka di Tab Baru" class="neo-btn bg-sky-100 hover:bg-sky-200 text-slate-900 text-xs py-1.5 px-3 flex items-center gap-1.5 shadow-[1.5px_1.5px_0px_0px_#0f172a]">
+                        <x-icon name="external-link" class="w-3.5 h-3.5" />
+                        <span class="hidden sm:inline">Tab Baru</span>
+                    </a>
+
+                    <!-- Direct Download button -->
+                    <a id="preview-download-btn" href="#" title="Download Berkas" class="neo-btn bg-amber-300 hover:bg-amber-400 text-slate-900 text-xs py-1.5 px-3 flex items-center gap-1.5 shadow-[1.5px_1.5px_0px_0px_#0f172a]">
+                        <x-icon name="download" class="w-3.5 h-3.5" />
+                        <span class="hidden sm:inline">Download</span>
+                    </a>
+
+                    <!-- Close button -->
+                    <button type="button" onclick="closeFilePreview()" aria-label="Tutup" class="w-8 h-8 rounded-lg border-2 border-slate-900 bg-rose-200 hover:bg-rose-300 font-black text-sm flex items-center justify-center cursor-pointer shadow-[1.5px_1.5px_0px_0px_#0f172a] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none">
+                        ✕
+                    </button>
+                </div>
+            </div>
+
+            <!-- Modal Body (Preview Content Area) -->
+            <div class="flex-1 overflow-auto p-4 bg-slate-950/5 flex items-center justify-center min-h-[350px] relative">
+                
+                <!-- Loading State (Soft Neo-Brutalism Spinner) -->
+                <div id="preview-loader" class="flex flex-col items-center justify-center p-8 space-y-3.5 text-center">
+                    <div class="relative w-12 h-12 flex items-center justify-center">
+                        <div class="w-12 h-12 rounded-full border-4 border-slate-200 border-t-amber-400 border-r-slate-800 animate-spin"></div>
+                        <x-icon name="cloud" class="w-5 h-5 text-slate-800 absolute" />
+                    </div>
+                    <div class="space-y-1">
+                        <p class="text-xs font-black text-slate-900 tracking-wide">Mengunduh Pratinjau dari Cloud Storage...</p>
+                        <p class="text-[10px] font-bold text-slate-500 font-mono" id="preview-loader-filename">Memuat berkas...</p>
+                    </div>
+                </div>
+
+                <!-- Error State -->
+                <div id="preview-container-error" class="hidden text-center p-8 max-w-md mx-auto space-y-3">
+                    <div class="w-14 h-14 rounded-2xl bg-rose-100 border-2 border-slate-900 flex items-center justify-center mx-auto shadow-[2.5px_2.5px_0px_0px_#0f172a]">
+                        <x-icon name="alert-triangle" class="w-7 h-7 text-rose-600" />
+                    </div>
+                    <div>
+                        <h4 class="font-black text-base text-slate-900">Gagal Memuat Pratinjau</h4>
+                        <p class="text-xs text-slate-600 mt-1 leading-relaxed">
+                            Terjadi kendala saat memuat berkas langsung di browser. Anda tetap dapat membukanya melalui tombol tab baru atau download langsung.
+                        </p>
+                    </div>
+                    <div class="flex items-center justify-center gap-2 pt-1">
+                        <a id="preview-error-tab-btn" href="#" target="_blank" class="neo-btn bg-sky-200 hover:bg-sky-300 text-xs py-2 px-3.5 font-bold text-slate-900">
+                            Buka di Tab Baru
+                        </a>
+                        <a id="preview-error-download-btn" href="#" class="neo-btn bg-amber-300 hover:bg-amber-400 text-xs py-2 px-3.5 font-black text-slate-900">
+                            Download File
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Image Viewer -->
+                <div id="preview-container-img" class="hidden w-full h-full flex items-center justify-center">
+                    <img id="preview-img-element" src="" alt="Pratinjau File" class="max-h-[65vh] max-w-full object-contain rounded-xl border-2 border-slate-900 shadow-[3px_3px_0px_0px_#0f172a] bg-white transition-opacity duration-300 opacity-0">
+                </div>
+
+                <!-- PDF Viewer -->
+                <div id="preview-container-pdf" class="hidden w-full h-full">
+                    <iframe id="preview-pdf-element" src="" class="w-full h-[65vh] rounded-xl border-2 border-slate-900 bg-white"></iframe>
+                </div>
+
+                <!-- Non-previewable / Vector / RAW File Fallback -->
+                <div id="preview-container-fallback" class="hidden text-center p-8 max-w-md mx-auto space-y-3">
+                    <div class="w-16 h-16 rounded-2xl bg-amber-100 border-2 border-slate-900 flex items-center justify-center mx-auto shadow-[2.5px_2.5px_0px_0px_#0f172a]">
+                        <x-icon name="file" class="w-8 h-8 text-amber-800" />
+                    </div>
+                    <div>
+                        <h4 class="font-black text-base text-slate-900">Format File Khusus Produksi</h4>
+                        <p class="text-xs text-slate-600 mt-1 leading-relaxed">
+                            Format berkas ini (<span id="preview-fallback-ext" class="font-mono font-bold uppercase text-slate-900">FILE</span>) adalah file mentah percetakan. Gunakan tombol download di atas untuk membukanya pada software CorelDRAW, Photoshop, atau Illustrator.
+                        </p>
+                    </div>
+                    <a id="preview-fallback-download" href="#" class="inline-flex neo-btn bg-emerald-300 hover:bg-emerald-400 text-xs py-2 px-4 font-black text-slate-950 gap-2">
+                        <x-icon name="download" class="w-4 h-4" />
+                        <span>Download Berkas Ini</span>
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </dialog>
+
+    <!-- Mobile Sidebar Toggle Script & Global File Preview Scripts -->
     <script>
     function toggleSidebar() {
         const sidebar = document.getElementById('main-sidebar');
@@ -409,6 +522,274 @@
             backdrop.classList.remove('hidden');
         }
     }
+
+    function openFilePreview(url, fileName, fileSize, badgeText, fileKind, downloadUrl) {
+        const modal = document.getElementById('file-preview-modal');
+        if (!modal) return;
+
+        document.getElementById('preview-filename').textContent = fileName;
+        document.getElementById('preview-filesize').textContent = fileSize;
+        document.getElementById('preview-badge').textContent = badgeText;
+        document.getElementById('preview-tab-btn').href = url;
+        document.getElementById('preview-download-btn').href = downloadUrl;
+        document.getElementById('preview-fallback-download').href = downloadUrl;
+
+        const errorTabBtn = document.getElementById('preview-error-tab-btn');
+        const errorDownloadBtn = document.getElementById('preview-error-download-btn');
+        if (errorTabBtn) errorTabBtn.href = url;
+        if (errorDownloadBtn) errorDownloadBtn.href = downloadUrl;
+
+        const loader = document.getElementById('preview-loader');
+        const loaderFilename = document.getElementById('preview-loader-filename');
+        if (loaderFilename) loaderFilename.textContent = fileName + ' (' + fileSize + ')';
+
+        const imgContainer = document.getElementById('preview-container-img');
+        const pdfContainer = document.getElementById('preview-container-pdf');
+        const fallbackContainer = document.getElementById('preview-container-fallback');
+        const errorContainer = document.getElementById('preview-container-error');
+        const imgEl = document.getElementById('preview-img-element');
+        const pdfEl = document.getElementById('preview-pdf-element');
+
+        // Reset display states
+        loader.classList.remove('hidden');
+        imgContainer.classList.add('hidden');
+        pdfContainer.classList.add('hidden');
+        fallbackContainer.classList.add('hidden');
+        if (errorContainer) errorContainer.classList.add('hidden');
+
+        if (fileKind === 'image') {
+            imgEl.classList.add('opacity-0');
+            imgEl.classList.remove('opacity-100');
+
+            imgEl.onload = function() {
+                loader.classList.add('hidden');
+                imgContainer.classList.remove('hidden');
+                setTimeout(() => {
+                    imgEl.classList.remove('opacity-0');
+                    imgEl.classList.add('opacity-100');
+                }, 50);
+            };
+
+            imgEl.onerror = function() {
+                loader.classList.add('hidden');
+                if (errorContainer) errorContainer.classList.remove('hidden');
+            };
+
+            imgEl.src = url;
+        } else if (fileKind === 'pdf') {
+            pdfEl.onload = function() {
+                loader.classList.add('hidden');
+                pdfContainer.classList.remove('hidden');
+            };
+            pdfEl.onerror = function() {
+                loader.classList.add('hidden');
+                if (errorContainer) errorContainer.classList.remove('hidden');
+            };
+            pdfEl.src = url;
+        } else {
+            loader.classList.add('hidden');
+            const ext = fileName.split('.').pop() || 'FILE';
+            document.getElementById('preview-fallback-ext').textContent = ext;
+            fallbackContainer.classList.remove('hidden');
+        }
+
+        modal.showModal();
+    }
+
+    function closeFilePreview() {
+        const modal = document.getElementById('file-preview-modal');
+        if (!modal) return;
+        modal.close();
+        const imgEl = document.getElementById('preview-img-element');
+        const pdfEl = document.getElementById('preview-pdf-element');
+        if (imgEl) {
+            imgEl.onload = null;
+            imgEl.onerror = null;
+            imgEl.src = '';
+            imgEl.classList.add('opacity-0');
+        }
+        if (pdfEl) {
+            pdfEl.onload = null;
+            pdfEl.onerror = null;
+            pdfEl.src = '';
+        }
+    }
+
+    window.openFilePreview = openFilePreview;
+    window.closeFilePreview = closeFilePreview;
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const modal = document.getElementById('file-preview-modal');
+        if (modal) {
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    closeFilePreview();
+                }
+            });
+            modal.addEventListener('cancel', () => {
+                closeFilePreview();
+            });
+        }
+
+        initAjaxUploads();
+    });
+
+    function resetUploadForm(form) {
+        if (!form) return;
+        const fieldsContainer = form.querySelector('.upload-fields-container');
+        const progressContainer = form.querySelector('.upload-progress-container');
+        const barEl = form.querySelector('.upload-progress-bar');
+        const percentEl = form.querySelector('.upload-progress-percent');
+        const bytesEl = form.querySelector('.upload-progress-bytes');
+        const errorContainer = form.querySelector('.upload-progress-error');
+        const statusEl = form.querySelector('.upload-progress-status');
+
+        if (fieldsContainer) fieldsContainer.classList.remove('hidden');
+        if (progressContainer) progressContainer.classList.add('hidden');
+        if (errorContainer) errorContainer.classList.add('hidden');
+        if (barEl) barEl.style.width = '0%';
+        if (percentEl) percentEl.innerText = '0%';
+        if (bytesEl) bytesEl.innerText = '0 KB / 0 KB';
+        if (statusEl) {
+            statusEl.innerHTML = `
+                <span class="w-2 h-2 rounded-full bg-amber-500 animate-ping"></span>
+                <span>Mengunggah file ke cloud storage...</span>
+            `;
+        }
+    }
+    window.resetUploadForm = resetUploadForm;
+
+    function initAjaxUploads() {
+        if (window.__ajaxUploadDelegated) return;
+        window.__ajaxUploadDelegated = true;
+
+        document.addEventListener('submit', function(e) {
+            const form = e.target.closest('form[data-ajax-upload]');
+            if (!form) return;
+
+            const fileInput = form.querySelector('input[type="file"]');
+            if (!fileInput || !fileInput.files || fileInput.files.length === 0) {
+                return; // Let browser trigger native required validation
+            }
+
+            e.preventDefault();
+
+            const file = fileInput.files[0];
+            const modal = form.closest('dialog');
+            const closeBtns = modal ? modal.querySelectorAll('form[method="dialog"] button, button[onclick*="close"]') : [];
+            const fieldsContainer = form.querySelector('.upload-fields-container') || form;
+            const progressContainer = form.querySelector('.upload-progress-container');
+
+            if (!progressContainer) {
+                form.submit();
+                return;
+            }
+
+            closeBtns.forEach(btn => btn.style.pointerEvents = 'none');
+
+            fieldsContainer.classList.add('hidden');
+            progressContainer.classList.remove('hidden');
+
+            const fileNameEl = progressContainer.querySelector('.upload-progress-filename');
+            const percentEl = progressContainer.querySelector('.upload-progress-percent');
+            const bytesEl = progressContainer.querySelector('.upload-progress-bytes');
+            const barEl = progressContainer.querySelector('.upload-progress-bar');
+            const statusEl = progressContainer.querySelector('.upload-progress-status');
+            const errorContainer = progressContainer.querySelector('.upload-progress-error');
+            const errorMsgEl = progressContainer.querySelector('.upload-progress-error-msg');
+            const retryBtn = progressContainer.querySelector('.upload-progress-retry-btn');
+
+            if (errorContainer) errorContainer.classList.add('hidden');
+            if (fileNameEl) fileNameEl.innerText = file.name;
+
+            const formatBytes = (bytes) => {
+                if (bytes >= 1048576) return (bytes / 1048576).toFixed(2) + ' MB';
+                return (bytes / 1024).toFixed(1) + ' KB';
+            };
+
+            const totalFormatted = formatBytes(file.size);
+            if (bytesEl) bytesEl.innerText = `0 KB / ${totalFormatted}`;
+            if (percentEl) percentEl.innerText = '0%';
+            if (barEl) barEl.style.width = '0%';
+
+            const formData = new FormData(form);
+            const xhr = new XMLHttpRequest();
+
+            xhr.upload.addEventListener('progress', (event) => {
+                if (event.lengthComputable) {
+                    const percent = Math.round((event.loaded / event.total) * 100);
+                    if (barEl) barEl.style.width = percent + '%';
+                    if (percentEl) percentEl.innerText = percent + '%';
+                    if (bytesEl) bytesEl.innerText = `${formatBytes(event.loaded)} / ${totalFormatted}`;
+
+                    if (percent >= 100 && statusEl) {
+                        statusEl.innerHTML = `
+                            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+                            <span>Menyimpan berkas & memperbarui tiket...</span>
+                        `;
+                    }
+                }
+            });
+
+            xhr.addEventListener('load', () => {
+                if (xhr.status >= 200 && xhr.status < 300) {
+                    if (modal) {
+                        modal.close();
+                    }
+                    window.location.reload();
+                } else {
+                    let errMsg = 'Terjadi kesalahan saat mengunggah (HTTP ' + xhr.status + ').';
+                    try {
+                        const res = JSON.parse(xhr.responseText);
+                        if (res.message) errMsg = res.message;
+                        if (res.errors) errMsg = Object.values(res.errors).flat().join(', ');
+                    } catch(e) {}
+                    showError(errMsg);
+                }
+            });
+
+            xhr.addEventListener('error', () => {
+                showError('Koneksi internet terputus atau gagal menghubungi server storage.');
+            });
+
+            function showError(msg) {
+                closeBtns.forEach(btn => btn.style.pointerEvents = 'auto');
+                if (errorContainer && errorMsgEl) {
+                    errorMsgEl.innerText = msg;
+                    errorContainer.classList.remove('hidden');
+                }
+                if (statusEl) {
+                    statusEl.innerHTML = `
+                        <span class="w-2 h-2 rounded-full bg-rose-500"></span>
+                        <span class="text-rose-900 font-bold">Proses terhenti karena kesalahan.</span>
+                    `;
+                }
+                if (retryBtn) {
+                    retryBtn.onclick = () => {
+                        resetUploadForm(form);
+                    };
+                }
+            }
+
+            xhr.open('POST', form.action);
+            xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+            xhr.setRequestHeader('Accept', 'application/json');
+            const csrfMeta = document.querySelector('meta[name="csrf-token"]');
+            if (csrfMeta) {
+                xhr.setRequestHeader('X-CSRF-TOKEN', csrfMeta.content);
+            }
+            xhr.send(formData);
+        });
+
+        // Auto reset when dialog closes
+        document.querySelectorAll('dialog').forEach(modal => {
+            modal.addEventListener('close', () => {
+                const form = modal.querySelector('form[data-ajax-upload]');
+                if (form) resetUploadForm(form);
+            });
+        });
+    }
+    window.initAjaxUploads = initAjaxUploads;
     </script>
 
     @stack('scripts')

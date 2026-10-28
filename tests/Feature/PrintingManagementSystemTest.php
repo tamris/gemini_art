@@ -148,7 +148,27 @@ class PrintingManagementSystemTest extends TestCase
             ->first();
         $this->assertNotNull($asset);
         $this->assertStringContainsString('print_', $asset->file_name);
-        Storage::disk('public')->assertExists($asset->file_path);
+        Storage::disk(config('filesystems.archive_disk', 'public'))->assertExists($asset->file_path);
+    }
+
+    public function test_designer_ajax_upload_returns_json_and_session_flash(): void
+    {
+        $designer = User::where('email', 'desain.solo@geminiart.test')->first();
+        $order = Order::where('branch_id', $designer->branch_id)->first();
+        $job = $order->designJob;
+
+        $dummyFile = UploadedFile::fake()->create('proof_design.jpg', 2000, 'image/jpeg');
+
+        $response = $this->actingAs($designer)->postJson(route('workdesk.upload', $job->id), [
+            'file' => $dummyFile,
+            'file_type' => 'preview_proof',
+        ]);
+
+        $response->assertOk();
+        $response->assertJson([
+            'success' => true,
+        ]);
+        $response->assertSessionHas('success');
     }
 
     public function test_cashier_settlement_updates_to_paid_and_completed(): void
@@ -395,5 +415,17 @@ class PrintingManagementSystemTest extends TestCase
         ]);
 
         $response->assertStatus(403);
+    }
+
+    public function test_user_can_preview_design_asset(): void
+    {
+        $owner = User::where('role', 'owner')->first();
+        $asset = DesignAsset::first();
+
+        $disk = $asset->disk ?: config('filesystems.archive_disk', 'public');
+        Storage::disk($disk)->put($asset->file_path, 'fake image content');
+
+        $response = $this->actingAs($owner)->get(route('archive.preview', $asset->id));
+        $response->assertStatus(200);
     }
 }

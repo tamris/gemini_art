@@ -20,41 +20,29 @@
             </p> -->
         </div>
 
-        <!-- Storage Stat Badges -->
-        <div class="flex items-center gap-3">
-            <div class="p-3 bg-white border-2 border-black rounded-xl shadow-[2px_2px_0px_0px_#000] text-right">
-                <span class="text-[10px] font-black uppercase text-slate-500 block">Total Aset Arsip</span>
-                <span class="font-black text-sm text-black">{{ $totalCount }} File</span>
-            </div>
-            <div class="p-3 bg-amber-100 border-2 border-black rounded-xl shadow-[2px_2px_0px_0px_#000] text-right">
-                <span class="text-[10px] font-black uppercase text-slate-700 block">Kapasitas Terpakai</span>
-                <span class="font-black text-sm text-black">
-                    @php
-                        if ($totalBytes >= 1073741824) {
-                            $fmtTotal = number_format($totalBytes / 1073741824, 2) . ' GB';
-                        } elseif ($totalBytes >= 1048576) {
-                            $fmtTotal = number_format($totalBytes / 1048576, 2) . ' MB';
-                        } else {
-                            $fmtTotal = number_format($totalBytes / 1024, 2) . ' KB';
-                        }
-                    @endphp
-                    {{ $fmtTotal }}
-                </span>
-            </div>
-        </div>
-    </div>
+        @php
+            if ($totalBytes >= 1073741824) {
+                $fmtTotal = number_format($totalBytes / 1073741824, 2) . ' GB';
+            } elseif ($totalBytes >= 1048576) {
+                $fmtTotal = number_format($totalBytes / 1048576, 2) . ' MB';
+            } else {
+                $fmtTotal = number_format($totalBytes / 1024, 2) . ' KB';
+            }
+        @endphp
 
-    <!-- Storage Pattern Info Notice -->
-    <div class="p-4 bg-slate-100 border-2 border-black rounded-xl text-xs space-y-1">
-        <div class="font-black text-black flex items-center gap-2">
-            <svg class="w-4 h-4 text-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/>
-            </svg>
-            <span>Pola Struktur Direktori Cloud Storage:</span>
+        <!-- Storage Stat Capsule (Compact & Space-Efficient) -->
+        <div class="inline-flex items-center divide-x-2 divide-slate-900 bg-white border-2 border-slate-900 rounded-xl shadow-[2px_2px_0px_0px_#0f172a] text-xs self-start sm:self-auto overflow-hidden shrink-0">
+            <div class="flex items-center gap-1.5 px-3 py-1.5 bg-white">
+                <x-icon name="file" class="w-3.5 h-3.5 text-slate-500" />
+                <span class="text-[11px] font-bold text-slate-500">Total File:</span>
+                <span class="font-black text-slate-900 font-mono">{{ $totalCount }}</span>
+            </div>
+            <div class="flex items-center gap-1.5 px-3 py-1.5 bg-amber-100">
+                <x-icon name="hard-drive" class="w-3.5 h-3.5 text-amber-800" />
+                <span class="text-[11px] font-bold text-amber-900">Storage Terpakai:</span>
+                <span class="font-black text-amber-950 font-mono">{{ $fmtTotal }}</span>
+            </div>
         </div>
-        <p class="font-mono text-slate-700 text-[11px] bg-white p-2 rounded border border-black overflow-x-auto">
-            storage/designs/{branch_code}/{YYYY-MM}/{order_number}/[ref_|print_|proof_]{file_name}
-        </p>
     </div>
 
     <!-- Filter Card (Instant Auto-Filter) -->
@@ -150,20 +138,24 @@
                     </div>
                 </div>
 
-                <div class="text-[10px] text-slate-400 font-mono break-all mb-3 bg-white p-2 rounded border border-slate-200">
-                    {{ $asset->file_path }}
-                </div>
             </div>
 
-            <!-- Download Button -->
-            <div class="pt-3 border-t-2 border-black flex items-center gap-2">
-                <a href="{{ route('archive.download', $asset->id) }}" class="flex-1 neo-btn bg-emerald-400 hover:bg-emerald-300 text-xs py-2 text-center font-black text-black flex items-center justify-center gap-1.5">
-                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+            <!-- Action Buttons: Preview Eye + Download + Tiket -->
+            <div class="pt-3 border-t-2 border-slate-900 flex items-center gap-2">
+                <button type="button" 
+                        onclick="openFilePreview('{{ route('archive.preview', $asset->id) }}', '{{ addslashes($asset->file_name) }}', '{{ $asset->formatted_size }}', '{{ $asset->file_type_badge }}', '{{ str_ends_with(strtolower($asset->file_name), '.pdf') ? 'pdf' : ($asset->is_image ? 'image' : 'other') }}', '{{ route('archive.download', $asset->id) }}')"
+                        title="Pratinjau File (Preview)"
+                        class="w-9 h-9 rounded-xl border-[1.5px] border-slate-900 bg-sky-200 hover:bg-sky-300 text-slate-900 shadow-[1.5px_1.5px_0px_0px_#0f172a] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none flex items-center justify-center shrink-0 cursor-pointer transition-all">
+                    <svg class="w-4 h-4 stroke-[2.5]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0" />
+                        <circle cx="12" cy="12" r="3" />
                     </svg>
-                    <span>Download File</span>
+                </button>
+                <a href="{{ route('archive.download', $asset->id) }}" title="Download File" class="flex-1 neo-btn bg-emerald-300 hover:bg-emerald-400 text-xs py-2 text-center font-black text-slate-950 flex items-center justify-center gap-1.5 shadow-[1.5px_1.5px_0px_0px_#0f172a]">
+                    <x-icon name="download" class="w-3.5 h-3.5" />
+                    <span>Download</span>
                 </a>
-                <a href="{{ route('orders.show', $asset->designJob->order_id ?? 0) }}" class="neo-btn bg-white hover:bg-slate-100 text-xs py-2 px-3">
+                <a href="{{ route('orders.show', $asset->designJob->order_id ?? 0) }}" title="Lihat Detail Tiket" class="neo-btn bg-white hover:bg-slate-100 text-xs py-2 px-3 font-bold text-slate-800 shadow-[1.5px_1.5px_0px_0px_#0f172a]">
                     Tiket
                 </a>
             </div>

@@ -168,13 +168,15 @@ class OrderController extends Controller
                 $originalName = preg_replace('/[^a-zA-Z0-9_\.-]/', '_', $file->getClientOriginalName());
                 $fileName = "ref_" . $originalName;
                 $folder = "designs/{$branch->code}/{$ym}/{$orderNumber}";
-                $path = $file->storeAs($folder, $fileName, 'public');
+                $disk = config('filesystems.archive_disk', 'public');
+                $path = $file->storeAs($folder, $fileName, $disk);
 
                 DesignAsset::create([
                     'design_job_id' => $designJob->id,
                     'uploaded_by' => $user->id,
                     'file_type' => 'brief_ref',
                     'file_path' => $path,
+                    'disk' => $disk,
                     'file_name' => $fileName,
                     'file_size' => $file->getSize(),
                 ]);

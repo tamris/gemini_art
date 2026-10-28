@@ -158,13 +158,13 @@
                             </div>
                             <span>File Arsip Desain & Cetak</span>
                         </h2>
-                        <p class="text-xs text-slate-500 font-medium mt-0.5">
-                            Struktur path: <code>designs/{{ $order->branch->code }}/{{ date('Y-m') }}/{{ $order->order_number }}/...</code>
-                        </p>
+                        <span class="text-xs text-slate-500 font-medium mt-0.5 block">
+                            Total {{ $order->designJob->assets->count() }} berkas terarsip di cloud storage
+                        </span>
                     </div>
 
                     <button type="button" 
-                            onclick="document.getElementById('upload-modal').showModal()"
+                            onclick="if(window.resetUploadForm) window.resetUploadForm(document.querySelector('#upload-modal form')); document.getElementById('upload-modal').showModal()"
                             class="neo-btn bg-emerald-400 hover:bg-emerald-300 text-xs py-1.5 px-3 font-bold flex items-center gap-1.5 cursor-pointer">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/>
@@ -207,11 +207,26 @@
                         </div>
 
                         <div class="flex items-center gap-2 shrink-0">
-                            <a href="{{ route('archive.download', $asset->id) }}" class="neo-btn bg-white hover:bg-slate-100 text-xs py-1.5 px-3 flex items-center gap-1">
-                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                            <!-- Preview Button (Eye Icon) -->
+                            <button type="button" 
+                                    onclick="openFilePreview('{{ route('archive.preview', $asset->id) }}', '{{ addslashes($asset->file_name) }}', '{{ $asset->formatted_size }}', '{{ $asset->file_type_badge }}', '{{ str_ends_with(strtolower($asset->file_name), '.pdf') ? 'pdf' : ($asset->is_image ? 'image' : 'other') }}', '{{ route('archive.download', $asset->id) }}')"
+                                    title="Pratinjau File (Preview)"
+                                    class="w-8 h-8 rounded-lg border-[1.5px] border-slate-900 bg-sky-200 hover:bg-sky-300 text-slate-900 shadow-[1.5px_1.5px_0px_0px_#0f172a] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none flex items-center justify-center shrink-0 cursor-pointer transition-all">
+                                <svg class="w-4 h-4 stroke-[2.5]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0" />
+                                    <circle cx="12" cy="12" r="3" />
                                 </svg>
-                                <!-- <span>Download</span> -->
+                            </button>
+
+                            <!-- Download Button -->
+                            <a href="{{ route('archive.download', $asset->id) }}" 
+                               title="Download File" 
+                               class="w-8 h-8 rounded-lg border-[1.5px] border-slate-900 bg-white hover:bg-slate-100 text-slate-900 shadow-[1.5px_1.5px_0px_0px_#0f172a] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none flex items-center justify-center shrink-0 transition-all">
+                                <svg class="w-4 h-4 stroke-[2.5]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M12 15V3" />
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                    <path d="m7 10 5 5 5-5" />
+                                </svg>
                             </a>
                         </div>
                     </div>
@@ -382,32 +397,37 @@
             </form>
         </div>
 
-        <form method="POST" action="{{ route('workdesk.upload', $order->designJob->id) }}" enctype="multipart/form-data" class="space-y-4">
+        <form method="POST" action="{{ route('workdesk.upload', $order->designJob->id) }}" enctype="multipart/form-data" data-ajax-upload class="space-y-4">
             @csrf
-            <div>
-                <label class="block text-xs font-black uppercase text-black mb-1">Tipe File</label>
-                <select name="file_type" required class="neo-select">
-                    <option value="final_print" selected>File Cetak Siap Produksi (Status → Siap Cetak)</option>
-                    <option value="preview_proof">Preview Proofing ke Pelanggan</option>
-                    <option value="brief_ref">Referensi Brief / Lampiran</option>
-                </select>
-            </div>
 
-            <div>
-                <label class="block text-xs font-black uppercase text-black mb-1">Pilih File</label>
-                <input type="file" name="file" required class="neo-input text-xs file:mr-2 file:py-1 file:px-2.5 file:rounded file:border file:border-black file:bg-amber-300 file:text-xs file:font-black">
-            </div>
+            <x-upload-progress />
 
-            <div class="pt-3 border-t-2 border-black flex justify-end gap-2">
-                <button type="button" onclick="document.getElementById('upload-modal').close()" class="neo-btn bg-slate-200 text-xs py-2 px-4 cursor-pointer">
-                    Batal
-                </button>
-                <button type="submit" class="neo-btn bg-emerald-400 hover:bg-emerald-300 text-xs py-2 px-4 font-black flex items-center gap-1.5 cursor-pointer">
-                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
-                    </svg>
-                    <span>Unggah & Simpan</span>
-                </button>
+            <div class="upload-fields-container space-y-4">
+                <div>
+                    <label class="block text-xs font-black uppercase text-black mb-1">Tipe File</label>
+                    <select name="file_type" required class="neo-select">
+                        <option value="final_print" selected>File Cetak Siap Produksi (Status → Siap Cetak)</option>
+                        <option value="preview_proof">Preview Proofing ke Pelanggan</option>
+                        <option value="brief_ref">Referensi Brief / Lampiran</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-black uppercase text-black mb-1">Pilih File</label>
+                    <input type="file" name="file" required class="neo-input text-xs file:mr-2 file:py-1 file:px-2.5 file:rounded file:border file:border-black file:bg-amber-300 file:text-xs file:font-black">
+                </div>
+
+                <div class="pt-3 border-t-2 border-black flex justify-end gap-2">
+                    <button type="button" onclick="document.getElementById('upload-modal').close()" class="neo-btn bg-slate-200 text-xs py-2 px-4 cursor-pointer">
+                        Batal
+                    </button>
+                    <button type="submit" class="neo-btn bg-emerald-400 hover:bg-emerald-300 text-xs py-2 px-4 font-black flex items-center gap-1.5 cursor-pointer">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
+                        </svg>
+                        <span>Unggah & Simpan</span>
+                    </button>
+                </div>
             </div>
         </form>
     </div>
