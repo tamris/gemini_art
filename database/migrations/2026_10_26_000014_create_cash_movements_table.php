@@ -19,7 +19,7 @@ return new class extends Migration
             $table->enum('type', ['in', 'out']);
             $table->decimal('amount', 12, 2);
             $table->enum('payment_method', ['cash', 'qris', 'transfer'])->default('cash');
-            $table->enum('category', ['order_dp', 'order_settlement', 'retail_pos', 'petty_cash_expense', 'initial_balance']);
+            $table->enum('category', ['order_dp', 'order_settlement', 'retail_pos', 'petty_cash_expense', 'initial_balance', 'order_refund']);
             $table->text('notes')->nullable();
             $table->timestamps();
         });

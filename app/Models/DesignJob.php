@@ -18,6 +18,8 @@ class DesignJob extends Model
         'dimensions',
         'material_notes',
         'brief_notes',
+        'revision_notes',
+        'revision_count',
         'deadline_at',
     ];
 
@@ -25,6 +27,7 @@ class DesignJob extends Model
     {
         return [
             'deadline_at' => 'datetime',
+            'revision_count' => 'integer',
         ];
     }
 

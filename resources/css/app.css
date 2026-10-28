@@ -60,15 +60,20 @@
 }
 
 .neo-input {
+    height: 2.5rem;
     border: 1.5px solid #cbd5e1;
     border-radius: 0.75rem;
-    padding: 0.625rem 0.875rem;
+    padding: 0.5rem 0.875rem;
     background-color: #ffffff;
     font-weight: 500;
     width: 100%;
     outline: none;
     box-shadow: 1.5px 1.5px 0px 0px #e2e8f0;
     transition: all 0.15s ease-in-out;
+}
+
+textarea.neo-input {
+    height: auto;
 }
 
 .neo-input:focus {
@@ -122,7 +127,7 @@ dialog::backdrop {
 select.neo-select,
 select.neo-input {
     width: 100%;
-    height: 38px;
+    height: 40px;
     background-color: #ffffff;
     border: 1.5px solid #cbd5e1;
     border-radius: 0.75rem;
@@ -203,6 +208,26 @@ select[data-neo-select-initialized="true"] {
 #filter-results-container {
     transition: opacity 180ms ease;
 }
+
+/* Neo-Datepicker Sleek Time Scrollbar */
+.neo-time-scroll {
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 transparent;
+}
+.neo-time-scroll::-webkit-scrollbar {
+    width: 4px;
+}
+.neo-time-scroll::-webkit-scrollbar-track {
+    background: transparent;
+}
+.neo-time-scroll::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 9999px;
+}
+.neo-time-scroll::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
 
 
 

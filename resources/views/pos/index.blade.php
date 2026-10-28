@@ -74,16 +74,27 @@
 
                 <div class="grid grid-cols-1 sm:grid-cols-12 gap-3 items-end">
                     <div class="sm:col-span-6">
-                        <label class="block text-[11px] font-black uppercase text-black mb-1">Nama Barang / Jasa</label>
-                        <input type="text" id="custom-name" placeholder="Misal: Print Kalkir A3 / Map Snellhecter" class="neo-input text-xs py-2">
+                        <label class="block text-[11px] font-black uppercase text-slate-800 mb-1 tracking-wider">Nama Barang / Jasa</label>
+                        <input type="text" id="custom-name" placeholder="Misal: Print Kalkir A3 / Map Snellhecter" class="w-full h-10 neo-input text-xs">
                     </div>
                     <div class="sm:col-span-2">
-                        <label class="block text-[11px] font-black uppercase text-black mb-1">Qty</label>
-                        <input type="number" id="custom-qty" value="1" min="1" class="neo-input text-xs py-2 font-bold text-center">
+                        <label class="block text-[11px] font-black uppercase text-slate-800 mb-1 tracking-wider">Qty</label>
+                        <input type="number" id="custom-qty" value="1" min="1" class="w-full h-10 neo-input text-xs font-bold text-center">
                     </div>
                     <div class="sm:col-span-4">
-                        <label class="block text-[11px] font-black uppercase text-black mb-1">Harga Satuan (Rp)</label>
-                        <input type="number" id="custom-price" placeholder="5000" min="0" class="neo-input text-xs py-2 font-bold">
+                        <label class="block text-[11px] font-black uppercase text-slate-800 mb-1 tracking-wider">Harga Satuan</label>
+                        <div class="flex h-10 rounded-xl overflow-hidden border-[1.5px] border-slate-300 bg-white shadow-[1.5px_1.5px_0px_0px_#e2e8f0] focus-within:border-slate-800 focus-within:shadow-[2.5px_2.5px_0px_0px_#0f172a] transition-all">
+                            <span class="inline-flex items-center px-3 bg-amber-200 border-r-[1.5px] border-slate-300 text-xs font-black text-slate-800 select-none">
+                                Rp
+                            </span>
+                            <input type="text" 
+                                   id="custom-price" 
+                                   inputmode="numeric" 
+                                   oninput="formatRupiahInput(this)" 
+                                   placeholder="0" 
+                                   autocomplete="off"
+                                   class="w-full px-3 text-xs font-bold text-slate-900 bg-transparent focus:outline-none">
+                        </div>
                     </div>
                 </div>
 
@@ -136,30 +147,30 @@
                     @endif
 
                     <div>
-                        <label class="block text-[11px] font-black uppercase text-black mb-1">Nama Pelanggan (Opsional)</label>
-                        <input type="text" name="customer_name" placeholder="Pelanggan Ritel Walk-In" class="neo-input text-xs py-1.5 font-medium">
+                        <label class="block text-[11px] font-black uppercase text-slate-800 mb-1 tracking-wider">Nama Pelanggan (Opsional)</label>
+                        <input type="text" name="customer_name" placeholder="Pelanggan Ritel Walk-In" class="w-full h-10 neo-input text-xs font-medium">
                     </div>
 
-                    <div class="p-3 bg-amber-50 border-2 border-black rounded-xl space-y-1.5 text-xs">
+                    <div class="p-3.5 bg-amber-50 border-2 border-black rounded-xl space-y-1.5 text-xs shadow-[2px_2px_0px_0px_#000]">
                         <div class="flex justify-between items-center text-base">
                             <span class="font-black text-black">TOTAL BELANJA:</span>
                             <span id="cart-total-text" class="font-black text-black">Rp 0</span>
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-2 gap-3">
+                    <div class="grid grid-cols-2 gap-3 items-end">
                         <div>
-                            <label class="block text-[11px] font-black uppercase text-black mb-1">Metode Bayar</label>
-                            <select name="payment_method" id="payment-method" required class="neo-select">
+                            <label class="block text-[11px] font-black uppercase text-slate-800 mb-1 tracking-wider">Metode Bayar</label>
+                            <select name="payment_method" id="payment-method" required class="neo-select h-10">
                                 <option value="cash">Tunai (Cash Laci)</option>
                                 <option value="qris">QRIS</option>
                                 <option value="transfer">Transfer Bank</option>
                             </select>
                         </div>
                         <div>
-                            <label class="block text-[11px] font-black uppercase text-black mb-1">Uang Diterima</label>
-                            <div class="flex rounded-lg overflow-hidden border-2 border-black bg-white shadow-[2px_2px_0px_0px_#000] focus-within:ring-2 focus-within:ring-black">
-                                <span class="inline-flex items-center px-2 bg-emerald-200 border-r-2 border-black text-[11px] font-black text-black select-none">
+                            <label class="block text-[11px] font-black uppercase text-slate-800 mb-1 tracking-wider">Uang Diterima</label>
+                            <div class="flex h-10 rounded-xl overflow-hidden border-[1.5px] border-slate-300 bg-white shadow-[1.5px_1.5px_0px_0px_#e2e8f0] focus-within:border-slate-800 focus-within:shadow-[2.5px_2.5px_0px_0px_#0f172a] transition-all">
+                                <span class="inline-flex items-center px-3 bg-emerald-200 border-r-[1.5px] border-slate-300 text-xs font-black text-slate-800 select-none">
                                     Rp
                                 </span>
                                 <input type="text" 
@@ -168,7 +179,7 @@
                                        oninput="formatCashReceived(this)" 
                                        placeholder="0" 
                                        autocomplete="off"
-                                       class="w-full px-2 py-1 text-xs font-bold text-black bg-transparent focus:outline-none">
+                                       class="w-full px-3 text-xs font-bold text-slate-900 bg-transparent focus:outline-none">
                             </div>
                         </div>
                     </div>
@@ -235,14 +246,17 @@ function addCustomItem() {
 
     const name = nameInput.value.trim();
     const qty = parseInt(qtyInput.value) || 1;
-    const price = parseFloat(priceInput.value) || 0;
+    const rawPrice = priceInput.value.replace(/\D/g, '');
+    const price = parseFloat(rawPrice) || 0;
 
     if (!name) {
         alert('Harap isi nama barang / jasa!');
+        nameInput.focus();
         return;
     }
-    if (price < 0) {
-        alert('Harga tidak valid!');
+    if (price <= 0) {
+        alert('Harap isi harga satuan yang valid!');
+        priceInput.focus();
         return;
     }
 
@@ -251,6 +265,7 @@ function addCustomItem() {
     nameInput.value = '';
     qtyInput.value = '1';
     priceInput.value = '';
+    nameInput.focus();
 }
 
 function updateQty(index, delta) {
@@ -331,7 +346,7 @@ function renderCart() {
     calculateChange();
 }
 
-function formatCashReceived(input) {
+function formatRupiahInput(input) {
     const raw = input.value.replace(/\D/g, '');
     if (!raw) {
         input.value = '';
@@ -339,6 +354,10 @@ function formatCashReceived(input) {
         const num = parseInt(raw, 10);
         input.value = num.toLocaleString('id-ID');
     }
+}
+
+function formatCashReceived(input) {
+    formatRupiahInput(input);
     calculateChange();
 }
 
@@ -370,6 +389,46 @@ function calculateChange() {
 
     document.getElementById('change-amount-text').innerText = 'Rp ' + change.toLocaleString('id-ID');
 }
+
+function attachRupiahBackspace(el) {
+    if (!el) return;
+    el.addEventListener('keydown', function(e) {
+        if (e.key === 'Backspace') {
+            const cursor = el.selectionStart;
+            if (cursor > 1 && el.value[cursor - 1] === '.') {
+                e.preventDefault();
+                const val = el.value;
+                const newVal = val.slice(0, cursor - 2) + val.slice(cursor - 1);
+                el.value = newVal;
+                el.setSelectionRange(cursor - 2, cursor - 2);
+                el.dispatchEvent(new Event('input'));
+            }
+        }
+    });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    const customPrice = document.getElementById('custom-price');
+    const cashReceived = document.getElementById('cash-received');
+    const customName = document.getElementById('custom-name');
+
+    attachRupiahBackspace(customPrice);
+    attachRupiahBackspace(cashReceived);
+
+    customName?.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            customPrice?.focus();
+        }
+    });
+
+    customPrice?.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            addCustomItem();
+        }
+    });
+});
 </script>
 @endpush
 @endsection

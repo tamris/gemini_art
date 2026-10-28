@@ -65,7 +65,7 @@
         <!-- Jobs Grid -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         @forelse($jobs as $job)
-        <div class="neo-box p-5 bg-white flex flex-col justify-between hover:translate-y-[-2px] transition-transform">
+        <div class="neo-box p-5 bg-white flex flex-col justify-between hover:translate-y-[-2px] transition-transform {{ $job->order->work_status === 'revision' ? 'ring-2 ring-rose-500 shadow-[4px_4px_0px_0px_#f43f5e]' : '' }}">
             <div>
                 <!-- Top Status Bar -->
                 <div class="flex items-center justify-between pb-3 border-b-[1.5px] border-slate-200 mb-3">
@@ -77,9 +77,16 @@
                             {{ $job->order->branch->code }}
                         </span>
                     </div>
-                    <span class="text-[10px] font-black uppercase px-2 py-0.5 rounded-full border-[1.5px] border-slate-800 shadow-[1px_1px_0px_0px_#0f172a] {{ $job->order->status_color_class }}">
-                        {{ $job->order->status_label }}
-                    </span>
+                    @if($job->order->work_status === 'revision')
+                        <span class="text-[10px] font-black uppercase px-2 py-0.5 rounded-full border-[1.5px] border-slate-900 bg-rose-400 text-slate-950 flex items-center gap-1 shadow-[1px_1px_0px_0px_#0f172a]">
+                            <x-icon name="alert-triangle" class="w-3 h-3 text-slate-950" />
+                            <span>Revisi (Ke-{{ $job->revision_count ?? 1 }})</span>
+                        </span>
+                    @else
+                        <span class="text-[10px] font-black uppercase px-2 py-0.5 rounded-full border-[1.5px] border-slate-800 shadow-[1px_1px_0px_0px_#0f172a] {{ $job->order->status_color_class }}">
+                            {{ $job->order->status_label }}
+                        </span>
+                    @endif
                 </div>
 
                 <!-- Title & Customer -->
@@ -104,6 +111,17 @@
                         <span class="font-bold text-slate-900">{{ $job->material_notes ?? '-' }}</span>
                     </div>
                 </div>
+
+                <!-- Revision Notes Snippet (Priority for Designer) -->
+                @if($job->revision_notes)
+                <div class="p-3 bg-rose-50 border-[1.5px] border-rose-300 rounded-xl text-xs mb-3 shadow-[1.5px_1.5px_0px_0px_#fecdd3]">
+                    <div class="flex items-center gap-1.5 font-black text-rose-900 mb-1 text-[10px] uppercase tracking-wide">
+                        <x-icon name="alert-circle" class="w-3.5 h-3.5 text-rose-600" />
+                        <span>Catatan Revisi Pelanggan (Prioritas):</span>
+                    </div>
+                    <p class="text-rose-950 font-bold leading-relaxed">{{ $job->revision_notes }}</p>
+                </div>
+                @endif
 
                 <!-- Brief Notes Snippet -->
                 @if($job->brief_notes)

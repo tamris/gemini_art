@@ -133,7 +133,8 @@ export function initNeoSelect() {
         // 2. Build Trigger Button
         const trigger = document.createElement('button');
         trigger.type = 'button';
-        trigger.className = 'neo-select-trigger w-full flex items-center justify-between gap-2 bg-white border-[1.5px] border-slate-300 rounded-xl px-3 py-2 text-xs font-bold text-slate-800 shadow-[1.5px_1.5px_0px_0px_#e2e8f0] hover:border-slate-800 focus:outline-none cursor-pointer text-left';
+        const heightClass = select.className.match(/\bh-\S+/)?.[0] || 'h-10';
+        trigger.className = `neo-select-trigger w-full ${heightClass} flex items-center justify-between gap-2 bg-white border-[1.5px] border-slate-300 rounded-xl px-3 text-xs font-bold text-slate-800 shadow-[1.5px_1.5px_0px_0px_#e2e8f0] hover:border-slate-800 focus:outline-none cursor-pointer text-left`;
         trigger.setAttribute('aria-haspopup', 'listbox');
         trigger.setAttribute('aria-expanded', 'false');
 

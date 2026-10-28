@@ -131,9 +131,67 @@
                 </select>
             </div>
 
-            <div>
+            <div class="relative" data-neo-datepicker-container data-mode="date">
                 <label class="block text-[11px] font-black uppercase text-slate-800 mb-1 tracking-wider">Tanggal</label>
-                <input type="date" name="date" value="{{ request('date') }}" class="neo-input text-xs py-2 font-bold cursor-pointer">
+                
+                <input type="hidden" name="date" value="{{ request('date') }}">
+
+                <!-- Trigger Input Button -->
+                <button type="button" 
+                        data-datepicker-toggle
+                        class="w-full flex items-center justify-between bg-white border-[1.5px] border-slate-300 rounded-xl px-3 py-2 text-xs font-bold text-slate-800 shadow-[1.5px_1.5px_0px_0px_#e2e8f0] hover:border-slate-800 focus:outline-none cursor-pointer text-left h-[38px] transition-all">
+                    <span data-datepicker-text class="truncate {{ request('date') ? 'text-slate-900 font-extrabold' : 'text-slate-400 font-medium' }}">
+                        {{ request('date') ? date('d/m/Y', strtotime(request('date'))) : 'Pilih Tanggal...' }}
+                    </span>
+                    <x-icon name="calendar" class="w-3.5 h-3.5 text-slate-500 shrink-0 stroke-[2.5]" />
+                </button>
+
+                <!-- Popover Container (Downwards, aligned left) -->
+                <div data-datepicker-popover class="hidden absolute top-[calc(100%+6px)] left-0 z-50 bg-white border-2 border-slate-900 rounded-2xl shadow-[4px_4px_0px_0px_#0f172a] overflow-hidden select-none w-[235px]">
+                    
+                    <!-- Month Header (h-10 / 40px) -->
+                    <div class="h-10 px-3 bg-amber-300 border-b-2 border-slate-900 flex items-center justify-between shrink-0">
+                        <button type="button" data-cal-prev class="w-6 h-6 rounded-md bg-white border-[1.5px] border-slate-900 shadow-[1px_1px_0px_0px_#0f172a] hover:bg-slate-50 flex items-center justify-center cursor-pointer active:translate-x-[0.5px] active:translate-y-[0.5px]">
+                            <x-icon name="chevron-left" class="w-3.5 h-3.5 text-slate-900 stroke-[2.5]" />
+                        </button>
+                        <div class="font-black text-xs text-slate-950 uppercase tracking-wider flex items-center gap-1.5">
+                            <span data-cal-month>Oktober</span>
+                            <span data-cal-year>2026</span>
+                        </div>
+                        <button type="button" data-cal-next class="w-6 h-6 rounded-md bg-white border-[1.5px] border-slate-900 shadow-[1px_1px_0px_0px_#0f172a] hover:bg-slate-50 flex items-center justify-center cursor-pointer active:translate-x-[0.5px] active:translate-y-[0.5px]">
+                            <x-icon name="chevron-right" class="w-3.5 h-3.5 text-slate-900 stroke-[2.5]" />
+                        </button>
+                    </div>
+
+                    <!-- Weekdays Row (h-6 / 24px) -->
+                    <div class="h-6 grid grid-cols-7 text-center items-center px-2 bg-slate-100 border-b border-slate-200 text-[10px] font-black uppercase text-slate-600 shrink-0">
+                        <span>Min</span>
+                        <span>Sen</span>
+                        <span>Sel</span>
+                        <span>Rab</span>
+                        <span>Kam</span>
+                        <span>Jum</span>
+                        <span>Sab</span>
+                    </div>
+
+                    <!-- Days Grid (h-[204px], tight 6 rows x 7 cols) -->
+                    <div class="h-[204px] p-2 bg-white shrink-0">
+                        <div data-cal-days class="grid grid-cols-7 gap-1">
+                            <!-- Dynamically generated day buttons -->
+                        </div>
+                    </div>
+
+                    <!-- Footer: Hapus & Hari Ini (h-10 / 40px) -->
+                    <div class="h-10 flex items-center justify-between px-3 border-t-2 border-slate-900 bg-slate-50 text-xs font-bold shrink-0">
+                        <button type="button" data-cal-reset class="text-xs font-black text-rose-600 hover:text-rose-800 hover:underline cursor-pointer">
+                            Hapus
+                        </button>
+                        <button type="button" data-cal-today class="text-xs font-black text-slate-800 hover:text-slate-950 hover:underline cursor-pointer">
+                            Hari ini
+                        </button>
+                    </div>
+
+                </div>
             </div>
 
             <div>

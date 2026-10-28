@@ -44,7 +44,12 @@ class WorkdeskController extends Controller
             $query->where('designer_id', $user->id);
         }
 
-        $jobs = $query->orderBy('deadline_at', 'asc')->paginate(12)->withQueryString();
+        $jobs = $query->join('orders', 'design_jobs.order_id', '=', 'orders.id')
+            ->select('design_jobs.*')
+            ->orderByRaw("CASE WHEN orders.work_status = 'revision' THEN 0 ELSE 1 END")
+            ->orderBy('design_jobs.deadline_at', 'asc')
+            ->paginate(12)
+            ->withQueryString();
         $branches = Branch::all();
 
         return view('workdesk.index', compact('jobs', 'branches'));

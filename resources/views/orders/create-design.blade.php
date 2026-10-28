@@ -43,15 +43,19 @@
                             </div>
                             <span>1. Data Pelanggan & Cabang Pelaksana</span>
                         </span>
-                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Wajib Diisi</span>
+                        <span class="text-[10px] font-black text-amber-950 bg-amber-100 border border-amber-300 px-2 py-0.5 rounded">
+                            Wajib Diisi
+                        </span>
                     </h2>
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         
                         @if(Auth::user()->isOwner())
                         <div>
-                            <label class="block text-xs font-black uppercase text-black mb-1">Pilih Cabang Pelaksana *</label>
-                            <select name="branch_id" required class="neo-select">
+                            <label class="block text-xs font-black uppercase text-slate-800 mb-1 tracking-wider">
+                                Cabang Pelaksana <span class="text-rose-500">*</span>
+                            </label>
+                            <select name="branch_id" required class="neo-select h-10">
                                 @foreach($branches as $b)
                                     <option value="{{ $b->id }}">{{ $b->code }} - {{ $b->name }}</option>
                                 @endforeach
@@ -59,34 +63,46 @@
                         </div>
                         @else
                         <div>
-                            <label class="block text-xs font-black uppercase text-black mb-1">Cabang Pelaksana</label>
-                            <input type="text" disabled value="{{ Auth::user()->branch->name ?? 'Cabang Saya' }}" class="neo-input text-xs bg-slate-100 cursor-not-allowed">
+                            <label class="block text-xs font-black uppercase text-slate-800 mb-1 tracking-wider">
+                                Cabang Pelaksana
+                            </label>
+                            <input type="text" disabled value="{{ Auth::user()->branch->name ?? 'Cabang Saya' }}" class="w-full h-10 neo-input text-xs bg-slate-100 cursor-not-allowed">
                         </div>
                         @endif
 
                         <div>
-                            <label class="block text-xs font-black uppercase text-black mb-1">Nama Customer / Instansi *</label>
+                            <label class="block text-xs font-black uppercase text-slate-800 mb-1 tracking-wider">
+                                Nama Customer / Instansi <span class="text-rose-500">*</span>
+                            </label>
                             <input type="text" 
                                    name="customer_name" 
                                    value="{{ old('customer_name') }}" 
                                    required 
-                                   placeholder="Contoh: Kopi Nusantara / Bpk. Hendra"
-                                   class="neo-input text-xs">
+                                   placeholder="Misal: Bpk. Hendra / Kopi Nusantara"
+                                   class="w-full h-10 neo-input text-xs">
                         </div>
 
                         <div>
-                            <label class="block text-xs font-black uppercase text-black mb-1">No. WhatsApp / Telepon Customer</label>
-                            <input type="text" 
+                            <label class="block text-xs font-black uppercase text-slate-800 mb-1 tracking-wider">
+                                No. WhatsApp / Telepon
+                            </label>
+                            <input type="tel" 
+                                   id="customer_phone"
                                    name="customer_phone" 
+                                   data-phone-mask
                                    value="{{ old('customer_phone') }}" 
-                                   placeholder="Contoh: 081234567890"
-                                   class="neo-input text-xs">
+                                   placeholder="0823-2323-2323"
+                                   maxlength="16"
+                                   autocomplete="tel"
+                                   class="w-full h-10 neo-input text-xs font-bold tracking-wider">
                         </div>
 
                         <div>
-                            <label class="block text-xs font-black uppercase text-black mb-1">Tugaskan ke Desainer (Opsional)</label>
-                            <select name="designer_id" class="neo-select">
-                                <option value="">-- Masuk Antrean Umum Cabang (Draft) --</option>
+                            <label class="block text-xs font-black uppercase text-slate-800 mb-1 tracking-wider">
+                                Tugaskan ke Desainer
+                            </label>
+                            <select name="designer_id" class="neo-select h-10">
+                                <option value="">Antrean Umum Cabang (Draft)</option>
                                 @foreach($designers as $d)
                                     <option value="{{ $d->id }}" {{ old('designer_id') == $d->id ? 'selected' : '' }}>
                                         {{ $d->name }} ({{ $d->branch ? $d->branch->code : 'Pusat' }})
@@ -107,59 +123,165 @@
                             </div>
                             <span>2. Spesifikasi Desain & Bahan Produksi</span>
                         </span>
-                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Detail Teknis</span>
+                        <span class="text-[10px] font-black text-blue-950 bg-blue-100 border border-blue-300 px-2 py-0.5 rounded">
+                            Detail Teknis
+                        </span>
                     </h2>
 
                     <div class="space-y-4">
                         
                         <div>
-                            <label class="block text-xs font-black uppercase text-black mb-1">Judul / Nama Desain *</label>
+                            <label class="block text-xs font-black uppercase text-slate-800 mb-1 tracking-wider">
+                                Judul / Nama Desain <span class="text-rose-500">*</span>
+                            </label>
                             <input type="text" 
                                    name="title" 
                                    value="{{ old('title') }}" 
                                    required 
-                                   placeholder="Contoh: Spanduk Warung Makan Soto Lamongan / Kartu Nama Eksekutif"
-                                   class="neo-input text-xs">
+                                   placeholder="Misal: Spanduk Warung, Kartu Nama, Brosur..."
+                                   class="w-full h-10 neo-input text-xs">
                         </div>
 
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
-                                <label class="block text-xs font-black uppercase text-black mb-1">Dimensi / Ukuran Jadi</label>
+                                <label class="block text-xs font-black uppercase text-slate-800 mb-1 tracking-wider">
+                                    Dimensi / Ukuran Jadi
+                                </label>
                                 <input type="text" 
                                        name="dimensions" 
                                        value="{{ old('dimensions') }}" 
-                                       placeholder="Contoh: 3 x 1 meter / A4 Lipat 3 / 9x5.5 cm"
-                                       class="neo-input text-xs">
+                                       placeholder="Misal: 3 x 1 meter, A4, 9x5.5 cm"
+                                       class="w-full h-10 neo-input text-xs">
                             </div>
 
                             <div>
-                                <label class="block text-xs font-black uppercase text-black mb-1">Bahan & Spesifikasi Finishing</label>
+                                <label class="block text-xs font-black uppercase text-slate-800 mb-1 tracking-wider">
+                                    Bahan & Finishing
+                                </label>
                                 <input type="text" 
                                        name="material_notes" 
                                        value="{{ old('material_notes') }}" 
-                                       placeholder="Contoh: Flexi Korea 380gr + Mata Ayam / Art Carton 260gr Doff"
-                                       class="neo-input text-xs">
+                                       placeholder="Misal: Flexi Korea 380gr, Art Carton 260gr"
+                                       class="w-full h-10 neo-input text-xs">
                             </div>
                         </div>
 
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <div>
-                                <label for="deadline_at" class="block text-xs font-black uppercase text-black mb-1">
-                                    Tenggat Waktu Selesai (Deadline)
+                            <div class="relative" data-neo-datepicker-container>
+                                <label class="block text-xs font-black uppercase text-slate-800 mb-1 tracking-wider">
+                                    Tenggat Waktu Selesai (Deadline) <span class="text-rose-500">*</span>
                                 </label>
-                                <input type="datetime-local" 
-                                       id="deadline_at"
+
+                                <input type="hidden" 
+                                       id="deadline_at_hidden"
                                        name="deadline_at" 
-                                       value="{{ old('deadline_at', date('Y-m-d\TH:i', strtotime('+1 day 17:00'))) }}" 
-                                       class="neo-input text-xs font-bold h-10 py-2">
+                                       value="{{ old('deadline_at', date('Y-m-d H:i', strtotime('+1 day 17:00'))) }}">
+
+                                <!-- Trigger Input Button -->
+                                <button type="button" 
+                                        data-datepicker-toggle
+                                        class="w-full flex items-center justify-between neo-input text-xs font-bold h-10 px-3 bg-white hover:border-slate-800 transition-all cursor-pointer shadow-[1.5px_1.5px_0px_0px_#e2e8f0] hover:shadow-[2px_2px_0px_0px_#0f172a] select-none text-left">
+                                    <span data-datepicker-text class="font-extrabold text-xs text-slate-900">
+                                        {{ date('d/m/Y H.i', strtotime('+1 day 17:00')) }}
+                                    </span>
+                                    <x-icon name="calendar" class="w-4 h-4 text-slate-700 stroke-[2.5]" />
+                                </button>
+
+                                <!-- Popover Positioned ABOVE the Input (Identical to Native Layout, in Soft Neo-Brutalism) -->
+                                <div data-datepicker-popover class="hidden absolute bottom-full mb-2 left-0 z-50 bg-white border-2 border-slate-900 rounded-2xl shadow-[4px_4px_0px_0px_#0f172a] overflow-hidden select-none flex flex-row w-[360px]">
+                                    
+                                    <!-- Left Pane: Calendar (235px) -->
+                                    <div class="w-[235px] flex flex-col bg-white shrink-0">
+                                        <!-- Month Header (h-10 / 40px) -->
+                                        <div class="h-10 px-3 bg-amber-300 border-b-2 border-slate-900 flex items-center justify-between shrink-0">
+                                            <button type="button" data-cal-prev class="w-6 h-6 rounded-md bg-white border-[1.5px] border-slate-900 shadow-[1px_1px_0px_0px_#0f172a] hover:bg-slate-50 flex items-center justify-center cursor-pointer active:translate-x-[0.5px] active:translate-y-[0.5px]">
+                                                <x-icon name="chevron-left" class="w-3.5 h-3.5 text-slate-900 stroke-[2.5]" />
+                                            </button>
+                                            <div class="font-black text-xs text-slate-950 uppercase tracking-wider flex items-center gap-1.5">
+                                                <span data-cal-month>Oktober</span>
+                                                <span data-cal-year>2026</span>
+                                            </div>
+                                            <button type="button" data-cal-next class="w-6 h-6 rounded-md bg-white border-[1.5px] border-slate-900 shadow-[1px_1px_0px_0px_#0f172a] hover:bg-slate-50 flex items-center justify-center cursor-pointer active:translate-x-[0.5px] active:translate-y-[0.5px]">
+                                                <x-icon name="chevron-right" class="w-3.5 h-3.5 text-slate-900 stroke-[2.5]" />
+                                            </button>
+                                        </div>
+
+                                        <!-- Weekdays Row (h-6 / 24px) -->
+                                        <div class="h-6 grid grid-cols-7 text-center items-center px-2 bg-slate-100 border-b border-slate-200 text-[10px] font-black uppercase text-slate-600 shrink-0">
+                                            <span>Min</span>
+                                            <span>Sen</span>
+                                            <span>Sel</span>
+                                            <span>Rab</span>
+                                            <span>Kam</span>
+                                            <span>Jum</span>
+                                            <span>Sab</span>
+                                        </div>
+
+                                        <!-- Days Grid (h-[204px], tight 6 rows x 7 cols) -->
+                                        <div class="h-[204px] p-2 bg-white shrink-0">
+                                            <div data-cal-days class="grid grid-cols-7 gap-1">
+                                                <!-- Dynamically generated day buttons -->
+                                            </div>
+                                        </div>
+
+                                        <!-- Left Pane Footer: Reset & Hari Ini (h-10 / 40px) -->
+                                        <div class="h-10 flex items-center justify-between px-3 border-t-2 border-slate-900 bg-slate-50 text-xs font-bold shrink-0">
+                                            <button type="button" data-cal-reset class="text-xs font-black text-rose-600 hover:text-rose-800 hover:underline cursor-pointer">
+                                                Reset
+                                            </button>
+                                            <button type="button" data-cal-today class="text-xs font-black text-slate-800 hover:text-slate-950 hover:underline cursor-pointer">
+                                                Hari ini
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <!-- Right Pane: Time Columns (125px) -->
+                                    <div class="w-[125px] border-l-2 border-slate-900 bg-white flex flex-col shrink-0">
+                                        <!-- Header Jam & Menit (h-10 / 40px) -->
+                                        <div class="h-10 px-2 bg-amber-300 border-b-2 border-slate-900 flex items-center justify-center shrink-0">
+                                            <div class="grid grid-cols-2 w-full text-center text-[10px] font-black uppercase text-slate-950 tracking-wider">
+                                                <span>Jam</span>
+                                                <span class="border-l border-slate-900/40">Menit</span>
+                                            </div>
+                                        </div>
+
+                                        <!-- Subheader Jam & Menit (h-6 / 24px) -->
+                                        <div class="h-6 bg-slate-100 border-b border-slate-200 flex items-center justify-center shrink-0">
+                                            <div class="grid grid-cols-2 w-full text-center text-[9px] font-black text-slate-500 uppercase">
+                                                <span>08-23</span>
+                                                <span class="border-l border-slate-200">00-55</span>
+                                            </div>
+                                        </div>
+
+                                        <!-- Two Vertical Scroll Columns (h-[204px]) -->
+                                        <div class="h-[204px] flex bg-white shrink-0">
+                                            <!-- Hours column -->
+                                            <div data-cal-hours class="w-1/2 h-full overflow-y-auto neo-time-scroll p-1 flex flex-col items-center space-y-0.5">
+                                                <!-- Hours 08..23 -->
+                                            </div>
+                                            <!-- Minutes column -->
+                                            <div data-cal-minutes class="w-1/2 h-full overflow-y-auto neo-time-scroll p-1 border-l border-slate-200 flex flex-col items-center space-y-0.5">
+                                                <!-- Minutes 00..55 -->
+                                            </div>
+                                        </div>
+
+                                        <!-- Footer: Selesai Button (h-10 / 40px) -->
+                                        <div class="h-10 p-1.5 border-t-2 border-slate-900 bg-slate-50 flex items-center justify-center shrink-0">
+                                            <button type="button" data-cal-apply class="w-full h-7 neo-btn bg-emerald-400 hover:bg-emerald-300 text-xs font-black text-slate-950 shadow-[1px_1px_0px_0px_#0f172a] rounded-lg cursor-pointer">
+                                                Terapkan
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                </div>
                             </div>
 
                             <div>
                                 <div class="flex items-center justify-between mb-1">
-                                    <label for="brief_file" class="block text-xs font-black uppercase text-black cursor-pointer">
-                                        File Acuan / Referensi Customer
+                                    <label for="brief_file" class="block text-xs font-black uppercase text-slate-800 tracking-wider cursor-pointer">
+                                        File Acuan / Sketsa
                                     </label>
-                                    <span class="text-[10px] font-bold text-slate-500">Opsional (Sketsa/Logo)</span>
+                                    <span class="text-[10px] font-bold text-slate-400">Opsional (Sketsa/Logo)</span>
                                 </div>
                                 <div class="relative">
                                     <input type="file" 
@@ -172,7 +294,7 @@
                                         <div class="flex items-center gap-2 min-w-0 flex-1">
                                             <x-icon name="file" class="w-3.5 h-3.5 text-slate-400 shrink-0" />
                                             <span id="brief_file_name" class="text-xs text-slate-400 font-medium truncate pr-1">
-                                                Pilih file acuan customer...
+                                                Pilih file sketsa/logo...
                                             </span>
                                         </div>
                                         <div class="flex items-center gap-1.5 shrink-0">
@@ -194,10 +316,12 @@
                         </div>
 
                         <div>
-                            <label class="block text-xs font-black uppercase text-black mb-1">Catatan Brief Lengkap Dari Customer</label>
+                            <label class="block text-xs font-black uppercase text-slate-800 mb-1 tracking-wider">
+                                Catatan Brief Desain
+                            </label>
                             <textarea name="brief_notes" 
                                       rows="3" 
-                                      placeholder="Tuliskan warna dominan, teks utama, kontak yang dicantumkan, logo, atau referensi gaya desain yang diinginkan customer..."
+                                      placeholder="Tuliskan warna dominan, teks utama, kontak yang dicantumkan, logo, atau referensi gaya desain..."
                                       class="neo-input text-xs">{{ old('brief_notes') }}</textarea>
                         </div>
 
@@ -226,8 +350,8 @@
                     <div class="space-y-4">
                         <!-- Total Biaya Order -->
                         <div>
-                            <label for="total_amount_display" class="block text-xs font-black uppercase text-black mb-1">
-                                Total Biaya Order *
+                            <label for="total_amount_display" class="block text-xs font-black uppercase text-slate-800 mb-1 tracking-wider">
+                                Total Biaya Order <span class="text-rose-500">*</span>
                             </label>
                             <div class="flex rounded-xl overflow-hidden border-[1.5px] border-slate-300 bg-white shadow-[1.5px_1.5px_0px_0px_#e2e8f0] focus-within:border-slate-800 focus-within:shadow-[2.5px_2.5px_0px_0px_#0f172a] transition-all">
                                 <span class="inline-flex items-center px-3.5 bg-amber-200 border-r-[1.5px] border-slate-300 text-xs font-black text-slate-800 select-none">
@@ -246,14 +370,14 @@
                                    id="total_amount" 
                                    name="total_amount" 
                                    value="{{ old('total_amount', '') }}">
-                            <span class="text-[10px] text-slate-500 font-semibold mt-1 block">Otomatis terformat rupiah (contoh: 250.000).</span>
+                            <span class="text-[10px] text-slate-400 font-semibold mt-1 block">Otomatis terformat rupiah (misal: 250.000).</span>
                         </div>
 
                         <!-- Nominal Dibayar di Awal -->
                         <div>
                             <div class="flex items-center justify-between mb-1">
-                                <label for="paid_amount_display" class="block text-xs font-black uppercase text-black">
-                                    Nominal Dibayar di Awal *
+                                <label for="paid_amount_display" class="block text-xs font-black uppercase text-slate-800 tracking-wider">
+                                    Nominal Dibayar di Awal <span class="text-rose-500">*</span>
                                 </label>
                                 <span class="text-[10px] font-bold text-slate-500">Min. DP / Lunas</span>
                             </div>
@@ -264,7 +388,7 @@
                                 <input type="text" 
                                        id="paid_amount_display" 
                                        inputmode="numeric"
-                                       value="{{ (old('paid_amount') !== null && old('paid_amount') !== '' && old('paid_amount') > 0) ? number_format((float) old('paid_amount'), 0, ',', '.') : '' }}" 
+                                       value="{{ (old('paid_amount') !== null && old('paid_amount') !== '') ? number_format((float) old('paid_amount'), 0, ',', '.') : '0' }}" 
                                        placeholder="0"
                                        required 
                                        autocomplete="off"
@@ -297,17 +421,14 @@
                                         class="px-2.5 py-1 text-[10px] font-bold bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 hover:border-slate-700 rounded shadow-[1px_1px_0px_0px_#e2e8f0] transition-all active:translate-y-0.5 cursor-pointer">
                                     DP 100rb
                                 </button>
-                                <button type="button" 
-                                        onclick="setPaidPreset(0)" 
-                                        class="px-2.5 py-1 text-[10px] font-bold bg-slate-100 hover:bg-slate-200 text-slate-600 border border-slate-300 hover:border-slate-700 rounded shadow-[1px_1px_0px_0px_#e2e8f0] transition-all active:translate-y-0.5 cursor-pointer">
-                                    Rp 0 (Belum Bayar)
-                                </button>
                             </div>
                         </div>
 
                         <div>
-                            <label class="block text-xs font-black uppercase text-black mb-1">Metode Pembayaran *</label>
-                            <select name="payment_method" required class="neo-select">
+                            <label class="block text-xs font-black uppercase text-slate-800 mb-1 tracking-wider">
+                                Metode Pembayaran <span class="text-rose-500">*</span>
+                            </label>
+                            <select name="payment_method" required class="neo-select h-10">
                                 <option value="cash">Tunai (Cash Laci)</option>
                                 <option value="qris">QRIS Statis/Dinamis</option>
                                 <option value="transfer">Transfer Bank Cabang</option>
@@ -402,6 +523,20 @@ function setupRupiahMask(displayId, hiddenId) {
         }
 
         calculateRemaining();
+    });
+
+    displayEl.addEventListener('focus', function() {
+        if (displayEl.value === '0') {
+            displayEl.select();
+        }
+    });
+
+    displayEl.addEventListener('blur', function() {
+        if (displayEl.value === '' && hiddenId === 'paid_amount') {
+            displayEl.value = '0';
+            hiddenEl.value = '0';
+            calculateRemaining();
+        }
     });
 }
 

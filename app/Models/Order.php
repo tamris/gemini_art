@@ -23,6 +23,9 @@ class Order extends Model
         'paid_amount',
         'payment_status',
         'work_status',
+        'cancellation_reason',
+        'cancellation_type',
+        'completed_at',
     ];
 
     protected function casts(): array
@@ -30,7 +33,23 @@ class Order extends Model
         return [
             'total_amount' => 'decimal:2',
             'paid_amount' => 'decimal:2',
+            'completed_at' => 'datetime',
         ];
+    }
+
+    public function isCompleted(): bool
+    {
+        return $this->work_status === 'completed';
+    }
+
+    public function isCanceled(): bool
+    {
+        return $this->work_status === 'canceled';
+    }
+
+    public function isLocked(): bool
+    {
+        return in_array($this->work_status, ['completed', 'canceled']);
     }
 
     public function branch(): BelongsTo

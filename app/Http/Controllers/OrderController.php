@@ -41,10 +41,14 @@ class OrderController extends Controller
         }
         if ($request->filled('search')) {
             $search = $request->search;
-            $query->where(function ($q) use ($search) {
+            $rawPhone = preg_replace('/\D/', '', $search);
+            $query->where(function ($q) use ($search, $rawPhone) {
                 $q->where('order_number', 'like', "%{$search}%")
                     ->orWhere('customer_name', 'like', "%{$search}%")
                     ->orWhere('customer_phone', 'like', "%{$search}%");
+                if (strlen($rawPhone) >= 4) {
+                    $q->orWhereRaw("REPLACE(REPLACE(customer_phone, '-', ''), ' ', '') LIKE ?", ["%{$rawPhone}%"]);
+                }
             });
         }
 
@@ -238,6 +242,7 @@ class OrderController extends Controller
             $order->paid_amount += $remaining;
             $order->payment_status = 'paid';
             $order->work_status = 'completed'; // Delivered & settled
+            $order->completed_at = now();
             $order->save();
 
             CashMovement::create([
@@ -262,10 +267,123 @@ class OrderController extends Controller
             abort(403, 'Akses ditolak.');
         }
 
+        // State Guard: If order is locked (completed or canceled)
+        if ($order->isLocked()) {
+            if (!$user->isOwner()) {
+                return back()->with('error', "Status tiket sudah {$order->status_label} dan dikunci. Hanya Owner yang berwenang membuka kembali tiket ini.");
+            }
+
+            if ($request->work_status === 'reopen') {
+                $request->validate([
+                    'reopen_reason' => 'required|string|max:1000',
+                    'target_status' => 'required|in:in_progress,revision',
+                ], [
+                    'reopen_reason.required' => 'Alasan membuka kembali tiket wajib diisi.',
+                ]);
+
+                $order->work_status = $request->target_status;
+                if ($order->isCompleted()) {
+                    $order->completed_at = null;
+                }
+                $order->save();
+
+                return back()->with('success', "Tiket {$order->order_number} berhasil dibuka kembali oleh Owner ke status {$order->status_label}.");
+            }
+
+            return back()->with('error', "Status tiket sudah dikunci.");
+        }
+
         $request->validate([
             'work_status' => 'required|in:draft,in_progress,revision,ready_to_print,completed,canceled',
         ]);
 
+        // Guard: Cannot mark as completed if still unpaid
+        if ($request->work_status === 'completed') {
+            if ($order->remaining_amount > 0) {
+                return back()->with('error', "Pesanan belum dapat ditandai Selesai / Diambil Customer karena masih memiliki sisa tagihan sebesar Rp " . number_format($order->remaining_amount, 0, ',', '.') . ". Harap selesaikan pelunasan pembayaran terlebih dahulu di kartu Status Pembayaran!");
+            }
+
+            $order->work_status = 'completed';
+            $order->completed_at = now();
+            $order->save();
+
+            return back()->with('success', "Status order diperbarui menjadi Selesai & Diambil Customer. Tiket telah dikunci.");
+        }
+
+        // Handling: Revision status requires notes & increments revision count
+        if ($request->work_status === 'revision') {
+            $request->validate([
+                'revision_notes' => 'required|string|max:1000',
+            ], [
+                'revision_notes.required' => 'Catatan revisi dari pelanggan wajib diisi agar desainer mengetahui bagian yang perlu diperbaiki.',
+            ]);
+
+            if ($order->designJob) {
+                $order->designJob->revision_notes = $request->revision_notes;
+                $order->designJob->increment('revision_count');
+                $order->designJob->save();
+            }
+
+            $order->work_status = 'revision';
+            $order->save();
+
+            $revCount = $order->designJob ? $order->designJob->revision_count : 1;
+            return back()->with('success', "Status tiket diperbarui menjadi Revisi (ke-{$revCount}). Tiket otomatis diprioritaskan di antrean desainer!");
+        }
+
+        // Handling: Cancellation with refund or forfeit
+        if ($request->work_status === 'canceled') {
+            $request->validate([
+                'cancellation_reason' => 'required|string|max:1000',
+            ], [
+                'cancellation_reason.required' => 'Alasan pembatalan pesanan wajib diisi.',
+            ]);
+
+            if ($order->paid_amount > 0) {
+                $request->validate([
+                    'cancellation_type' => 'required|in:refund,forfeit',
+                    'refund_method' => 'nullable|in:cash,qris,transfer',
+                ], [
+                    'cancellation_type.required' => 'Pilih perlakuan uang muka (DP): apakah di-refund ke pelanggan atau hangus.',
+                ]);
+
+                if ($request->cancellation_type === 'refund') {
+                    $refundAmount = (float) $order->paid_amount;
+
+                    DB::transaction(function () use ($order, $user, $request, $refundAmount) {
+                        CashMovement::create([
+                            'branch_id' => $order->branch_id,
+                            'order_id' => $order->id,
+                            'user_id' => $user->id,
+                            'type' => 'out',
+                            'amount' => $refundAmount,
+                            'payment_method' => $request->refund_method ?? 'cash',
+                            'category' => 'order_refund',
+                            'notes' => "Refund DP pembatalan order {$order->order_number}: " . $request->cancellation_reason,
+                        ]);
+
+                        $order->cancellation_type = 'refund';
+                        $order->cancellation_reason = $request->cancellation_reason;
+                        $order->work_status = 'canceled';
+                        $order->save();
+                    });
+
+                    return back()->with('success', "Pesanan {$order->order_number} berhasil dibatalkan. Pengeluaran kas refund sebesar Rp " . number_format($refundAmount, 0, ',', '.') . " telah dicatat di Buku Kas Laci.");
+                }
+
+                $order->cancellation_type = 'forfeit';
+            } else {
+                $order->cancellation_type = 'none';
+            }
+
+            $order->cancellation_reason = $request->cancellation_reason;
+            $order->work_status = 'canceled';
+            $order->save();
+
+            return back()->with('success', "Pesanan {$order->order_number} berhasil dibatalkan.");
+        }
+
+        // Regular transition (draft, in_progress, ready_to_print)
         $order->work_status = $request->work_status;
         $order->save();
 

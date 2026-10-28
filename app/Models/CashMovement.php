@@ -51,6 +51,7 @@ class CashMovement extends Model
             'retail_pos' => 'Kasir Ritel / POS',
             'petty_cash_expense' => 'Pengeluaran Operasional',
             'initial_balance' => 'Modal Kas Awal',
+            'order_refund' => 'Pengembalian Dana (Refund DP)',
             default => $this->category,
         };
     }
@@ -63,6 +64,7 @@ class CashMovement extends Model
             'retail_pos' => 'bg-cyan-300 text-black',
             'petty_cash_expense' => 'bg-rose-400 text-black',
             'initial_balance' => 'bg-purple-300 text-black',
+            'order_refund' => 'bg-rose-500 text-white',
             default => 'bg-slate-200 text-black',
         };
     }

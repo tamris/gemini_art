@@ -260,10 +260,6 @@
                 </a>
             </div>
 
-            <p class="text-xs text-slate-500 font-medium mb-3">
-                File otomatis tersimpan di cloud storage sesuai SOP tanpa rekap manual email.
-            </p>
-
             <div class="space-y-3">
                 @forelse($recentAssets as $ast)
                 <div class="p-3 bg-slate-50 border-2 border-black rounded-xl flex items-center justify-between gap-3 shadow-[2px_2px_0px_0px_#000]">
