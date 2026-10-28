@@ -9,7 +9,13 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PosController;
 use App\Http\Controllers\WorkdeskController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\VendorShareController;
 use Illuminate\Support\Facades\Route;
+
+// Public Vendor Share & Download Portal (No login needed for print vendor)
+Route::get('/share/{token}', [VendorShareController::class, 'show'])->name('vendor.share');
+Route::get('/share/{token}/download', [VendorShareController::class, 'download'])->name('vendor.share.download');
+Route::get('/share/{token}/preview', [VendorShareController::class, 'preview'])->name('vendor.share.preview');
 
 // Guest Routes
 Route::get('/', function () {
@@ -51,6 +57,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/archive', [ArchiveController::class, 'index'])->name('archive.index');
     Route::get('/archive/{asset}/download', [ArchiveController::class, 'download'])->name('archive.download');
     Route::get('/archive/{asset}/preview', [ArchiveController::class, 'preview'])->name('archive.preview');
+    Route::post('/vendor/dispatch/{asset}/email', [VendorShareController::class, 'sendEmail'])->name('vendor.dispatch.email');
+    Route::get('/vendor/dispatch/{asset}/preview-email', [VendorShareController::class, 'previewEmail'])->name('vendor.dispatch.preview-email');
 
     // Multi-branch settings (Owner only)
     Route::get('/branches', [BranchController::class, 'index'])->name('branches.index');

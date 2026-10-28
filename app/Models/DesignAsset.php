@@ -18,8 +18,33 @@ class DesignAsset extends Model
         'file_path',
         'disk',
         'file_name',
+        'share_token',
         'file_size',
     ];
+
+    protected static function booted(): void
+    {
+        static::creating(function (DesignAsset $asset) {
+            if (empty($asset->share_token)) {
+                $asset->share_token = \Illuminate\Support\Str::random(32);
+            }
+        });
+    }
+
+    public function ensureShareToken(): string
+    {
+        if (empty($this->share_token)) {
+            $this->share_token = \Illuminate\Support\Str::random(32);
+            $this->save();
+        }
+        return $this->share_token;
+    }
+
+    public function getShareUrlAttribute(): string
+    {
+        $token = $this->ensureShareToken();
+        return route('vendor.share', $token);
+    }
 
     protected function casts(): array
     {

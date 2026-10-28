@@ -400,6 +400,9 @@
         </div>
     </dialog>
 
+    <!-- Global Vendor Dispatch Modal -->
+    <x-vendor-dispatch-modal />
+
     <!-- Global File Preview Modal (Soft Neo-Brutalism Lightbox) -->
     <dialog id="file-preview-modal" closedby="any" class="p-0 bg-transparent max-w-4xl w-full m-auto border-none outline-none overflow-visible">
         <div class="neo-box p-5 bg-white w-full mx-auto shadow-[6px_6px_0px_0px_#0f172a] rounded-2xl border-2 border-slate-900 overflow-hidden flex flex-col max-h-[90vh]">

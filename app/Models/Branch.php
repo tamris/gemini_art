@@ -38,4 +38,9 @@ class Branch extends Model
         $out = $this->cashMovements()->where('type', 'out')->sum('amount');
         return (float) ($in - $out);
     }
+
+    public function getCleanNameAttribute(): string
+    {
+        return preg_replace('/^Gemini\s+Art\s*[-–•:]\s*/i', '', $this->name ?? '') ?: ($this->name ?? 'Pusat');
+    }
 }

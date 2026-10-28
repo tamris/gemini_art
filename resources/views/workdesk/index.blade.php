@@ -6,17 +6,17 @@
 <div class="space-y-6">
 
     <!-- Header Section -->
-    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b-[1.5px] border-slate-800">
         <div>
             <h1 class="text-2xl font-black text-slate-900 tracking-tight">Workdesk Antrean Desainer</h1>
-            <!-- <p class="text-xs font-semibold text-slate-500 mt-0.5">
+            <p class="text-xs font-semibold text-slate-500 mt-1">
                 Pengerjaan aset desain, penyesuaian spesifikasi cetak, dan upload file final siap produksi.
-            </p> -->
+            </p>
         </div>
         <div class="flex items-center gap-2">
-            <a href="{{ route('archive.index') }}" class="neo-btn bg-yellow-200 hover:bg-yellow-300 text-xs py-2 px-3.5 text-black flex items-center gap-2 font-black">
+            <a href="{{ route('archive.index') }}" class="neo-btn bg-amber-200 hover:bg-amber-300 text-xs py-2 px-3.5 text-slate-900 flex items-center gap-2 font-black shadow-[2px_2px_0px_0px_#0f172a]">
                 <x-icon name="archive" class="w-4 h-4" />
-                <span>Arsip Cloud</span>
+                <span>Arsip Desain</span>
             </a>
         </div>
     </div>
@@ -68,26 +68,26 @@
         <div class="neo-box p-5 bg-white flex flex-col justify-between hover:translate-y-[-2px] transition-transform">
             <div>
                 <!-- Top Status Bar -->
-                <div class="flex items-center justify-between pb-3 border-b-2 border-black mb-3">
+                <div class="flex items-center justify-between pb-3 border-b-[1.5px] border-slate-200 mb-3">
                     <div class="flex items-center gap-1.5">
-                        <span class="font-mono text-xs font-bold bg-slate-100 border border-black px-1.5 py-0.5 rounded">
+                        <span class="font-mono text-xs font-bold bg-slate-100 border-[1.5px] border-slate-800 px-2 py-0.5 rounded-lg shadow-[1px_1px_0px_0px_#0f172a]">
                             {{ $job->order->order_number }}
                         </span>
-                        <span class="text-[10px] font-black px-1.5 py-0.2 rounded border border-black bg-slate-200">
+                        <span class="text-[10px] font-black px-1.5 py-0.5 rounded-md border-[1.5px] border-slate-800 bg-slate-200">
                             {{ $job->order->branch->code }}
                         </span>
                     </div>
-                    <span class="text-[10px] font-black uppercase px-2 py-0.5 rounded-full border border-black {{ $job->order->status_color_class }}">
+                    <span class="text-[10px] font-black uppercase px-2 py-0.5 rounded-full border-[1.5px] border-slate-800 shadow-[1px_1px_0px_0px_#0f172a] {{ $job->order->status_color_class }}">
                         {{ $job->order->status_label }}
                     </span>
                 </div>
 
                 <!-- Title & Customer -->
-                <h3 class="font-black text-base text-black mb-1 leading-snug">
+                <h3 class="font-black text-base text-slate-900 mb-1 leading-snug">
                     {{ $job->title }}
                 </h3>
-                <div class="text-xs font-bold text-slate-600 mb-3">
-                    Customer: <span class="text-black">{{ $job->order->customer_name }}</span>
+                <div class="text-xs font-semibold text-slate-600 mb-3">
+                    Customer: <span class="font-bold text-slate-900">{{ $job->order->customer_name }}</span>
                     @if($job->order->customer_phone)
                         &bull; {{ $job->order->customer_phone }}
                     @endif
@@ -95,34 +95,34 @@
 
                 <!-- Specs Grid -->
                 <div class="grid grid-cols-2 gap-2 mb-3 text-xs">
-                    <div class="p-2 bg-slate-50 border-2 border-black rounded-lg">
-                        <span class="text-[10px] font-black uppercase text-slate-500 block">Dimensi</span>
-                        <span class="font-bold text-black">{{ $job->dimensions ?? '-' }}</span>
+                    <div class="p-2.5 bg-slate-50 border-[1.5px] border-slate-200 rounded-xl">
+                        <span class="text-[10px] font-black uppercase text-slate-500 block mb-0.5">Dimensi</span>
+                        <span class="font-extrabold text-slate-900 font-mono">{{ $job->dimensions ?? '-' }}</span>
                     </div>
-                    <div class="p-2 bg-slate-50 border-2 border-black rounded-lg">
-                        <span class="text-[10px] font-black uppercase text-slate-500 block">Bahan</span>
-                        <span class="font-bold text-black">{{ $job->material_notes ?? '-' }}</span>
+                    <div class="p-2.5 bg-slate-50 border-[1.5px] border-slate-200 rounded-xl">
+                        <span class="text-[10px] font-black uppercase text-slate-500 block mb-0.5">Bahan</span>
+                        <span class="font-bold text-slate-900">{{ $job->material_notes ?? '-' }}</span>
                     </div>
                 </div>
 
                 <!-- Brief Notes Snippet -->
                 @if($job->brief_notes)
-                <div class="p-2.5 bg-amber-50 border-2 border-black rounded-lg text-xs mb-3">
-                    <span class="font-black text-amber-900 block mb-0.5 text-[10px] uppercase">Brief Catatan:</span>
-                    <p class="text-slate-800 line-clamp-3 font-medium">{{ $job->brief_notes }}</p>
+                <div class="p-3 bg-amber-50 border-[1.5px] border-amber-300 rounded-xl text-xs mb-3">
+                    <span class="font-black text-amber-900 block mb-0.5 text-[10px] uppercase tracking-wide">Brief Catatan:</span>
+                    <p class="text-amber-950 line-clamp-3 font-medium leading-relaxed">{{ $job->brief_notes }}</p>
                 </div>
                 @endif
 
                 <!-- Uploaded Assets Badge -->
-                <div class="mb-3 text-xs flex items-center justify-between">
+                <div class="mb-3 text-xs flex items-center justify-between px-1">
                     <span class="text-slate-500 font-medium">File Terunggah:</span>
-                    <span class="font-bold text-black bg-slate-100 border border-black px-2 py-0.5 rounded">
+                    <span class="font-bold text-slate-900 bg-slate-100 border border-slate-300 px-2 py-0.5 rounded-lg">
                         {{ $job->assets->count() }} File
                     </span>
                 </div>
 
                 <!-- Deadline & Assigned Designer -->
-                <div class="p-2.5 bg-slate-50 border-2 border-black rounded-lg text-xs space-y-1 mb-4">
+                <div class="p-2.5 bg-slate-50 border-[1.5px] border-slate-200 rounded-xl text-xs space-y-1 mb-4">
                     <div class="flex justify-between">
                         <span class="text-slate-500 font-medium">Deadline:</span>
                         <span class="font-black {{ $job->deadline_at && $job->deadline_at->isPast() ? 'text-rose-600' : 'text-slate-900' }}">
@@ -139,11 +139,11 @@
             </div>
 
             <!-- Actions Bar -->
-            <div class="pt-3 border-t-2 border-black space-y-2">
+            <div class="pt-3 border-t-[1.5px] border-slate-200 space-y-2">
                 @if(!$job->designer_id || $job->designer_id !== Auth::id())
                 <form method="POST" action="{{ route('workdesk.claim', $job->id) }}">
                     @csrf
-                    <button type="submit" class="w-full neo-btn bg-sky-200 hover:bg-sky-300 text-xs py-2 font-black text-black flex items-center justify-center gap-2 cursor-pointer">
+                    <button type="submit" class="w-full neo-btn bg-sky-200 hover:bg-sky-300 text-xs py-2 font-black text-slate-900 flex items-center justify-center gap-2 cursor-pointer shadow-[1.5px_1.5px_0px_0px_#0f172a]">
                         <x-icon name="user" class="w-3.5 h-3.5" />
                         <span>Ambil Alih Tiket Ini</span>
                     </button>
@@ -152,22 +152,22 @@
 
                 <button type="button" 
                         onclick="openUploadDialog('{{ $job->id }}', '{{ $job->order->order_number }}', '{{ addslashes($job->title) }}')"
-                        class="w-full neo-btn bg-emerald-400 hover:bg-emerald-300 text-xs py-2 font-black text-black flex items-center justify-center gap-2 cursor-pointer">
-                    <x-icon name="upload-cloud" class="w-4 h-4" />
+                        class="w-full neo-btn bg-emerald-400 hover:bg-emerald-300 text-xs py-2 font-black text-slate-950 flex items-center justify-center gap-2 cursor-pointer shadow-[2px_2px_0px_0px_#0f172a]">
+                    <x-icon name="upload" class="w-4 h-4" />
                     <span>Upload File Cetak Final</span>
                 </button>
 
-                <a href="{{ route('orders.show', $job->order->id) }}" class="block text-center text-xs font-bold text-slate-600 hover:underline py-1">
-                    Detail Tiket & File Brief →
+                <a href="{{ route('orders.show', $job->order->id) }}" class="block text-center text-xs font-bold text-slate-600 hover:text-slate-900 hover:underline py-1 transition-colors">
+                    Detail Tiket & File Brief &rarr;
                 </a>
             </div>
         </div>
         @empty
         <div class="col-span-full p-12 text-center neo-box bg-white">
-            <div class="w-12 h-12 bg-emerald-100 border-2 border-black rounded-xl flex items-center justify-center mx-auto mb-3 shadow-[2px_2px_0px_0px_#000]">
-                <x-icon name="check-circle-2" class="w-6 h-6 text-emerald-700" stroke-width="2.5" />
+            <div class="w-12 h-12 bg-emerald-100 border-[1.5px] border-slate-900 rounded-xl flex items-center justify-center mx-auto mb-3 shadow-[2px_2px_0px_0px_#0f172a]">
+                <x-icon name="check-circle" class="w-6 h-6 text-emerald-700" stroke-width="2.5" />
             </div>
-            <h3 class="font-black text-lg text-black mb-1">Tidak Ada Antrean Desain</h3>
+            <h3 class="font-black text-lg text-slate-900 mb-1">Tidak Ada Antrean Desain</h3>
             <p class="text-xs font-medium text-slate-500">
                 Semua tiket pengerjaan selesai atau tidak sesuai filter.
             </p>
@@ -185,17 +185,17 @@
 <!-- Upload Dialog Modal -->
 <dialog id="upload-dialog" closedby="any" class="p-0 bg-transparent max-w-md w-full m-auto border-none outline-none overflow-visible">
     <div class="neo-box p-6 bg-white w-full mx-auto shadow-[4px_4px_0px_0px_#0f172a] rounded-2xl border-2 border-slate-900 overflow-visible">
-        <div class="flex items-center justify-between pb-3 border-b-2 border-black mb-4">
-            <h3 class="font-black text-base text-black">Upload File Cetak Final</h3>
+        <div class="flex items-center justify-between pb-3 border-b-[1.5px] border-slate-800 mb-4">
+            <h3 class="font-black text-base text-slate-900">Upload File Cetak Final</h3>
             <form method="dialog">
-                <button class="w-8 h-8 rounded-lg border-2 border-black bg-rose-200 hover:bg-rose-300 font-black text-base flex items-center justify-center cursor-pointer">
+                <button class="w-8 h-8 rounded-lg border-[1.5px] border-slate-800 bg-rose-200 hover:bg-rose-300 font-black text-sm flex items-center justify-center cursor-pointer shadow-[1px_1px_0px_0px_#0f172a]">
                     <x-icon name="x" class="w-4 h-4" />
                 </button>
             </form>
         </div>
 
-        <div class="mb-4 p-3 bg-slate-50 border-2 border-black rounded-xl text-xs">
-            <div class="font-mono font-bold text-black" id="modal-order-number">-</div>
+        <div class="mb-4 p-3 bg-slate-50 border-[1.5px] border-slate-800 rounded-xl text-xs shadow-[1.5px_1.5px_0px_0px_#0f172a]">
+            <div class="font-mono font-bold text-slate-900" id="modal-order-number">-</div>
             <div class="font-bold text-slate-700 mt-0.5" id="modal-job-title">-</div>
         </div>
 
@@ -206,7 +206,7 @@
 
             <div class="upload-fields-container space-y-4">
                 <div>
-                    <label class="block text-xs font-black uppercase text-black mb-1">Tipe File</label>
+                    <label class="block text-xs font-black uppercase text-slate-900 mb-1">Tipe File</label>
                     <select name="file_type" required class="neo-select">
                         <option value="final_print" selected>File Cetak Siap Produksi (Otomatis Ubah Status ke Siap Cetak)</option>
                         <option value="preview_proof">Preview Proofing ke Pelanggan</option>
@@ -215,19 +215,19 @@
                 </div>
 
                 <div>
-                    <label class="block text-xs font-black uppercase text-black mb-1">Pilih File (PDF, TIFF, JPG, CDR, PSD, ZIP)</label>
-                    <input type="file" name="file" required class="neo-input text-xs file:mr-2 file:py-1 file:px-2.5 file:rounded file:border file:border-black file:bg-amber-300 file:text-xs file:font-black">
+                    <label class="block text-xs font-black uppercase text-slate-900 mb-1">Pilih File (PDF, TIFF, JPG, CDR, PSD, ZIP)</label>
+                    <input type="file" name="file" required class="neo-input text-xs file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-[1.5px] file:border-slate-800 file:bg-amber-300 file:text-xs file:font-black">
                     <p class="text-[11px] text-slate-500 font-medium mt-1">
                         Aset otomatis tersimpan aman di cloud storage.
                     </p>
                 </div>
 
-                <div class="pt-3 border-t-2 border-black flex justify-end gap-2">
+                <div class="pt-3 border-t-[1.5px] border-slate-800 flex justify-end gap-2">
                     <button type="button" onclick="document.getElementById('upload-dialog').close()" class="neo-btn bg-slate-200 text-xs py-2 px-4 cursor-pointer">
                         Batal
                     </button>
-                    <button type="submit" class="neo-btn bg-emerald-400 hover:bg-emerald-300 text-xs py-2 px-4 font-black flex items-center gap-2 cursor-pointer">
-                        <x-icon name="upload-cloud" class="w-3.5 h-3.5" />
+                    <button type="submit" class="neo-btn bg-emerald-400 hover:bg-emerald-300 text-xs py-2 px-4 font-black flex items-center gap-2 cursor-pointer shadow-[2px_2px_0px_0px_#0f172a]">
+                        <x-icon name="upload" class="w-3.5 h-3.5" />
                         <span>Unggah & Sinkronkan</span>
                     </button>
                 </div>
