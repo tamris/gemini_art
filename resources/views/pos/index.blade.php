@@ -33,7 +33,7 @@
         <div class="lg:col-span-7 space-y-6">
             
             <!-- Quick Presets Grid -->
-            <div class="neo-box p-6 bg-white space-y-4">
+            <div class="neo-box p-4 sm:p-6 bg-white space-y-4">
                 <div class="flex items-center justify-between pb-3 border-b-2 border-black">
                     <h2 class="font-black text-base text-black flex items-center gap-2.5">
                         <div class="w-7 h-7 bg-amber-300 border-2 border-black rounded-lg flex items-center justify-center text-black shadow-[1px_1px_0px_0px_#000]">
@@ -64,7 +64,7 @@
             </div>
 
             <!-- Custom Item Input Card -->
-            <div class="neo-box p-6 bg-white space-y-3">
+            <div class="neo-box p-4 sm:p-6 bg-white space-y-3">
                 <h2 class="font-black text-base text-black pb-2 border-b-2 border-black flex items-center gap-2.5">
                     <div class="w-7 h-7 bg-blue-300 border-2 border-black rounded-lg flex items-center justify-center text-black shadow-[1px_1px_0px_0px_#000]">
                         <x-icon name="plus" class="w-4 h-4" stroke-width="2.5" />
@@ -110,7 +110,7 @@
 
         <!-- Right Column: Interactive Cart & Checkout (5 cols) -->
         <div class="lg:col-span-5">
-            <div class="neo-box p-6 bg-white space-y-4 sticky top-24">
+            <div class="neo-box p-4 sm:p-6 bg-white space-y-4 lg:sticky lg:top-24">
                 
                 <div class="flex items-center justify-between pb-3 border-b-2 border-black">
                     <h2 class="font-black text-base text-black flex items-center gap-2.5">

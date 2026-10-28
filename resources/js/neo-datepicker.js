@@ -310,10 +310,21 @@ export function initNeoDatePicker() {
             if (!isDateOnly) {
                 renderTimeColumns();
             }
+
+            // Viewport boundary guard for small mobile screens (prevent edge clipping)
+            requestAnimationFrame(() => {
+                const rect = popover.getBoundingClientRect();
+                if (rect.right > window.innerWidth - 8) {
+                    const diff = rect.right - (window.innerWidth - 8);
+                    const currentLeft = parseFloat(getComputedStyle(popover).left) || 0;
+                    popover.style.left = `${currentLeft - diff}px`;
+                }
+            });
         }
 
         function closePopover() {
             popover.classList.add('hidden');
+            popover.style.left = '';
             container.style.zIndex = '';
         }
 

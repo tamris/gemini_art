@@ -21,7 +21,7 @@
         </div>
         <button type="button" 
                 onclick="document.getElementById('add-expense-modal').showModal()"
-                class="neo-btn bg-rose-300 hover:bg-rose-400 text-xs py-2 px-4 font-black text-black flex items-center gap-1.5 cursor-pointer">
+                class="neo-btn bg-rose-300 hover:bg-rose-400 text-xs py-2 px-4 font-black text-black flex items-center justify-center gap-1.5 cursor-pointer w-full sm:w-auto">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M20 12H4"/>
             </svg>
@@ -30,52 +30,52 @@
     </div>
 
     <!-- 3 Summary Metrics Cards -->
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
         
         <!-- Saldo Kas Aktif Laci -->
-        <div class="p-5 bg-amber-100 border-2 border-black rounded-xl shadow-[4px_4px_0px_0px_#000]">
-            <div class="text-xs font-black uppercase text-slate-700 mb-1 flex items-center justify-between">
-                <span>Saldo Kas Aktif (Fisik Laci)</span>
+        <div class="p-3.5 sm:p-5 bg-amber-100 border-[1.5px] sm:border-2 border-black rounded-xl shadow-[2px_2px_0px_0px_#000] sm:shadow-[4px_4px_0px_0px_#000]">
+            <div class="text-[11px] sm:text-xs font-black uppercase text-slate-700 mb-0.5 sm:mb-1 flex items-center justify-between">
+                <span>Saldo Kas Aktif (Laci)</span>
                 <svg class="w-4 h-4 text-slate-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/>
                 </svg>
             </div>
-            <div class="text-2xl font-black text-black tracking-tight">
+            <div class="text-xl sm:text-2xl font-black text-black tracking-tight">
                 Rp {{ number_format($currentBalance, 0, ',', '.') }}
             </div>
-            <div class="mt-2 text-[11px] font-bold text-slate-700">
+            <div class="mt-1 sm:mt-2 text-[10px] sm:text-[11px] font-bold text-slate-700">
                 {{ $selectedBranch ? $selectedBranch->name : 'Gabungan Seluruh Cabang' }}
             </div>
         </div>
 
         <!-- Total Kas Masuk -->
-        <div class="p-5 bg-emerald-100 border-2 border-black rounded-xl shadow-[4px_4px_0px_0px_#000]">
-            <div class="text-xs font-black uppercase text-slate-700 mb-1 flex items-center justify-between">
+        <div class="p-3.5 sm:p-5 bg-emerald-100 border-[1.5px] sm:border-2 border-black rounded-xl shadow-[2px_2px_0px_0px_#000] sm:shadow-[4px_4px_0px_0px_#000]">
+            <div class="text-[11px] sm:text-xs font-black uppercase text-slate-700 mb-0.5 sm:mb-1 flex items-center justify-between">
                 <span>Total Kas Masuk</span>
                 <svg class="w-4 h-4 text-emerald-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/>
                 </svg>
             </div>
-            <div class="text-2xl font-black text-emerald-800 tracking-tight">
+            <div class="text-xl sm:text-2xl font-black text-emerald-800 tracking-tight">
                 + Rp {{ number_format($totalIn, 0, ',', '.') }}
             </div>
-            <div class="mt-2 text-[11px] font-bold text-emerald-800">
+            <div class="mt-1 sm:mt-2 text-[10px] sm:text-[11px] font-bold text-emerald-800 hidden sm:block">
                 DP Desain, Pelunasan & Kasir POS
             </div>
         </div>
 
         <!-- Total Kas Keluar -->
-        <div class="p-5 bg-rose-100 border-2 border-black rounded-xl shadow-[4px_4px_0px_0px_#000]">
-            <div class="text-xs font-black uppercase text-slate-700 mb-1 flex items-center justify-between">
+        <div class="p-3.5 sm:p-5 bg-rose-100 border-[1.5px] sm:border-2 border-black rounded-xl shadow-[2px_2px_0px_0px_#000] sm:shadow-[4px_4px_0px_0px_#000]">
+            <div class="text-[11px] sm:text-xs font-black uppercase text-slate-700 mb-0.5 sm:mb-1 flex items-center justify-between">
                 <span>Total Kas Keluar</span>
                 <svg class="w-4 h-4 text-rose-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M20 12H4"/>
                 </svg>
             </div>
-            <div class="text-2xl font-black text-rose-800 tracking-tight">
+            <div class="text-xl sm:text-2xl font-black text-rose-800 tracking-tight">
                 - Rp {{ number_format($totalOut, 0, ',', '.') }}
             </div>
-            <div class="mt-2 text-[11px] font-bold text-rose-800">
+            <div class="mt-1 sm:mt-2 text-[10px] sm:text-[11px] font-bold text-rose-800 hidden sm:block">
                 Petty cash, belanja toko & operasional
             </div>
         </div>
@@ -206,83 +206,133 @@
 
     <!-- Filter Results Container (Live Smooth Replacement) -->
     <div id="filter-results-container">
-        <!-- Movements Table -->
-        <div class="neo-box bg-white overflow-hidden">
+        <!-- 1. Desktop & Tablet Table View (hidden on mobile) -->
+        <div class="hidden sm:block neo-box bg-white overflow-hidden">
             <div class="overflow-x-auto">
-                <table class="w-full text-left text-xs">
+                <table class="w-full text-left text-xs min-w-[680px]">
                     <thead>
                         <tr class="bg-slate-50 border-b border-slate-200 text-slate-800 font-black uppercase tracking-wider">
-                        <th class="py-3 px-4">Waktu</th>
-                        <th class="py-3 px-4">Cabang</th>
-                        <th class="py-3 px-4">Kategori & Keterangan</th>
-                        <th class="py-3 px-4">No. Order Terkait</th>
-                        <th class="py-3 px-4">Metode</th>
-                        <th class="py-3 px-4">Petugas</th>
-                        <th class="py-3 px-4 text-right">Nominal</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-black/20">
-                    @forelse($movements as $m)
-                    <tr class="hover:bg-amber-50/40 transition-colors">
-                        <td class="py-3.5 px-4 font-mono whitespace-nowrap">
-                            {{ $m->created_at->format('d/m/Y H:i') }}
-                        </td>
+                            <th class="py-3 px-4">Waktu</th>
+                            <th class="py-3 px-4">Cabang</th>
+                            <th class="py-3 px-4">Kategori & Keterangan</th>
+                            <th class="py-3 px-4">No. Order Terkait</th>
+                            <th class="py-3 px-4">Metode</th>
+                            <th class="py-3 px-4">Petugas</th>
+                            <th class="py-3 px-4 text-right">Nominal</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-black/20">
+                        @forelse($movements as $m)
+                        <tr class="hover:bg-amber-50/40 transition-colors">
+                            <td class="py-3.5 px-4 font-mono whitespace-nowrap">
+                                {{ $m->created_at->format('d/m/Y H:i') }}
+                            </td>
 
-                        <td class="py-3.5 px-4 whitespace-nowrap">
-                            <span class="px-2 py-0.5 rounded border border-black bg-slate-100 font-bold text-[10px]">
-                                {{ $m->branch->code }}
-                            </span>
-                        </td>
-
-                        <td class="py-3.5 px-4">
-                            <div class="flex items-center gap-2 mb-1">
-                                <span class="px-2 py-0.2 rounded border border-black text-[10px] font-black uppercase {{ $m->category_badge_class }}">
-                                    {{ $m->category_label }}
+                            <td class="py-3.5 px-4 whitespace-nowrap">
+                                <span class="px-2 py-0.5 rounded border border-black bg-slate-100 font-bold text-[10px]">
+                                    {{ $m->branch->code }}
                                 </span>
-                            </div>
-                            <div class="font-semibold text-slate-800 text-xs">
-                                {{ $m->notes ?? '-' }}
-                            </div>
-                        </td>
+                            </td>
 
-                        <td class="py-3.5 px-4 font-mono font-bold whitespace-nowrap">
-                            @if($m->order)
-                                <a href="{{ route('orders.show', $m->order_id) }}" class="underline hover:text-blue-700">
-                                    {{ $m->order->order_number }}
-                                </a>
-                            @else
-                                <span class="text-slate-400">-</span>
-                            @endif
-                        </td>
+                            <td class="py-3.5 px-4">
+                                <div class="flex items-center gap-2 mb-1">
+                                    <span class="px-2 py-0.2 rounded border border-black text-[10px] font-black uppercase {{ $m->category_badge_class }}">
+                                        {{ $m->category_label }}
+                                    </span>
+                                </div>
+                                <div class="font-semibold text-slate-800 text-xs">
+                                    {{ $m->notes ?? '-' }}
+                                </div>
+                            </td>
 
-                        <td class="py-3.5 px-4 whitespace-nowrap font-bold uppercase text-[11px]">
-                            {{ $m->payment_method }}
-                        </td>
+                            <td class="py-3.5 px-4 font-mono font-bold whitespace-nowrap">
+                                @if($m->order)
+                                    <a href="{{ route('orders.show', $m->order_id) }}" class="underline hover:text-blue-700">
+                                        {{ $m->order->order_number }}
+                                    </a>
+                                @else
+                                    <span class="text-slate-400">-</span>
+                                @endif
+                            </td>
 
-                        <td class="py-3.5 px-4 whitespace-nowrap font-semibold text-slate-600">
-                            {{ $m->user->name }}
-                        </td>
+                            <td class="py-3.5 px-4 whitespace-nowrap font-bold uppercase text-[11px]">
+                                {{ $m->payment_method }}
+                            </td>
 
-                        <td class="py-3.5 px-4 text-right whitespace-nowrap">
-                            <span class="font-black text-sm {{ $m->type === 'in' ? 'text-emerald-700' : 'text-rose-700' }}">
-                                {{ $m->type === 'in' ? '+' : '-' }} Rp {{ number_format($m->amount, 0, ',', '.') }}
-                            </span>
-                        </td>
-                    </tr>
-                    @empty
-                    <tr>
-                        <td colspan="7" class="py-12 text-center text-slate-400 font-semibold">
-                            Belum ada riwayat mutasi kas yang sesuai.
-                        </td>
-                    </tr>
-                    @endforelse
-                </tbody>
-            </table>
+                            <td class="py-3.5 px-4 whitespace-nowrap font-semibold text-slate-600">
+                                {{ $m->user->name }}
+                            </td>
+
+                            <td class="py-3.5 px-4 text-right whitespace-nowrap">
+                                <span class="font-black text-sm {{ $m->type === 'in' ? 'text-emerald-700' : 'text-rose-700' }}">
+                                    {{ $m->type === 'in' ? '+' : '-' }} Rp {{ number_format($m->amount, 0, ',', '.') }}
+                                </span>
+                            </td>
+                        </tr>
+                        @empty
+                        <tr>
+                            <td colspan="7" class="py-12 text-center text-slate-400 font-semibold">
+                                Belum ada riwayat mutasi kas yang sesuai.
+                            </td>
+                        </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 2. Mobile Native Card Feed View (visible only on mobile) -->
+        <div class="sm:hidden space-y-2.5">
+            @forelse($movements as $m)
+            <div class="p-3.5 bg-white border-[1.5px] border-slate-900 rounded-xl shadow-[2px_2px_0px_0px_#0f172a] space-y-2">
+                <!-- Top Row: Cabang + Kategori + Waktu -->
+                <div class="flex items-center justify-between gap-2">
+                    <div class="flex items-center gap-1.5 min-w-0">
+                        <span class="px-1.5 py-0.5 rounded border border-black bg-slate-100 font-bold text-[10px] shrink-0">
+                            {{ $m->branch->code }}
+                        </span>
+                        <span class="px-2 py-0.5 rounded border border-black text-[10px] font-black uppercase truncate {{ $m->category_badge_class }}">
+                            {{ $m->category_label }}
+                        </span>
+                    </div>
+                    <span class="text-[11px] font-mono font-bold text-slate-500 shrink-0">
+                        {{ $m->created_at->format('d/m H:i') }}
+                    </span>
+                </div>
+
+                <!-- Middle Row: Notes & Order -->
+                <div class="text-xs font-semibold text-slate-800 leading-snug">
+                    {{ $m->notes ?? '-' }}
+                    @if($m->order)
+                    <div class="mt-1 text-[11px] font-mono text-blue-700 font-bold">
+                        <a href="{{ route('orders.show', $m->order_id) }}" class="underline hover:text-blue-900">
+                            {{ $m->order->order_number }}
+                        </a>
+                    </div>
+                    @endif
+                </div>
+
+                <!-- Bottom Row: Metode + Nominal -->
+                <div class="flex items-center justify-between pt-1.5 border-t border-slate-100">
+                    <span class="text-[10px] font-bold uppercase text-slate-600 bg-slate-100 px-2 py-0.5 rounded border border-slate-300">
+                        {{ $m->payment_method }}
+                    </span>
+                    <span class="font-black text-sm {{ $m->type === 'in' ? 'text-emerald-700' : 'text-rose-700' }}">
+                        {{ $m->type === 'in' ? '+' : '-' }} Rp {{ number_format($m->amount, 0, ',', '.') }}
+                    </span>
+                </div>
+            </div>
+            @empty
+            <div class="p-8 text-center text-slate-400 font-semibold text-xs bg-white border-[1.5px] border-dashed border-slate-300 rounded-xl">
+                Belum ada riwayat mutasi kas yang sesuai.
+            </div>
+            @endforelse
         </div>
 
         <!-- Pagination & Counter Footer -->
-        {{ $movements->links() }}
-    </div>
+        <div class="mt-4">
+            {{ $movements->links() }}
+        </div>
     </div>
 
 </div>

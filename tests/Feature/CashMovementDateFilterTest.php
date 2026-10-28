@@ -39,8 +39,9 @@ class CashMovementDateFilterTest extends TestCase
             'payment_method' => 'cash',
             'amount' => 75000,
             'notes' => 'Pelunasan hari ini',
-            'created_at' => '2026-10-28 10:00:00',
         ]);
+        $movementToday->created_at = '2026-10-28 10:00:00';
+        $movementToday->save();
 
         $movementYesterday = CashMovement::create([
             'branch_id' => $branch->id,

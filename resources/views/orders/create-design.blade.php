@@ -19,7 +19,7 @@
                 Data spesifikasi pengerjaan, deadline, dan komitmen DP/Lunas yang otomatis tercatat ke buku kas cabang.
             </p> -->
         </div>
-        <a href="{{ route('orders.index') }}" class="neo-btn bg-slate-200 hover:bg-slate-300 text-xs py-2 px-3.5 flex items-center gap-1.5 self-start sm:self-center">
+        <a href="{{ route('orders.index') }}" class="neo-btn bg-slate-200 hover:bg-slate-300 text-xs py-2 px-3.5 flex items-center justify-center gap-1.5 w-full sm:w-auto">
             <x-icon name="arrow-left" class="w-3.5 h-3.5" stroke-width="2.5" />
             <span>Kembali ke Daftar Order</span>
         </a>
@@ -35,7 +35,7 @@
             <div class="lg:col-span-8 space-y-6">
 
                 <!-- Card 1: Data Pelanggan & Cabang Pelaksana -->
-                <div class="neo-box p-5 bg-white space-y-4">
+                <div class="neo-box p-4 sm:p-5 bg-white space-y-4">
                     <h2 class="text-sm font-black text-slate-800 pb-3 border-b border-slate-200 flex items-center justify-between">
                         <span class="flex items-center gap-2">
                             <div class="w-7 h-7 bg-amber-200 border-[1.5px] border-slate-800 rounded-lg flex items-center justify-center text-slate-900 shadow-[1px_1px_0px_0px_#0f172a]">
@@ -115,7 +115,7 @@
                 </div>
 
                 <!-- Card 2: Spesifikasi Pengerjaan & Brief Desain -->
-                <div class="neo-box p-5 bg-white space-y-4">
+                <div class="neo-box p-4 sm:p-5 bg-white space-y-4">
                     <h2 class="text-sm font-black text-slate-800 pb-3 border-b border-slate-200 flex items-center justify-between">
                         <span class="flex items-center gap-2">
                             <div class="w-7 h-7 bg-blue-200 border-[1.5px] border-slate-800 rounded-lg flex items-center justify-center text-slate-900 shadow-[1px_1px_0px_0px_#0f172a]">
@@ -334,7 +334,7 @@
             <div class="lg:col-span-4 space-y-6 lg:sticky lg:top-24">
 
                 <!-- Card 3: Biaya & Pembayaran Awal -->
-                <div class="neo-box p-5 bg-amber-50/60 space-y-4">
+                <div class="neo-box p-4 sm:p-5 bg-amber-50/60 space-y-4">
                     <div class="flex items-center justify-between pb-3 border-b border-amber-200/80">
                         <h2 class="text-sm font-black text-slate-800 flex items-center gap-2">
                             <div class="w-7 h-7 bg-emerald-200 border-[1.5px] border-slate-800 rounded-lg flex items-center justify-center text-slate-900 shadow-[1px_1px_0px_0px_#0f172a]">

@@ -13,14 +13,14 @@
                 Semua pesanan desain kustom dan transaksi kasir ritel cepat di cabang.
             </p> -->
         </div>
-        <div class="flex items-center gap-3">
-            <a href="{{ route('orders.create-design') }}" class="neo-btn bg-sky-400 hover:bg-sky-300 text-xs py-2 px-3.5 text-black font-black flex items-center gap-2">
+        <div class="grid grid-cols-2 sm:flex items-center gap-2 sm:gap-3 w-full sm:w-auto">
+            <a href="{{ route('orders.create-design') }}" class="neo-btn bg-sky-400 hover:bg-sky-300 text-xs py-2 px-3 text-black font-black flex items-center justify-center gap-1.5">
                 <x-icon name="plus" class="w-4 h-4" stroke-width="2.5" />
-                <span>Order Desain Baru</span>
+                <span>Order Baru</span>
             </a>
-            <a href="{{ route('pos.index') }}" class="neo-btn bg-amber-300 hover:bg-amber-400 text-xs py-2 px-3.5 text-black font-black flex items-center gap-2">
+            <a href="{{ route('pos.index') }}" class="neo-btn bg-amber-300 hover:bg-amber-400 text-xs py-2 px-3 text-black font-black flex items-center justify-center gap-1.5">
                 <x-icon name="shopping-cart" class="w-4 h-4" />
-                <span>Kasir POS Ritel</span>
+                <span>Kasir POS</span>
             </a>
         </div>
     </div>
@@ -99,10 +99,10 @@
 
     <!-- Filter Results Container (Live Smooth Replacement) -->
     <div id="filter-results-container">
-        <!-- Orders Table (Soft Neo-Brutalism) -->
-        <div class="neo-box bg-white overflow-hidden">
+        <!-- 1. Desktop & Tablet Orders Table (hidden on mobile) -->
+        <div class="hidden sm:block neo-box bg-white overflow-hidden">
             <div class="overflow-x-auto">
-                <table class="w-full text-left text-xs">
+                <table class="w-full text-left text-xs min-w-[720px]">
                     <thead>
                         <tr class="bg-slate-50 border-b border-slate-200 text-slate-800 font-black uppercase tracking-wider">
                         <th class="py-3 px-4">No. Order</th>
@@ -211,10 +211,81 @@
                 </tbody>
             </table>
         </div>
+    </div>
+
+        <!-- 2. Mobile Native Order Cards (visible only on mobile) -->
+        <div class="sm:hidden space-y-3">
+            @forelse($orders as $order)
+            <div class="p-3.5 bg-white border-[1.5px] border-slate-900 rounded-xl shadow-[2px_2px_0px_0px_#0f172a] space-y-2.5">
+                <!-- Top Row: Cabang + No Order + Tanggal -->
+                <div class="flex items-center justify-between gap-2">
+                    <div class="flex items-center gap-1.5 min-w-0">
+                        <span class="px-1.5 py-0.5 rounded border border-black bg-slate-100 font-bold text-[10px] shrink-0">
+                            {{ $order->branch->code }}
+                        </span>
+                        <a href="{{ route('orders.show', $order->id) }}" class="font-mono font-bold text-xs underline text-black hover:text-blue-700 truncate">
+                            {{ $order->order_number }}
+                        </a>
+                    </div>
+                    <span class="text-[11px] text-slate-500 font-medium shrink-0">
+                        {{ $order->created_at->format('d/m/Y') }}
+                    </span>
+                </div>
+
+                <!-- Customer & Items -->
+                <div class="bg-slate-50/80 p-2.5 rounded-lg border border-slate-200 text-xs">
+                    <div class="font-bold text-slate-900">{{ $order->customer_name }}</div>
+                    <div class="text-[11px] text-slate-600 mt-0.5 leading-snug">
+                        {{ $order->order_type === 'design_printing' ? ($order->designJob->title ?? 'Desain Kustom') : 'Transaksi Kasir POS Ritel' }}
+                    </div>
+                </div>
+
+                <!-- Status Badges & Total -->
+                <div class="flex items-center justify-between pt-1 border-t border-slate-100">
+                    <div class="flex items-center gap-1.5">
+                        <span class="px-2 py-0.5 rounded-full border border-black text-[9px] font-black {{ $order->status_color_class }}">
+                            {{ $order->status_label }}
+                        </span>
+                        <span class="px-2 py-0.5 rounded-full border border-black text-[9px] font-black {{ $order->payment_status_color_class }}">
+                            {{ $order->payment_status_label }}
+                        </span>
+                    </div>
+                    <div class="text-right">
+                        <div class="font-black text-sm text-black">
+                            Rp {{ number_format($order->total_amount, 0, ',', '.') }}
+                        </div>
+                        @if($order->remaining_amount > 0)
+                            <div class="text-[10px] font-bold text-rose-600">
+                                Sisa: Rp {{ number_format($order->remaining_amount, 0, ',', '.') }}
+                            </div>
+                        @endif
+                    </div>
+                </div>
+
+                <!-- Action Buttons: Detail & Struk -->
+                <div class="grid grid-cols-2 gap-2 pt-1">
+                    <a href="{{ route('orders.show', $order->id) }}" 
+                       class="py-1.5 text-center rounded-lg border-[1.5px] border-black bg-white hover:bg-slate-100 font-bold text-xs shadow-[1px_1px_0px_0px_#000]">
+                        Lihat Detail
+                    </a>
+                    <a href="{{ route('orders.receipt', $order->id) }}" 
+                       target="_blank"
+                       class="py-1.5 text-center rounded-lg border-[1.5px] border-black bg-amber-100 hover:bg-amber-200 font-bold text-xs shadow-[1px_1px_0px_0px_#000]">
+                        Cetak Struk
+                    </a>
+                </div>
+            </div>
+            @empty
+            <div class="p-8 text-center text-slate-400 font-semibold text-xs bg-white border-[1.5px] border-dashed border-slate-300 rounded-xl">
+                Tidak ditemukan order yang sesuai dengan kriteria filter.
+            </div>
+            @endforelse
+        </div>
 
         <!-- Pagination & Counter Footer -->
-        {{ $orders->links() }}
-    </div>
+        <div class="mt-4">
+            {{ $orders->links() }}
+        </div>
     </div>
 
 </div>

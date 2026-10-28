@@ -6,23 +6,20 @@
 <div class="space-y-8">
     
     <!-- Top Welcome & Global Status Header -->
-    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 p-5 bg-purple-100 border-2 border-black rounded-xl shadow-[3px_3px_0px_0px_#000]">
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-3.5 p-4 sm:p-5 bg-purple-100 border-2 border-black rounded-xl shadow-[3px_3px_0px_0px_#000]">
         <div>
             <div class="flex items-center gap-2 mb-1">
                 <span class="w-2.5 h-2.5 rounded-full bg-purple-600 animate-pulse"></span>
                 <span class="text-[11px] font-black uppercase tracking-wider text-purple-900">Owner Command Center</span>
             </div>
             <h1 class="text-xl md:text-2xl font-black text-black">Monitor Omset & Operasional Multi-Cabang</h1>
-            <!-- <p class="text-xs font-semibold text-slate-700 mt-0.5">
-                Data real-time gabungan seluruh cabang dan sinkronisasi arsip desain terpusat.
-            </p> -->
         </div>
-        <div class="flex items-center gap-2 shrink-0">
-            <a href="{{ route('orders.create-design') }}" class="neo-btn bg-amber-300 hover:bg-amber-400 text-xs py-2 px-3.5 text-black flex items-center gap-1.5">
+        <div class="grid grid-cols-2 sm:flex items-center gap-2 w-full sm:w-auto shrink-0">
+            <a href="{{ route('orders.create-design') }}" class="neo-btn bg-amber-300 hover:bg-amber-400 text-xs py-2 px-3 text-black flex items-center justify-center gap-1.5">
                 <x-icon name="plus" class="w-3.5 h-3.5" stroke-width="2.5" />
                 <span>Order Desain</span>
             </a>
-            <a href="{{ route('cash.index') }}" class="neo-btn bg-white hover:bg-slate-100 text-xs py-2 px-3.5 text-black flex items-center gap-1.5">
+            <a href="{{ route('cash.index') }}" class="neo-btn bg-white hover:bg-slate-100 text-xs py-2 px-3 text-black flex items-center justify-center gap-1.5">
                 <x-icon name="wallet" class="w-3.5 h-3.5" />
                 <span>Audit Buku Kas</span>
             </a>
@@ -30,85 +27,85 @@
     </div>
 
     <!-- 5 Global Metric Stat Cards (Neo-Brutalism Grid) -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3.5">
+    <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-5 gap-2.5 sm:gap-3.5">
         
-        <!-- Omset Hari Ini -->
-        <div class="p-4 bg-white border-2 border-black rounded-xl shadow-[3px_3px_0px_0px_#000] flex flex-col justify-between">
+        <!-- Omset Hari Ini (Full-width 2-col on mobile, single on desktop) -->
+        <div class="col-span-2 sm:col-span-1 p-3.5 sm:p-4 bg-white border-[1.5px] sm:border-2 border-black rounded-xl shadow-[2px_2px_0px_0px_#000] sm:shadow-[3px_3px_0px_0px_#000] flex flex-col justify-between">
             <div>
                 <div class="text-[11px] font-black uppercase text-slate-500 mb-1 flex items-center justify-between">
                     <span>Omset Hari Ini (Gabungan)</span>
                     <x-icon name="trending-up" class="w-4 h-4 text-emerald-600" />
                 </div>
-                <div class="text-xl font-black text-black tracking-tight">
+                <div class="text-xl sm:text-2xl font-black text-black tracking-tight">
                     Rp {{ number_format($totalTurnoverToday, 0, ',', '.') }}
                 </div>
             </div>
-            <div class="mt-3 pt-2 border-t border-slate-200 text-[10px] font-bold text-emerald-700 flex items-center gap-1">
+            <div class="mt-2.5 pt-2 border-t border-slate-200 text-[10px] font-bold text-emerald-700 hidden sm:flex items-center gap-1">
                 <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
                 <span>Real-time gabungan cabang</span>
             </div>
         </div>
 
         <!-- Omset Bulan Ini -->
-        <div class="p-4 bg-white border-2 border-black rounded-xl shadow-[3px_3px_0px_0px_#000] flex flex-col justify-between">
+        <div class="p-3 sm:p-4 bg-white border-[1.5px] sm:border-2 border-black rounded-xl shadow-[2px_2px_0px_0px_#000] sm:shadow-[3px_3px_0px_0px_#000] flex flex-col justify-between">
             <div>
-                <div class="text-[11px] font-black uppercase text-slate-500 mb-1 flex items-center justify-between">
+                <div class="text-[10px] sm:text-[11px] font-black uppercase text-slate-500 mb-1 flex items-center justify-between">
                     <span>Omset Bulan Ini</span>
-                    <x-icon name="calendar" class="w-4 h-4 text-blue-600" />
+                    <x-icon name="calendar" class="w-3.5 sm:w-4 h-3.5 sm:h-4 text-blue-600" />
                 </div>
-                <div class="text-xl font-black text-black tracking-tight">
+                <div class="text-base sm:text-xl font-black text-black tracking-tight">
                     Rp {{ number_format($totalTurnoverMonth, 0, ',', '.') }}
                 </div>
             </div>
-            <div class="mt-3 pt-2 border-t border-slate-200 text-[10px] font-bold text-slate-600">
+            <div class="mt-2.5 pt-2 border-t border-slate-200 text-[10px] font-bold text-slate-600 hidden sm:block">
                 Periode {{ \Carbon\Carbon::now('Asia/Jakarta')->locale('id')->isoFormat('MMMM Y') }}
             </div>
         </div>
 
         <!-- Total Kas Aktif -->
-        <div class="p-4 bg-amber-50 border-2 border-black rounded-xl shadow-[3px_3px_0px_0px_#000] flex flex-col justify-between">
+        <div class="p-3 sm:p-4 bg-amber-50 border-[1.5px] sm:border-2 border-black rounded-xl shadow-[2px_2px_0px_0px_#000] sm:shadow-[3px_3px_0px_0px_#000] flex flex-col justify-between">
             <div>
-                <div class="text-[11px] font-black uppercase text-slate-700 mb-1 flex items-center justify-between">
+                <div class="text-[10px] sm:text-[11px] font-black uppercase text-slate-700 mb-1 flex items-center justify-between">
                     <span>Saldo Kas Aktif</span>
-                    <x-icon name="wallet" class="w-4 h-4 text-slate-900" />
+                    <x-icon name="wallet" class="w-3.5 sm:w-4 h-3.5 sm:h-4 text-slate-900" />
                 </div>
-                <div class="text-xl font-black text-black tracking-tight">
+                <div class="text-base sm:text-xl font-black text-black tracking-tight">
                     Rp {{ number_format($totalCashBalance, 0, ',', '.') }}
                 </div>
             </div>
-            <div class="mt-3 pt-2 border-t border-amber-200 text-[10px] font-bold text-slate-700">
+            <div class="mt-2.5 pt-2 border-t border-amber-200 text-[10px] font-bold text-slate-700 hidden sm:block">
                 Total fisik laci kasir
             </div>
         </div>
 
         <!-- Order Desain Aktif -->
-        <div class="p-4 bg-sky-50 border-2 border-black rounded-xl shadow-[3px_3px_0px_0px_#000] flex flex-col justify-between">
+        <div class="p-3 sm:p-4 bg-sky-50 border-[1.5px] sm:border-2 border-black rounded-xl shadow-[2px_2px_0px_0px_#000] sm:shadow-[3px_3px_0px_0px_#000] flex flex-col justify-between">
             <div>
-                <div class="text-[11px] font-black uppercase text-slate-700 mb-1 flex items-center justify-between">
+                <div class="text-[10px] sm:text-[11px] font-black uppercase text-slate-700 mb-1 flex items-center justify-between">
                     <span>Antrean Desain</span>
-                    <x-icon name="palette" class="w-4 h-4 text-sky-800" />
+                    <x-icon name="palette" class="w-3.5 sm:w-4 h-3.5 sm:h-4 text-sky-800" />
                 </div>
-                <div class="text-xl font-black text-black tracking-tight">
+                <div class="text-base sm:text-xl font-black text-black tracking-tight">
                     {{ $activeDesignsCount }} Tiket
                 </div>
             </div>
-            <div class="mt-3 pt-2 border-t border-sky-200 text-[10px] font-bold text-blue-700">
+            <div class="mt-2.5 pt-2 border-t border-sky-200 text-[10px] font-bold text-blue-700 hidden sm:block">
                 Draft, In Progress & Revisi
             </div>
         </div>
 
         <!-- Siap Cetak -->
-        <div class="p-4 bg-emerald-50 border-2 border-black rounded-xl shadow-[3px_3px_0px_0px_#000] flex flex-col justify-between">
+        <div class="p-3 sm:p-4 bg-emerald-50 border-[1.5px] sm:border-2 border-black rounded-xl shadow-[2px_2px_0px_0px_#000] sm:shadow-[3px_3px_0px_0px_#000] flex flex-col justify-between">
             <div>
-                <div class="text-[11px] font-black uppercase text-slate-700 mb-1 flex items-center justify-between">
+                <div class="text-[10px] sm:text-[11px] font-black uppercase text-slate-700 mb-1 flex items-center justify-between">
                     <span>Siap Cetak</span>
-                    <x-icon name="printer" class="w-4 h-4 text-emerald-800" />
+                    <x-icon name="printer" class="w-3.5 sm:w-4 h-3.5 sm:h-4 text-emerald-800" />
                 </div>
-                <div class="text-xl font-black text-black tracking-tight">
+                <div class="text-base sm:text-xl font-black text-black tracking-tight">
                     {{ $readyToPrintCount }} Tiket
                 </div>
             </div>
-            <div class="mt-3 pt-2 border-t border-emerald-200 text-[10px] font-bold text-emerald-800">
+            <div class="mt-2.5 pt-2 border-t border-emerald-200 text-[10px] font-bold text-emerald-800 hidden sm:block">
                 File final terunggah
             </div>
         </div>
@@ -129,9 +126,9 @@
             </a>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
             @foreach($branches as $branch)
-            <div class="neo-box p-6 bg-white hover:bg-slate-50 transition-colors">
+            <div class="neo-box p-4 sm:p-6 bg-white hover:bg-slate-50 transition-colors">
                 <div class="flex items-start justify-between pb-4 border-b-2 border-black mb-4">
                     <div>
                         <div class="flex items-center gap-2">
@@ -140,29 +137,29 @@
                             </span>
                             <h3 class="font-black text-lg text-black">{{ $branch->name }}</h3>
                         </div>
-                        <p class="text-xs font-medium text-slate-500 mt-1">{{ $branch->address ?? 'Alamat belum diatur' }}</p>
+                        <p class="text-xs font-medium text-slate-500 mt-1 hidden sm:block">{{ $branch->address ?? 'Alamat belum diatur' }}</p>
                     </div>
                     <span class="text-xs font-bold text-slate-600 bg-slate-100 border border-black px-2 py-1 rounded">
                         {{ $branch->phone ?? '-' }}
                     </span>
                 </div>
 
-                <div class="grid grid-cols-3 gap-3 mb-4">
-                    <div class="p-3 bg-slate-100 border-2 border-black rounded-lg">
-                        <div class="text-[10px] font-black uppercase text-slate-500">Omset Hari Ini</div>
-                        <div class="text-base font-black text-black mt-0.5">
+                <div class="grid grid-cols-3 gap-1.5 sm:gap-3 mb-4">
+                    <div class="p-2 sm:p-3 bg-slate-100 border-[1.5px] sm:border-2 border-black rounded-lg text-center sm:text-left">
+                        <div class="text-[9px] sm:text-[10px] font-black uppercase text-slate-500 leading-tight">Omset Hari Ini</div>
+                        <div class="text-xs sm:text-base font-black text-black mt-0.5 sm:mt-1">
                             Rp {{ number_format($branch->today_turnover, 0, ',', '.') }}
                         </div>
                     </div>
-                    <div class="p-3 bg-slate-100 border-2 border-black rounded-lg">
-                        <div class="text-[10px] font-black uppercase text-slate-500">Saldo Kas Laci</div>
-                        <div class="text-base font-black text-black mt-0.5">
+                    <div class="p-2 sm:p-3 bg-slate-100 border-[1.5px] sm:border-2 border-black rounded-lg text-center sm:text-left">
+                        <div class="text-[9px] sm:text-[10px] font-black uppercase text-slate-500 leading-tight">Saldo Kas Laci</div>
+                        <div class="text-xs sm:text-base font-black text-black mt-0.5 sm:mt-1">
                             Rp {{ number_format($branch->cash_balance, 0, ',', '.') }}
                         </div>
                     </div>
-                    <div class="p-3 bg-slate-100 border-2 border-black rounded-lg">
-                        <div class="text-[10px] font-black uppercase text-slate-500">Order Berjalan</div>
-                        <div class="text-base font-black text-black mt-0.5">
+                    <div class="p-2 sm:p-3 bg-slate-100 border-[1.5px] sm:border-2 border-black rounded-lg text-center sm:text-left">
+                        <div class="text-[9px] sm:text-[10px] font-black uppercase text-slate-500 leading-tight">Order Berjalan</div>
+                        <div class="text-xs sm:text-base font-black text-black mt-0.5 sm:mt-1">
                             {{ $branch->active_orders_count }} Order
                         </div>
                     </div>
@@ -185,7 +182,7 @@
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
         
         <!-- Left: Recent Orders Across All Branches (7 cols) -->
-        <div class="lg:col-span-7 neo-box p-6 bg-white">
+        <div class="lg:col-span-7 neo-box p-4 sm:p-6 bg-white">
             <div class="flex items-center justify-between pb-4 border-b-2 border-black mb-4">
                 <div class="flex items-center gap-2.5">
                     <div class="w-7 h-7 bg-sky-300 border-2 border-black rounded-lg flex items-center justify-center text-black shadow-[1px_1px_0px_0px_#000]">
@@ -198,8 +195,9 @@
                 </a>
             </div>
 
-            <div class="overflow-x-auto">
-                <table class="w-full text-left text-xs">
+            <!-- Desktop Table View (hidden on mobile) -->
+            <div class="hidden sm:block overflow-x-auto">
+                <table class="w-full text-left text-xs min-w-[500px]">
                     <thead>
                         <tr class="border-b-2 border-black bg-slate-100 text-black uppercase font-black">
                             <th class="py-2.5 px-3">No. Order</th>
@@ -244,10 +242,43 @@
                     </tbody>
                 </table>
             </div>
+
+            <!-- Mobile Card Feed (visible only on mobile) -->
+            <div class="sm:hidden space-y-2">
+                @forelse($recentOrders as $ord)
+                <div class="p-3 bg-slate-50 border-[1.5px] border-slate-900 rounded-xl space-y-1.5 shadow-[1.5px_1.5px_0px_0px_#000]">
+                    <div class="flex items-center justify-between gap-2">
+                        <div class="flex items-center gap-1.5">
+                            <span class="px-1.5 py-0.5 rounded border border-black bg-slate-200 text-[10px] font-bold">
+                                {{ $ord->branch->code }}
+                            </span>
+                            <a href="{{ route('orders.show', $ord->id) }}" class="font-mono font-bold text-xs underline text-black hover:text-blue-700">
+                                {{ $ord->order_number }}
+                            </a>
+                        </div>
+                        <span class="font-black text-xs text-black">
+                            Rp {{ number_format($ord->total_amount, 0, ',', '.') }}
+                        </span>
+                    </div>
+                    <div class="flex items-center justify-between text-xs pt-1 border-t border-slate-200/60">
+                        <span class="font-semibold text-slate-700 truncate max-w-[180px]">
+                            {{ $ord->customer_name }}
+                        </span>
+                        <span class="px-2 py-0.5 rounded-full border border-black text-[9px] font-black {{ $ord->status_color_class }}">
+                            {{ $ord->status_label }}
+                        </span>
+                    </div>
+                </div>
+                @empty
+                <div class="py-6 text-center text-slate-400 font-semibold text-xs border border-dashed border-slate-200 rounded-lg">
+                    Belum ada order tercatat.
+                </div>
+                @endforelse
+            </div>
         </div>
 
         <!-- Right: Recent Central Cloud Archives (5 cols) -->
-        <div class="lg:col-span-5 neo-box p-6 bg-white">
+        <div class="lg:col-span-5 neo-box p-4 sm:p-6 bg-white">
             <div class="flex items-center justify-between pb-4 border-b-2 border-black mb-4">
                 <div class="flex items-center gap-2.5">
                     <div class="w-7 h-7 bg-emerald-300 border-2 border-black rounded-lg flex items-center justify-center text-black shadow-[1px_1px_0px_0px_#000]">

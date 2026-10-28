@@ -237,35 +237,37 @@
     <div class="flex-1 lg:pl-72 flex flex-col min-h-screen min-w-0">
         
         <!-- Top Minimal Utility Bar -->
-        <header class="h-20 bg-white border-b-[1.5px] border-slate-800 sticky top-0 z-30 px-4 sm:px-8 flex items-center justify-between">
+        <header class="h-16 sm:h-20 bg-white border-b-[1.5px] border-slate-800 sticky top-0 z-30 px-4 sm:px-8 flex items-center justify-between gap-3">
             
             <!-- Left: Mobile Toggle & Page Title -->
-            <div class="flex items-center gap-3">
+            <div class="flex items-center gap-3 min-w-0">
                 <button type="button" 
                         onclick="toggleSidebar()" 
-                        class="lg:hidden p-2 rounded-xl border-[1.5px] border-slate-800 bg-amber-300 hover:bg-amber-400 active:translate-x-[1px] active:translate-y-[1px] shadow-[1.5px_1.5px_0px_0px_#0f172a] cursor-pointer">
+                        aria-label="Buka Menu"
+                        class="lg:hidden p-2 rounded-xl border-[1.5px] border-slate-800 bg-amber-300 hover:bg-amber-400 active:translate-x-[1px] active:translate-y-[1px] shadow-[1.5px_1.5px_0px_0px_#0f172a] cursor-pointer shrink-0">
                     <x-icon name="menu" class="w-5 h-5 text-slate-900" stroke-width="2.5" />
                 </button>
 
-                <div>
-                    <h2 class="font-black text-sm sm:text-base text-slate-900 tracking-tight flex items-center gap-2">
+                <div class="min-w-0">
+                    <h2 class="font-black text-sm sm:text-base text-slate-900 tracking-tight truncate flex items-center gap-2">
                         <span>@yield('title', 'Gemini Art')</span>
                     </h2>
                 </div>
             </div>
 
             <!-- Right: Indonesian Date Only -->
-            <div>
-                <span class="inline-flex items-center gap-1.5 text-xs font-bold text-slate-700 bg-slate-100 border-[1.5px] border-slate-700 px-3 py-1.5 rounded-xl shadow-[1.5px_1.5px_0px_0px_#0f172a]">
-                    <x-icon name="calendar" class="w-3.5 h-3.5 text-slate-500" />
-                    <span>{{ \Carbon\Carbon::now('Asia/Jakarta')->locale('id')->isoFormat('dddd, D MMMM Y') }}</span>
+            <div class="shrink-0">
+                <span class="inline-flex items-center gap-1.5 text-xs font-bold text-slate-700 bg-slate-100 border-[1.5px] border-slate-700 px-3 py-1.5 rounded-xl shadow-[1.5px_1.5px_0px_0px_#0f172a] whitespace-nowrap">
+                    <x-icon name="calendar" class="w-3.5 h-3.5 text-slate-500 shrink-0" />
+                    <span class="hidden md:inline">{{ \Carbon\Carbon::now('Asia/Jakarta')->locale('id')->isoFormat('dddd, ') }}</span>
+                    <span>{{ \Carbon\Carbon::now('Asia/Jakarta')->locale('id')->isoFormat('D MMM Y') }}</span>
                 </span>
             </div>
 
         </header>
 
         <!-- Main Workspace Area (Full-Width Fluid Responsive) -->
-        <main class="flex-1 w-full px-4 sm:px-8 py-6">
+        <main class="flex-1 w-full px-4 sm:px-8 py-5 sm:py-6">
 
             <!-- Flash Notifications -->
             @if(session('success'))
@@ -319,26 +321,13 @@
         </main>
 
         <!-- Minimal Footer -->
-        <footer class="bg-white border-t-[1.5px] border-slate-800 py-4 mt-auto">
-            <div class="w-full px-4 sm:px-8 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs font-semibold text-slate-500">
+        <footer class="bg-white border-t-[1.5px] border-slate-800 py-3.5 mt-auto">
+            <div class="w-full px-4 sm:px-8 flex flex-col sm:flex-row items-center justify-between gap-1 text-xs font-semibold text-slate-500 text-center sm:text-left">
                 <div>
                     <strong>Gemini Art Multi-Cabang</strong> &bull; ERP Percetakan & Studio Desain
                 </div>
-                <div class="flex items-center gap-3">
-                    <span class="flex items-center gap-1.5">
-                        <x-icon name="cloud" class="w-3.5 h-3.5 {{ config('filesystems.archive_disk') === 'r2' ? 'text-sky-600' : 'text-slate-500' }}" />
-                        <span>Storage:</span>
-                        @if(config('filesystems.archive_disk') === 'r2')
-                            <strong class="text-sky-700">Cloud Storage</strong>
-                        @else
-                            <strong class="text-slate-700">Lokal (Public Disk)</strong>
-                        @endif
-                    </span>
-                    <span class="flex items-center gap-1.5">
-                        <x-icon name="hard-drive" class="w-3.5 h-3.5 text-emerald-600" />
-                        <span>Database:</span>
-                        <strong class="text-emerald-700">SQLite Connected</strong>
-                    </span>
+                <div class="text-[11px] text-slate-400">
+                    &copy; {{ date('Y') }} Gemini Art. Hak cipta dilindungi.
                 </div>
             </div>
         </footer>
