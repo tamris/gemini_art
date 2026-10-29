@@ -133,7 +133,7 @@
 
     <!-- Minimal Copyright Footer -->
     <div class="mt-6 text-center text-xs font-semibold text-slate-400">
-        &copy; {{ date('Y') }} Gemini Art &bull; Solo, Jogja & Pusat
+        &copy; {{ date('Y') }} Gemini Art &bull; Hak cipta dilindungi.
     </div>
 
     <!-- Toggle Password Visibility Script -->

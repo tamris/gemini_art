@@ -150,6 +150,9 @@ select[data-neo-select-initialized="true"] {
 }
 
 .neo-select-trigger {
+    height: 2.5rem;
+    min-height: 40px;
+    box-sizing: border-box;
     transition: border-color 150ms ease, box-shadow 150ms ease, background-color 150ms ease;
 }
 

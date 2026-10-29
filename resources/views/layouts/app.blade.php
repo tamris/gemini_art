@@ -319,26 +319,13 @@
         </main>
 
         <!-- Minimal Footer -->
-        <footer class="bg-white border-t-[1.5px] border-slate-800 py-4 mt-auto">
-            <div class="w-full px-4 sm:px-8 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs font-semibold text-slate-500">
+        <footer class="bg-white border-t-[1.5px] border-slate-800 py-3.5 mt-auto">
+            <div class="w-full px-4 sm:px-8 flex flex-col sm:flex-row items-center justify-between gap-1 text-xs font-semibold text-slate-500 text-center sm:text-left">
                 <div>
                     <strong>Gemini Art Multi-Cabang</strong> &bull; ERP Percetakan & Studio Desain
                 </div>
-                <div class="flex items-center gap-3">
-                    <span class="flex items-center gap-1.5">
-                        <x-icon name="cloud" class="w-3.5 h-3.5 {{ config('filesystems.archive_disk') === 'r2' ? 'text-sky-600' : 'text-slate-500' }}" />
-                        <span>Storage:</span>
-                        @if(config('filesystems.archive_disk') === 'r2')
-                            <strong class="text-sky-700">Cloud Storage</strong>
-                        @else
-                            <strong class="text-slate-700">Lokal (Public Disk)</strong>
-                        @endif
-                    </span>
-                    <span class="flex items-center gap-1.5">
-                        <x-icon name="hard-drive" class="w-3.5 h-3.5 text-emerald-600" />
-                        <span>Database:</span>
-                        <strong class="text-emerald-700">SQLite Connected</strong>
-                    </span>
+                <div class="text-[11px] text-slate-400">
+                    &copy; {{ date('Y') }} Gemini Art. Hak cipta dilindungi.
                 </div>
             </div>
         </footer>
