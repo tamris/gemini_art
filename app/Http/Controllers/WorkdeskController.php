@@ -65,11 +65,29 @@ class WorkdeskController extends Controller
         }
 
         $request->validate([
-            'file' => 'required|file|max:512000', // max 500MB
+            'files' => 'nullable|array',
+            'files.*' => 'file|max:512000', // max 500MB per file
+            'file' => 'nullable|file|max:512000',
             'file_type' => 'required|in:final_print,preview_proof,brief_ref',
         ]);
 
-        $file = $request->file('file');
+        $uploadedFiles = [];
+        if ($request->hasFile('files')) {
+            $uploadedFiles = $request->file('files');
+        } elseif ($request->hasFile('file')) {
+            $uploadedFiles = [$request->file('file')];
+        }
+
+        if (empty($uploadedFiles)) {
+            if ($request->expectsJson() || $request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Silakan pilih minimal satu berkas desain untuk diunggah.',
+                ], 422);
+            }
+            return back()->with('error', 'Silakan pilih minimal satu berkas desain untuk diunggah.');
+        }
+
         $branch = $order->branch;
         $ym = date('Y-m');
 
@@ -80,21 +98,38 @@ class WorkdeskController extends Controller
             'brief_ref' => 'ref',
         };
 
-        $cleanOriginalName = preg_replace('/[^a-zA-Z0-9_\.-]/', '_', $file->getClientOriginalName());
-        $fileName = "{$prefix}_{$cleanOriginalName}";
+        $createdAssets = [];
+        $uploadedNames = [];
         $folder = "designs/{$branch->code}/{$ym}/{$order->order_number}";
         $disk = config('filesystems.archive_disk', 'public');
-        $path = $file->storeAs($folder, $fileName, $disk);
 
-        $asset = DesignAsset::create([
-            'design_job_id' => $job->id,
-            'uploaded_by' => $user->id,
-            'file_type' => $request->file_type,
-            'file_path' => $path,
-            'disk' => $disk,
-            'file_name' => $fileName,
-            'file_size' => $file->getSize(),
-        ]);
+        foreach ($uploadedFiles as $index => $file) {
+            $cleanOriginalName = preg_replace('/[^a-zA-Z0-9_\.-]/', '_', $file->getClientOriginalName());
+            
+            // To prevent collision if multiple files have identical name in the same batch or on disk
+            $fileName = "{$prefix}_{$cleanOriginalName}";
+            if (Storage::disk($disk)->exists("{$folder}/{$fileName}")) {
+                $ext = pathinfo($cleanOriginalName, PATHINFO_EXTENSION);
+                $nameOnly = pathinfo($cleanOriginalName, PATHINFO_FILENAME);
+                $uniqueSuffix = '_' . time() . '_' . ($index + 1);
+                $fileName = "{$prefix}_{$nameOnly}{$uniqueSuffix}" . ($ext ? ".{$ext}" : "");
+            }
+
+            $path = $file->storeAs($folder, $fileName, $disk);
+
+            $asset = DesignAsset::create([
+                'design_job_id' => $job->id,
+                'uploaded_by' => $user->id,
+                'file_type' => $request->file_type,
+                'file_path' => $path,
+                'disk' => $disk,
+                'file_name' => $fileName,
+                'file_size' => $file->getSize(),
+            ]);
+
+            $createdAssets[] = $asset;
+            $uploadedNames[] = $fileName;
+        }
 
         // Auto update order status to ready_to_print if final_print
         if ($request->file_type === 'final_print') {
@@ -102,17 +137,23 @@ class WorkdeskController extends Controller
             $order->save();
         }
 
+        $count = count($createdAssets);
+        $message = $count === 1
+            ? "File {$uploadedNames[0]} berhasil diunggah! Status tiket otomatis diperbarui."
+            : "{$count} file desain berhasil diunggah! Status tiket otomatis diperbarui.";
+
         if ($request->expectsJson() || $request->ajax()) {
-            session()->flash('success', "File {$fileName} berhasil diunggah! Status tiket otomatis diperbarui.");
+            session()->flash('success', $message);
             return response()->json([
                 'success' => true,
-                'message' => "File {$fileName} berhasil diunggah! Status tiket otomatis diperbarui.",
-                'file_name' => $fileName,
-                'asset_id' => $asset->id,
+                'message' => $message,
+                'file_name' => $uploadedNames[0] ?? '',
+                'count' => $count,
+                'asset_id' => $createdAssets[0]->id ?? null,
             ]);
         }
 
-        return back()->with('success', "File {$fileName} berhasil diunggah! Status tiket otomatis diperbarui.");
+        return back()->with('success', $message);
     }
 
     public function claimJob(DesignJob $job)

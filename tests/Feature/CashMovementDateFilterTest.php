@@ -39,8 +39,9 @@ class CashMovementDateFilterTest extends TestCase
             'payment_method' => 'cash',
             'amount' => 75000,
             'notes' => 'Pelunasan hari ini',
-            'created_at' => '2026-10-28 10:00:00',
         ]);
+        $movementToday->created_at = '2026-10-28 10:00:00';
+        $movementToday->save();
 
         $movementYesterday = CashMovement::create([
             'branch_id' => $branch->id,
@@ -58,14 +59,16 @@ class CashMovementDateFilterTest extends TestCase
         $response = $this->actingAs($owner)->get(route('cash.index'));
         $response->assertStatus(200);
         $response->assertSee('data-neo-datepicker-container', false);
-        $response->assertSee('Pelunasan hari ini');
-        $response->assertSee('DP kemarin');
+        $response->assertSee('Pelunasan Order');
+        $response->assertSee('DP Order Desain');
+        $response->assertSee('28/10/2026');
+        $response->assertSee('27/10/2026');
 
         // 2. Filter by 2026-10-28 -> only today appears
         $responseFiltered = $this->actingAs($owner)->get(route('cash.index', ['date' => '2026-10-28']));
         $responseFiltered->assertStatus(200);
-        $responseFiltered->assertSee('Pelunasan hari ini');
-        $responseFiltered->assertDontSee('DP kemarin');
+        $responseFiltered->assertSee('Pelunasan Order');
         $responseFiltered->assertSee('28/10/2026');
+        $responseFiltered->assertDontSee('27/10/2026');
     }
 }

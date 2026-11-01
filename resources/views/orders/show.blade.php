@@ -198,12 +198,27 @@
                         </span>
                     </div>
 
-                    <button type="button" 
-                            onclick="if(window.resetUploadForm) window.resetUploadForm(document.querySelector('#upload-modal form')); document.getElementById('upload-modal').showModal()"
-                            class="neo-btn bg-emerald-400 hover:bg-emerald-300 text-slate-950 text-xs py-1.5 px-3 font-black flex items-center gap-1.5 cursor-pointer shadow-[1.5px_1.5px_0px_0px_#0f172a]">
-                        <x-icon name="plus" class="w-3.5 h-3.5 stroke-[2.5]" />
-                        <span>Unggah File Baru</span>
-                    </button>
+                    <div class="flex items-center gap-2 flex-wrap">
+                        @php
+                            $finalPrintAssets = $order->designJob ? $order->designJob->assets->where('file_type', 'final_print') : collect();
+                        @endphp
+                        @if($finalPrintAssets->count() > 0)
+                        <button type="button" 
+                                onclick="dispatchAllAssets()"
+                                title="Kirim Semua Berkas Siap Cetak ke Percetakan Rekanan (WhatsApp / Email / Link)"
+                                class="neo-btn bg-amber-300 hover:bg-amber-400 text-slate-950 text-xs py-1.5 px-3 font-black flex items-center gap-1.5 cursor-pointer shadow-[1.5px_1.5px_0px_0px_#0f172a]">
+                            <x-icon name="send" class="w-3.5 h-3.5 text-slate-900" />
+                            <span>Kirim Berkas (All)</span>
+                        </button>
+                        @endif
+
+                        <button type="button" 
+                                onclick="if(window.resetUploadForm) window.resetUploadForm(document.querySelector('#upload-modal form')); document.getElementById('upload-modal').showModal()"
+                                class="neo-btn bg-emerald-400 hover:bg-emerald-300 text-slate-950 text-xs py-1.5 px-3 font-black flex items-center gap-1.5 cursor-pointer shadow-[1.5px_1.5px_0px_0px_#0f172a]">
+                            <x-icon name="plus" class="w-3.5 h-3.5 stroke-[2.5]" />
+                            <span>Unggah File</span>
+                        </button>
+                    </div>
                 </div>
 
                 <div class="space-y-3">
@@ -582,7 +597,10 @@
 
                 <div>
                     <label class="block text-xs font-black uppercase text-slate-900 mb-1">Pilih File</label>
-                    <input type="file" name="file" required class="neo-input text-xs file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-[1.5px] file:border-slate-800 file:bg-amber-300 file:text-xs file:font-black">
+                    <input type="file" name="files[]" multiple required class="neo-input text-xs file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-[1.5px] file:border-slate-800 file:bg-amber-300 file:text-xs file:font-black cursor-pointer">
+                    <div class="selected-files-preview mt-2 hidden text-xs bg-slate-50 border-[1.5px] border-slate-800 rounded-xl p-2.5 space-y-1.5 shadow-[1px_1px_0px_0px_#0f172a]">
+                        <!-- List file dirender via JS -->
+                    </div>
                 </div>
 
                 <div class="pt-3 border-t-[1.5px] border-slate-800 flex justify-end gap-2">
@@ -686,6 +704,32 @@ function handleWorkStatusChange(val) {
 function toggleRefundMethod(isRefund) {
     const sel = document.getElementById('refund-method-select');
     if (sel) sel.classList.toggle('hidden', !isRefund);
+}
+
+function dispatchAllAssets() {
+    if (typeof openVendorDispatchModal !== 'function') return;
+    openVendorDispatchModal({
+        isAll: true,
+        jobId: {{ $order->designJob ? $order->designJob->id : 'null' }},
+        orderNumber: '{{ addslashes($order->order_number) }}',
+        jobTitle: '{{ addslashes($order->designJob->title ?? $order->customer_name) }}',
+        dimensions: '{{ addslashes($order->designJob->dimensions ?? '') }}',
+        materialNotes: '{{ addslashes($order->designJob->material_notes ?? '') }}',
+        briefNotes: '{{ addslashes($order->designJob->brief_notes ?? '') }}',
+        files: [
+            @if($order->designJob)
+            @foreach($order->designJob->assets->where('file_type', 'final_print') as $ast)
+            {
+                id: {{ $ast->id }},
+                name: '{{ addslashes($ast->file_name) }}',
+                size: '{{ $ast->formatted_size }}',
+                typeBadge: '{{ addslashes($ast->file_type_badge) }}',
+                shareUrl: '{{ $ast->share_url }}'
+            },
+            @endforeach
+            @endif
+        ]
+    });
 }
 </script>
 @endsection

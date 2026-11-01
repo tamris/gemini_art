@@ -63,7 +63,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/archive/{asset}/download', [ArchiveController::class, 'download'])->name('archive.download');
     Route::get('/archive/{asset}/preview', [ArchiveController::class, 'preview'])->name('archive.preview');
     Route::post('/vendor/dispatch/{asset}/email', [VendorShareController::class, 'sendEmail'])->name('vendor.dispatch.email');
+    Route::post('/vendor/dispatch-all/{job}/email', [VendorShareController::class, 'sendJobEmail'])->name('vendor.dispatch.job.email');
     Route::get('/vendor/dispatch/{asset}/preview-email', [VendorShareController::class, 'previewEmail'])->name('vendor.dispatch.preview-email');
+    Route::get('/vendor/dispatch-all/{job}/preview-email', [VendorShareController::class, 'previewJobEmail'])->name('vendor.dispatch.job.preview-email');
 
     // Multi-branch settings (Owner only)
     Route::get('/branches', [BranchController::class, 'index'])->name('branches.index');

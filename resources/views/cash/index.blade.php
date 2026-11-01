@@ -214,7 +214,7 @@
                         <tr class="bg-slate-50 border-b border-slate-200 text-slate-800 font-black uppercase tracking-wider">
                         <th class="py-3 px-4">Waktu</th>
                         <th class="py-3 px-4">Cabang</th>
-                        <th class="py-3 px-4">Kategori & Keterangan</th>
+                        <th class="py-3 px-4">Kategori</th>
                         <th class="py-3 px-4">No. Order Terkait</th>
                         <th class="py-3 px-4">Metode</th>
                         <th class="py-3 px-4">Petugas</th>
@@ -234,15 +234,10 @@
                             </span>
                         </td>
 
-                        <td class="py-3.5 px-4">
-                            <div class="flex items-center gap-2 mb-1">
-                                <span class="px-2 py-0.2 rounded border border-black text-[10px] font-black uppercase {{ $m->category_badge_class }}">
-                                    {{ $m->category_label }}
-                                </span>
-                            </div>
-                            <div class="font-semibold text-slate-800 text-xs">
-                                {{ $m->notes ?? '-' }}
-                            </div>
+                        <td class="py-3.5 px-4 whitespace-nowrap">
+                            <span class="inline-block px-2 py-0.5 rounded border border-black text-[10px] font-black uppercase {{ $m->category_badge_class }}" @if($m->notes) title="{{ $m->notes }}" @endif>
+                                {{ $m->category_label }}
+                            </span>
                         </td>
 
                         <td class="py-3.5 px-4 font-mono font-bold whitespace-nowrap">

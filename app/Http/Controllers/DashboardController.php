@@ -57,7 +57,7 @@ class DashboardController extends Controller
 
             $recentOrders = Order::with(['branch', 'creator', 'designJob'])
                 ->latest()
-                ->take(6)
+                ->take(10)
                 ->get();
 
             $recentAssets = DesignAsset::with(['designJob.order.branch', 'uploader'])

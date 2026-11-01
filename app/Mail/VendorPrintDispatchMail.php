@@ -16,7 +16,8 @@ class VendorPrintDispatchMail extends Mailable
     public function __construct(
         public DesignAsset $asset,
         public ?string $notes = null,
-        public ?string $senderName = null
+        public ?string $senderName = null,
+        public mixed $allAssets = null
     ) {}
 
     public function envelope(): Envelope
@@ -24,9 +25,11 @@ class VendorPrintDispatchMail extends Mailable
         $order = $this->asset->designJob->order;
         $orderNumber = $order->order_number ?? 'ORDER';
         $title = $this->asset->designJob->title ?? 'Berkas Cetak';
+        $count = $this->allAssets ? count($this->allAssets) : 1;
+        $fileInfo = $count > 1 ? "({$count} Berkas)" : "File Siap Cetak";
 
         return new Envelope(
-            subject: "[ORDER CETAK #{$orderNumber}] File Siap Cetak: {$title} - Gemini Art",
+            subject: "[ORDER CETAK #{$orderNumber}] {$fileInfo}: {$title} - Gemini Art",
         );
     }
 
@@ -36,6 +39,7 @@ class VendorPrintDispatchMail extends Mailable
             view: 'emails.vendor-dispatch',
             with: [
                 'asset' => $this->asset,
+                'allAssets' => $this->allAssets,
                 'job' => $this->asset->designJob,
                 'order' => $this->asset->designJob->order,
                 'branch' => $this->asset->designJob->order->branch,

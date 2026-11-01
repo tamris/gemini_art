@@ -633,6 +633,52 @@
         initAjaxUploads();
     });
 
+    function formatBytes(bytes) {
+        if (!bytes || bytes === 0) return '0 KB';
+        if (bytes >= 1048576) return (bytes / 1048576).toFixed(2) + ' MB';
+        return (bytes / 1024).toFixed(1) + ' KB';
+    }
+
+    function updateSelectedFilesPreview(input) {
+        const form = input.closest('form');
+        if (!form) return;
+        const previewBox = form.querySelector('.selected-files-preview');
+        if (!previewBox) return;
+
+        if (!input.files || input.files.length === 0) {
+            previewBox.innerHTML = '';
+            previewBox.classList.add('hidden');
+            return;
+        }
+
+        const files = Array.from(input.files);
+        const totalSize = files.reduce((acc, f) => acc + f.size, 0);
+
+        let html = `
+            <div class="flex items-center justify-between font-black text-slate-900 pb-1.5 border-b border-slate-200">
+                <span class="flex items-center gap-1.5">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                    <span>${files.length} Berkas Dipilih</span>
+                </span>
+                <span class="font-mono text-[11px] text-slate-600 bg-white px-1.5 py-0.5 rounded border border-slate-200">Total: ${formatBytes(totalSize)}</span>
+            </div>
+            <ul class="space-y-1 max-h-36 overflow-y-auto pr-1">
+        `;
+
+        files.forEach((f, idx) => {
+            html += `
+                <li class="flex items-center justify-between text-[11px] text-slate-700 font-mono py-0.5">
+                    <span class="truncate max-w-[220px] sm:max-w-[280px]" title="${f.name}">${idx + 1}. ${f.name}</span>
+                    <span class="text-slate-400 shrink-0 ml-2">${formatBytes(f.size)}</span>
+                </li>
+            `;
+        });
+
+        html += `</ul>`;
+        previewBox.innerHTML = html;
+        previewBox.classList.remove('hidden');
+    }
+
     function resetUploadForm(form) {
         if (!form) return;
         const fieldsContainer = form.querySelector('.upload-fields-container');
@@ -642,7 +688,14 @@
         const bytesEl = form.querySelector('.upload-progress-bytes');
         const errorContainer = form.querySelector('.upload-progress-error');
         const statusEl = form.querySelector('.upload-progress-status');
+        const previewBox = form.querySelector('.selected-files-preview');
+        const fileInput = form.querySelector('input[type="file"]');
 
+        if (fileInput) fileInput.value = '';
+        if (previewBox) {
+            previewBox.innerHTML = '';
+            previewBox.classList.add('hidden');
+        }
         if (fieldsContainer) fieldsContainer.classList.remove('hidden');
         if (progressContainer) progressContainer.classList.add('hidden');
         if (errorContainer) errorContainer.classList.add('hidden');
@@ -662,6 +715,13 @@
         if (window.__ajaxUploadDelegated) return;
         window.__ajaxUploadDelegated = true;
 
+        document.addEventListener('change', function(e) {
+            const input = e.target.closest('form[data-ajax-upload] input[type="file"]');
+            if (input) {
+                updateSelectedFilesPreview(input);
+            }
+        });
+
         document.addEventListener('submit', function(e) {
             const form = e.target.closest('form[data-ajax-upload]');
             if (!form) return;
@@ -673,7 +733,9 @@
 
             e.preventDefault();
 
-            const file = fileInput.files[0];
+            const files = Array.from(fileInput.files);
+            const totalBytes = files.reduce((acc, f) => acc + f.size, 0);
+            const totalFormatted = formatBytes(totalBytes);
             const modal = form.closest('dialog');
             const closeBtns = modal ? modal.querySelectorAll('form[method="dialog"] button, button[onclick*="close"]') : [];
             const fieldsContainer = form.querySelector('.upload-fields-container') || form;
@@ -699,14 +761,14 @@
             const retryBtn = progressContainer.querySelector('.upload-progress-retry-btn');
 
             if (errorContainer) errorContainer.classList.add('hidden');
-            if (fileNameEl) fileNameEl.innerText = file.name;
+            if (fileNameEl) {
+                if (files.length === 1) {
+                    fileNameEl.innerText = files[0].name;
+                } else {
+                    fileNameEl.innerText = `${files.length} Berkas Dipilih (${files[0].name}, dkk)`;
+                }
+            }
 
-            const formatBytes = (bytes) => {
-                if (bytes >= 1048576) return (bytes / 1048576).toFixed(2) + ' MB';
-                return (bytes / 1024).toFixed(1) + ' KB';
-            };
-
-            const totalFormatted = formatBytes(file.size);
             if (bytesEl) bytesEl.innerText = `0 KB / ${totalFormatted}`;
             if (percentEl) percentEl.innerText = '0%';
             if (barEl) barEl.style.width = '0%';

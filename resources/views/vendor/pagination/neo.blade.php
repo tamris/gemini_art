@@ -65,16 +65,6 @@
                     </span>
                 @endif
             </div>
-        @else
-            {{-- Single Page Indicator --}}
-            <div class="flex items-center gap-1.5">
-                <span class="w-6 h-6 flex items-center justify-center text-xs font-black text-slate-900 bg-amber-200 border-[1.5px] border-slate-800 rounded-md shadow-[1px_1px_0px_0px_#0f172a]">
-                    1
-                </span>
-                <span class="text-[11px] font-bold text-slate-500">
-                    Halaman 1 dari 1
-                </span>
-            </div>
         @endif
 
     </nav>

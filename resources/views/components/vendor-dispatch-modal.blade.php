@@ -31,6 +31,7 @@
                 <span class="text-slate-500 font-medium">Ukuran & Bahan:</span>
                 <span class="font-bold text-slate-800" id="dispatch-file-specs">-</span>
             </div>
+            <div id="dispatch-files-list-box" class="hidden pt-2 border-t border-slate-200 mt-2 space-y-1 max-h-32 overflow-y-auto"></div>
         </div>
 
         <!-- Mode Navigation Tabs -->
@@ -153,18 +154,34 @@
                 <label class="block text-xs font-black uppercase text-slate-900 mb-1">
                     Link Portal Berkas Siap Cetak (Publik & Tanpa Login)
                 </label>
-                <div class="flex items-center gap-2">
-                    <input type="text" 
-                           id="dispatch-public-url" 
-                           readonly 
-                           class="neo-input text-xs font-mono font-bold w-full py-2 px-3 bg-slate-50 select-all">
-                    <button type="button" 
-                            onclick="copyPublicUrlToClipboard()" 
-                            id="btn-copy-public-url"
-                            class="neo-btn bg-amber-300 hover:bg-amber-400 text-xs py-2 px-4 font-black text-slate-950 shrink-0 shadow-[1.5px_1.5px_0px_0px_#0f172a]">
-                        Salin
-                    </button>
+
+                <div id="dispatch-single-link-container">
+                    <div class="flex items-center gap-2">
+                        <input type="text" 
+                               id="dispatch-public-url" 
+                               readonly 
+                               class="neo-input text-xs font-mono font-bold w-full py-2 px-3 bg-slate-50 select-all">
+                        <button type="button" 
+                                onclick="copyPublicUrlToClipboard()" 
+                                id="btn-copy-public-url"
+                                class="neo-btn bg-amber-300 hover:bg-amber-400 text-xs py-2 px-4 font-black text-slate-950 shrink-0 shadow-[1.5px_1.5px_0px_0px_#0f172a]">
+                            Salin
+                        </button>
+                    </div>
                 </div>
+
+                <div id="dispatch-all-links-container" class="hidden space-y-2">
+                    <textarea id="dispatch-all-links-text" rows="5" readonly class="neo-input text-xs font-mono font-bold w-full p-2.5 bg-slate-50 select-all"></textarea>
+                    <div class="flex justify-end">
+                        <button type="button" 
+                                onclick="copyAllLinksToClipboard()" 
+                                id="btn-copy-all-links"
+                                class="neo-btn bg-amber-300 hover:bg-amber-400 text-xs py-1.5 px-3 font-black text-slate-950 shadow-[1.5px_1.5px_0px_0px_#0f172a] cursor-pointer">
+                            Salin Semua Link
+                        </button>
+                    </div>
+                </div>
+
                 <p class="text-[11px] text-slate-500 font-medium mt-1 leading-relaxed">
                     Link ini aman dan dapat dibuka oleh siapa saja (rekanan percetakan) untuk mengunduh berkas resolusi penuh dan melihat spesifikasi cetak tanpa harus login.
                 </p>
@@ -190,20 +207,76 @@ function openVendorDispatchModal(data) {
     
     // Fill header & info
     document.getElementById('dispatch-modal-subtitle').innerText = data.orderNumber || '-';
-    document.getElementById('dispatch-file-name').innerText = data.fileName || '-';
     document.getElementById('dispatch-file-specs').innerText = (data.dimensions ? data.dimensions + ' • ' : '') + (data.materialNotes || 'Standar');
-    document.getElementById('dispatch-public-url').value = data.shareUrl || '';
 
-    // Set form action for email
+    const filesListBox = document.getElementById('dispatch-files-list-box');
+    const singleLinkContainer = document.getElementById('dispatch-single-link-container');
+    const allLinksContainer = document.getElementById('dispatch-all-links-container');
     const form = document.getElementById('dispatch-email-form');
-    if (form && data.assetId) {
-        form.action = '/vendor/dispatch/' + data.assetId + '/email';
-    }
-
-    // Set preview email link
     const previewLink = document.getElementById('dispatch-email-preview-link');
-    if (previewLink && data.assetId) {
-        previewLink.href = '/vendor/dispatch/' + data.assetId + '/preview-email';
+
+    if (data.isAll && data.files && data.files.length > 0) {
+        document.getElementById('dispatch-file-name').innerText = `Semua Berkas (${data.files.length} File)`;
+
+        if (filesListBox) {
+            let listHtml = '';
+            data.files.forEach((f, i) => {
+                listHtml += `
+                    <div class="flex items-center justify-between text-[11px] font-mono py-1 border-b border-slate-200 last:border-0">
+                        <span class="truncate max-w-[240px] text-slate-800 font-bold" title="${f.name}">${i + 1}. ${f.name}</span>
+                        <span class="text-slate-500 shrink-0 text-[10px] ml-2">${f.size}</span>
+                    </div>
+                `;
+            });
+            filesListBox.innerHTML = listHtml;
+            filesListBox.classList.remove('hidden');
+        }
+
+        if (singleLinkContainer) singleLinkContainer.classList.add('hidden');
+        if (allLinksContainer) {
+            let linksText = `Berkas Cetak Order #${data.orderNumber}:\n`;
+            data.files.forEach((f, i) => {
+                linksText += `${i + 1}. ${f.name} (${f.size})\n${f.shareUrl}\n\n`;
+            });
+            document.getElementById('dispatch-all-links-text').value = linksText.trim();
+            allLinksContainer.classList.remove('hidden');
+        }
+
+        if (form && data.jobId) {
+            form.action = '/vendor/dispatch-all/' + data.jobId + '/email';
+        }
+        if (previewLink) {
+            if (data.jobId) {
+                previewLink.href = '/vendor/dispatch-all/' + data.jobId + '/preview-email';
+                previewLink.classList.remove('hidden');
+            } else {
+                previewLink.classList.add('hidden');
+            }
+        }
+    } else {
+        document.getElementById('dispatch-file-name').innerText = data.fileName || '-';
+        document.getElementById('dispatch-public-url').value = data.shareUrl || '';
+
+        if (filesListBox) {
+            filesListBox.innerHTML = '';
+            filesListBox.classList.add('hidden');
+        }
+
+        if (singleLinkContainer) singleLinkContainer.classList.remove('hidden');
+        if (allLinksContainer) allLinksContainer.classList.add('hidden');
+
+        if (form && data.assetId) {
+            form.action = '/vendor/dispatch/' + data.assetId + '/email';
+        }
+
+        if (previewLink) {
+            if (data.assetId) {
+                previewLink.href = '/vendor/dispatch/' + data.assetId + '/preview-email';
+                previewLink.classList.remove('hidden');
+            } else {
+                previewLink.classList.add('hidden');
+            }
+        }
     }
 
     // Always reset form fields to clean state
@@ -263,9 +336,19 @@ function generateWaText() {
     if (d.dimensions) msg += `Ukuran: ${d.dimensions}\n`;
     if (d.materialNotes) msg += `Bahan & Finishing: ${d.materialNotes}\n`;
     if (d.briefNotes) msg += `Catatan: ${d.briefNotes}\n`;
-    msg += `\n*Nama Berkas Siap Cetak:*\n${d.fileName || '-'}\n`;
-    msg += `\n*Link Download Berkas (Resolusi Penuh):*\n${d.shareUrl || ''}\n\n`;
-    msg += `_Mohon segera diproses cetak. Terima kasih!_`;
+
+    if (d.isAll && d.files && d.files.length > 0) {
+        msg += `\n*Daftar Berkas Siap Cetak (${d.files.length} Berkas):*\n`;
+        d.files.forEach((f, i) => {
+            msg += `${i + 1}. [${f.typeBadge}] ${f.name} (${f.size})\n`;
+            msg += `   Link Download: ${f.shareUrl}\n`;
+        });
+    } else {
+        msg += `\n*Nama Berkas Siap Cetak:*\n${d.fileName || '-'}\n`;
+        msg += `\n*Link Download Berkas (Resolusi Penuh):*\n${d.shareUrl || ''}\n`;
+    }
+
+    msg += `\n_Mohon segera diproses cetak. Terima kasih!_`;
     return msg;
 }
 
@@ -295,6 +378,16 @@ function copyPublicUrlToClipboard() {
         const btn = document.getElementById('btn-copy-public-url');
         btn.innerText = 'Tersalin!';
         setTimeout(() => btn.innerText = 'Salin', 2000);
+    });
+}
+
+function copyAllLinksToClipboard() {
+    const textarea = document.getElementById('dispatch-all-links-text');
+    if (!textarea) return;
+    navigator.clipboard.writeText(textarea.value).then(() => {
+        const btn = document.getElementById('btn-copy-all-links');
+        btn.innerText = 'Tersalin!';
+        setTimeout(() => btn.innerText = 'Salin Semua Link', 2000);
     });
 }
 

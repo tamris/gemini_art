@@ -203,7 +203,8 @@
 
                 <div>
                     <label class="block text-xs font-black uppercase text-black mb-1">Pilih File (PDF, TIFF, JPG, CDR, PSD, ZIP)</label>
-                    <input type="file" name="file" required class="neo-input text-xs file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-2 file:border-black file:bg-amber-300 file:font-black file:text-xs">
+                    <input type="file" name="files[]" multiple required class="neo-input text-xs file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-2 file:border-black file:bg-amber-300 file:font-black file:text-xs cursor-pointer">
+                    <div class="selected-files-preview mt-2 hidden text-xs bg-slate-50 border-2 border-black rounded-xl p-2.5 space-y-1.5 shadow-[1px_1px_0px_0px_#0f172a]"></div>
                     <p class="text-[11px] text-slate-500 font-semibold mt-1">
                         Aset otomatis tersimpan aman di cloud storage.
                     </p>

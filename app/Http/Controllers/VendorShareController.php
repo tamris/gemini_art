@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Mail\VendorPrintDispatchMail;
 use App\Models\DesignAsset;
+use App\Models\DesignJob;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -107,6 +108,68 @@ class VendorShareController extends Controller
     }
 
     /**
+     * Dispatch all print assets of a job/ticket to vendor via Email.
+     */
+    public function sendJobEmail(Request $request, DesignJob $job)
+    {
+        $user = Auth::user();
+        if (!$user) {
+            abort(403);
+        }
+
+        $request->validate([
+            'vendor_email' => 'required|email',
+            'notes' => 'nullable|string|max:1000',
+        ]);
+
+        $assets = $job->assets->where('file_type', 'final_print');
+        if ($assets->isEmpty()) {
+            $errMsg = 'Tidak ada berkas cetak siap produksi (final print) yang ditemukan untuk tiket ini.';
+            if ($request->expectsJson() || $request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $errMsg,
+                ], 422);
+            }
+            return back()->with('error', $errMsg);
+        }
+
+        foreach ($assets as $asset) {
+            $asset->ensureShareToken();
+        }
+
+        try {
+            Mail::to($request->vendor_email)->send(
+                new VendorPrintDispatchMail($assets->first(), $request->notes, $user->name, $assets)
+            );
+
+            $count = $assets->count();
+            $msg = "Email seluruh berkas ({$count} file) berhasil dikirimkan ke {$request->vendor_email}!";
+
+            if ($request->expectsJson() || $request->ajax()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => $msg,
+                ]);
+            }
+
+            return back()->with('success', $msg);
+        } catch (\Throwable $e) {
+            Log::error("Failed to send vendor dispatch all email: " . $e->getMessage());
+
+            $errMsg = "Gagal mengirim email: " . $e->getMessage();
+            if ($request->expectsJson() || $request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $errMsg,
+                ], 500);
+            }
+
+            return back()->with('error', $errMsg);
+        }
+    }
+
+    /**
      * Preview the rendered dispatch email in the browser.
      */
     public function previewEmail(DesignAsset $asset)
@@ -116,6 +179,30 @@ class VendorShareController extends Controller
             $asset,
             'Mohon diprioritaskan cetak segera ya mas operator.',
             Auth::user()?->name ?? 'Owner Gemini Art'
+        );
+
+        return $mail->render();
+    }
+
+    /**
+     * Preview the rendered dispatch email for all final print assets in the browser.
+     */
+    public function previewJobEmail(DesignJob $job)
+    {
+        $assets = $job->assets->where('file_type', 'final_print');
+        if ($assets->isEmpty()) {
+            abort(404, 'Tidak ada berkas cetak final untuk dipratinjau.');
+        }
+
+        foreach ($assets as $asset) {
+            $asset->ensureShareToken();
+        }
+
+        $mail = new VendorPrintDispatchMail(
+            $assets->first(),
+            'Mohon diprioritaskan cetak segera ya mas operator.',
+            Auth::user()?->name ?? 'Owner Gemini Art',
+            $assets
         );
 
         return $mail->render();

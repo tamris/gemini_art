@@ -57,89 +57,118 @@
             </div>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- Spesifikasi Produksi & Bahan -->
+        <div class="neo-box p-5 sm:p-6 bg-white border-2 border-slate-900 rounded-2xl shadow-[3px_3px_0px_0px_#0f172a] space-y-4">
+            <div class="flex items-center justify-between pb-3 border-b-2 border-slate-900">
+                <h3 class="font-black text-base text-slate-900 flex items-center gap-2">
+                    <x-icon name="printer" class="w-5 h-5 text-slate-800" />
+                    <span>Spesifikasi Produksi & Bahan</span>
+                </h3>
+                <span class="text-[11px] font-bold text-slate-500 hidden sm:inline-block">Format: Print-Ready Original</span>
+            </div>
 
-            <!-- Left: Technical Print Specifications (2 Cols) -->
-            <div class="md:col-span-2 space-y-6">
-                <div class="neo-box p-6 bg-white border-2 border-slate-900 rounded-2xl shadow-[3px_3px_0px_0px_#0f172a] space-y-4">
-                    <h3 class="font-black text-base text-slate-900 flex items-center gap-2 pb-3 border-b-2 border-slate-900">
-                        <x-icon name="printer" class="w-5 h-5 text-slate-800" />
-                        <span>Spesifikasi Produksi & Bahan</span>
-                    </h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5 text-xs">
+                <div class="p-3.5 bg-slate-50 border-[1.5px] border-slate-900 rounded-xl space-y-1 shadow-[1.5px_1.5px_0px_0px_#0f172a]">
+                    <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">Ukuran / Dimensi</span>
+                    <span class="text-sm font-black text-slate-900 font-mono">
+                        {{ $job->dimensions ?: 'Sesuai file asli' }}
+                    </span>
+                </div>
 
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
-                        <div class="p-3.5 bg-slate-50 border-[1.5px] border-slate-900 rounded-xl space-y-1 shadow-[1.5px_1.5px_0px_0px_#0f172a]">
-                            <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider block">Ukuran / Dimensi</span>
-                            <span class="text-sm font-black text-slate-900 font-mono">
-                                {{ $job->dimensions ?: 'Sesuai file asli' }}
-                            </span>
-                        </div>
+                <div class="p-3.5 bg-slate-50 border-[1.5px] border-slate-900 rounded-xl space-y-1 shadow-[1.5px_1.5px_0px_0px_#0f172a]">
+                    <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">Material / Bahan</span>
+                    <span class="text-sm font-black text-slate-900">
+                        {{ $job->material_notes ?: 'Standar Percetakan' }}
+                    </span>
+                </div>
 
-                        <div class="p-3.5 bg-slate-50 border-[1.5px] border-slate-900 rounded-xl space-y-1 shadow-[1.5px_1.5px_0px_0px_#0f172a]">
-                            <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider block">Material / Bahan</span>
-                            <span class="text-sm font-black text-slate-900">
-                                {{ $job->material_notes ?: 'Standar Percetakan' }}
-                            </span>
-                        </div>
-                    </div>
-
-                    @if(!empty($job->brief_notes))
-                    <div class="p-4 bg-amber-50 border-[1.5px] border-slate-900 rounded-xl space-y-1">
-                        <span class="text-[11px] font-bold text-amber-900 uppercase tracking-wider block">Catatan Khusus Finishing / Brief</span>
-                        <p class="text-xs font-semibold text-amber-950 leading-relaxed whitespace-pre-line">
-                            {{ $job->brief_notes }}
-                        </p>
-                    </div>
-                    @endif
-
-                    <div class="pt-2 text-slate-500 text-[11px] font-medium flex items-center gap-2">
-                        <x-icon name="info" class="w-4 h-4 text-slate-400 shrink-0" />
-                        <span>File cetak telah disiapkan oleh tim desainer Gemini Art dalam format siap cetak (print-ready).</span>
-                    </div>
+                <div class="p-3.5 bg-amber-50/80 border-[1.5px] border-slate-900 rounded-xl space-y-1 shadow-[1.5px_1.5px_0px_0px_#0f172a] sm:col-span-2 lg:col-span-1">
+                    <span class="text-[10px] font-bold text-amber-900 uppercase tracking-wider block">Catatan Finishing / Brief</span>
+                    <p class="text-xs font-semibold text-slate-900 leading-relaxed whitespace-pre-line">
+                        {{ $job->brief_notes ?: 'Tidak ada catatan khusus.' }}
+                    </p>
                 </div>
             </div>
 
-            <!-- Right: Download Action Card (1 Col) -->
-            <div class="space-y-4">
-                <div class="neo-box p-6 bg-white border-2 border-slate-900 rounded-2xl shadow-[3px_3px_0px_0px_#0f172a] space-y-5 text-center">
-                    
-                    <div class="w-16 h-16 rounded-2xl bg-emerald-100 border-2 border-slate-900 flex items-center justify-center mx-auto shadow-[2px_2px_0px_0px_#0f172a]">
-                        <x-icon name="file-check" class="w-8 h-8 text-emerald-800" />
+            <div class="pt-1 text-slate-500 text-[11px] font-medium flex items-center gap-2">
+                <x-icon name="info" class="w-4 h-4 text-slate-400 shrink-0" />
+                <span>File cetak telah disiapkan oleh tim desainer Gemini Art dalam format siap cetak (resolusi asli tanpa kompresi).</span>
+            </div>
+        </div>
+
+        <!-- Berkas Cetak Siap Produksi (Daftar File Bersih & Rapi) -->
+        @php
+            $allFinalPrintAssets = $job->assets->where('file_type', 'final_print');
+            if ($allFinalPrintAssets->isEmpty()) {
+                $allFinalPrintAssets = collect([$asset]);
+            }
+        @endphp
+        <div class="neo-box p-5 sm:p-6 bg-white border-2 border-slate-900 rounded-2xl shadow-[3px_3px_0px_0px_#0f172a] space-y-4">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b-2 border-slate-900 gap-2">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-8 h-8 bg-emerald-300 border-[1.5px] border-slate-900 rounded-lg flex items-center justify-center text-slate-900 shadow-[1px_1px_0px_0px_#0f172a]">
+                        <x-icon name="file-check" class="w-4 h-4 text-slate-900" />
                     </div>
-
-                    <div class="space-y-1 text-left bg-slate-50 p-3 rounded-xl border border-slate-300">
-                        <div class="text-[10px] font-black uppercase text-slate-500">Nama Berkas:</div>
-                        <div class="text-xs font-black text-slate-900 font-mono break-all leading-tight">
-                            {{ $asset->file_name }}
-                        </div>
-                        <div class="text-[11px] font-bold text-slate-500 font-mono pt-1">
-                            Ukuran: {{ $asset->formatted_size }}
-                        </div>
+                    <div>
+                        <h3 class="font-black text-base text-slate-900">Berkas Cetak Siap Produksi</h3>
+                        <p class="text-[11px] font-bold text-slate-500">Tersedia {{ $allFinalPrintAssets->count() }} berkas master siap diproses mesin cetak</p>
                     </div>
+                </div>
 
-                    <!-- Direct Download Button -->
-                    <a href="{{ route('vendor.share.download', $asset->share_token) }}" 
-                       class="w-full neo-btn bg-emerald-400 hover:bg-emerald-300 active:translate-x-[2px] active:translate-y-[2px] text-sm py-3 px-4 font-black text-slate-950 shadow-[3px_3px_0px_0px_#0f172a] flex items-center justify-center gap-2 uppercase tracking-wide">
-                        <x-icon name="download" class="w-4 h-4 stroke-[2.5]" />
-                        <span>Download Berkas</span>
-                    </a>
-
-                    <!-- Preview Option if supported -->
-                    @if($asset->is_image || str_ends_with(strtolower($asset->file_name), '.pdf'))
-                    <a href="{{ route('vendor.share.preview', $asset->share_token) }}" 
-                       target="_blank" 
-                       class="w-full neo-btn bg-sky-200 hover:bg-sky-300 text-xs py-2 px-3 font-bold text-slate-900 shadow-[1.5px_1.5px_0px_0px_#0f172a] flex items-center justify-center gap-1.5">
-                        <x-icon name="eye" class="w-3.5 h-3.5" />
-                        <span>Buka Pratinjau di Tab Baru</span>
-                    </a>
-                    @endif
-
-                    <div class="text-[10px] text-slate-500 font-medium">
-                        Unduhan langsung aman tanpa batas kuota atau masa kedaluwarsa pendek.
-                    </div>
+                <div class="text-[11px] text-slate-500 font-medium font-mono">
+                    Cloud Storage Direct Access
                 </div>
             </div>
 
+            <!-- List of All Final Print Files -->
+            <div class="space-y-3">
+                @foreach($allFinalPrintAssets as $index => $ast)
+                <div class="p-4 bg-slate-50 border-2 border-slate-900 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-[2px_2px_0px_0px_#0f172a] hover:bg-amber-50/30 transition-all">
+                    <div class="flex items-center gap-3.5 min-w-0 flex-1">
+                        <div class="w-12 h-12 rounded-xl bg-amber-200 border-2 border-slate-900 flex items-center justify-center text-slate-900 shrink-0 shadow-[1.5px_1.5px_0px_0px_#0f172a]">
+                            @if(str_ends_with(strtolower($ast->file_name), '.pdf'))
+                                <x-icon name="printer" class="w-6 h-6 text-emerald-800" />
+                            @elseif($ast->is_image)
+                                <x-icon name="eye" class="w-6 h-6 text-sky-800" />
+                            @else
+                                <x-icon name="file-text" class="w-6 h-6 text-amber-800" />
+                            @endif
+                        </div>
+                        <div class="min-w-0 flex-1">
+                            <div class="flex items-center gap-2 flex-wrap mb-1">
+                                <span class="px-2 py-0.5 rounded-md border border-slate-900 bg-emerald-300 text-slate-950 font-black text-[10px] uppercase shadow-[0.5px_0.5px_0px_0px_#0f172a]">
+                                    Siap Cetak
+                                </span>
+                                <span class="font-mono text-xs font-bold text-slate-600 bg-white px-2 py-0.5 rounded border border-slate-300">
+                                    {{ $ast->formatted_size }}
+                                </span>
+                            </div>
+                            <div class="font-mono font-black text-sm text-slate-900 truncate" title="{{ $ast->file_name }}">
+                                {{ $ast->file_name }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="flex items-center gap-2 shrink-0 flex-wrap sm:flex-nowrap">
+                        @if($ast->is_image || str_ends_with(strtolower($ast->file_name), '.pdf'))
+                        <a href="{{ route('vendor.share.preview', $ast->share_token) }}" 
+                           target="_blank" 
+                           class="neo-btn bg-sky-200 hover:bg-sky-300 text-xs py-2 px-3.5 font-black text-slate-900 shadow-[1.5px_1.5px_0px_0px_#0f172a] flex items-center gap-1.5 cursor-pointer">
+                            <x-icon name="eye" class="w-3.5 h-3.5" />
+                            <span>Pratinjau</span>
+                        </a>
+                        @endif
+
+                        <a href="{{ route('vendor.share.download', $ast->share_token) }}" 
+                           class="neo-btn bg-emerald-400 hover:bg-emerald-300 active:translate-x-[1px] active:translate-y-[1px] text-xs py-2 px-4 font-black text-slate-950 shadow-[2px_2px_0px_0px_#0f172a] flex items-center gap-1.5 cursor-pointer">
+                            <x-icon name="download" class="w-3.5 h-3.5 stroke-[2.5]" />
+                            <span>Download Berkas</span>
+                        </a>
+                    </div>
+                </div>
+                @endforeach
+            </div>
         </div>
 
     </main>
@@ -151,15 +180,19 @@
 
     <script>
     function copySpecsToClipboard() {
-        const text = `ORDER CETAK: {{ $order->order_number }}
-Pekerjaan: {{ $job->title ?: $order->customer_name }}
-Ukuran: {{ $job->dimensions ?: 'Sesuai file' }}
-Bahan: {{ $job->material_notes ?: 'Standar' }}
-@if(!empty($job->brief_notes))Catatan: {{ $job->brief_notes }}
-@endif
-Download Berkas: {{ route('vendor.share.download', $asset->share_token) }}`;
+        let text = `ORDER CETAK: {{ $order->order_number }}\n`;
+        text += `Pekerjaan: {{ $job->title ?: $order->customer_name }}\n`;
+        text += `Ukuran: {{ $job->dimensions ?: 'Sesuai file asli' }}\n`;
+        text += `Bahan: {{ $job->material_notes ?: 'Standar' }}\n`;
+        @if(!empty($job->brief_notes))
+        text += `Catatan: {{ $job->brief_notes }}\n`;
+        @endif
+        text += `\nDaftar Berkas Siap Cetak:\n`;
+        @foreach($allFinalPrintAssets as $i => $ast)
+        text += `{{ $i + 1 }}. {{ $ast->file_name }} ({{ $ast->formatted_size }})\nDownload: {{ route('vendor.share.download', $ast->share_token) }}\n`;
+        @endforeach
 
-        navigator.clipboard.writeText(text).then(() => {
+        navigator.clipboard.writeText(text.trim()).then(() => {
             const btn = document.getElementById('copy-btn-text');
             const original = btn.innerText;
             btn.innerText = 'Tersalin!';

@@ -72,7 +72,41 @@
                     </tr>
                 </table>
 
-                <!-- File Box -->
+                @if($allAssets && count($allAssets) > 1)
+                <!-- Multiple Files List Box -->
+                <div style="margin: 16px 0;">
+                    <div style="font-size: 11px; font-weight: 900; color: #0f172a; text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.05em;">
+                        Daftar Berkas Siap Cetak (Total {{ count($allAssets) }} File):
+                    </div>
+                    @foreach($allAssets as $ast)
+                    <div style="background-color: #ffffff; border: 1.5px solid #0f172a; border-radius: 10px; padding: 12px 14px; margin-bottom: 10px; box-shadow: 2px 2px 0px 0px #0f172a;">
+                        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                            <tr>
+                                <td>
+                                    <div style="font-family: monospace; font-size: 12px; font-weight: 800; color: #0f172a; word-break: break-all;">
+                                        {{ $ast->file_name }}
+                                    </div>
+                                    <div style="font-size: 11px; color: #64748b; font-weight: 700; margin-top: 3px;">
+                                        Ukuran: <strong>{{ $ast->formatted_size }}</strong> &bull; Tipe: <strong>{{ $ast->file_type_badge }}</strong>
+                                    </div>
+                                </td>
+                                <td align="right" style="padding-left: 10px; white-space: nowrap;">
+                                    @if($ast->is_image || str_ends_with(strtolower($ast->file_name), '.pdf'))
+                                    <a href="{{ route('vendor.share.preview', $ast->share_token) }}" target="_blank" style="display: inline-block; background-color: #bae6fd; color: #0c4a6e; text-decoration: none; font-size: 11px; font-weight: 900; padding: 6px 12px; border-radius: 6px; border: 1.5px solid #0f172a; box-shadow: 1px 1px 0px 0px #0f172a; margin-right: 6px;">
+                                        Pratinjau
+                                    </a>
+                                    @endif
+                                    <a href="{{ route('vendor.share.download', $ast->share_token) }}" style="display: inline-block; background-color: #34d399; color: #064e3b; text-decoration: none; font-size: 11px; font-weight: 900; padding: 6px 12px; border-radius: 6px; border: 1.5px solid #0f172a; box-shadow: 1px 1px 0px 0px #0f172a;">
+                                        Download
+                                    </a>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    @endforeach
+                </div>
+                @else
+                <!-- Single File Box -->
                 <div style="background-color: #ffffff; border: 1.5px dashed #0f172a; border-radius: 12px; padding: 14px 16px; margin: 16px 0;">
                     <div style="font-size: 11px; font-weight: 800; color: #64748b; text-transform: uppercase; margin-bottom: 2px;">
                         Nama Berkas Cetak:
@@ -122,6 +156,7 @@
                         Link aman & langsung dari Cloud Storage (tanpa limit lampiran email).
                     </div>
                 </div>
+                @endif
 
                 <!-- Alternative Web Link -->
                 <div style="text-align: center; font-size: 12px; color: #64748b; border-top: 1px solid #e2e8f0; padding-top: 16px; margin-top: 20px;">
