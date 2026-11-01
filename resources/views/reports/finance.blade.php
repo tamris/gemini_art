@@ -62,13 +62,13 @@
     </div>
 
     <!-- Filter Bar (Screen Only - Auto Instant Filter) -->
-    <div class="no-print neo-box p-4 bg-white">
-        <form method="GET" action="{{ route('reports.finance') }}" data-auto-submit class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-3 items-end">
+    <div class="no-print neo-box p-4 bg-white relative z-20">
+        <form method="GET" action="{{ route('reports.finance') }}" data-auto-submit class="flex flex-wrap items-end gap-3">
             
             <!-- Filter Cabang (Owner Only) -->
             @if(Auth::user()->isOwner())
-            <div class="{{ $period === 'custom' ? 'lg:col-span-3' : 'lg:col-span-4' }}">
-                <label class="block text-[11px] font-black uppercase text-slate-700 mb-1 tracking-wider">Cabang</label>
+            <div class="w-full sm:w-60">
+                <label class="block text-[11px] font-black uppercase text-slate-800 mb-1 tracking-wider">Cabang</label>
                 <select name="branch_id" class="neo-select w-full">
                     <option value="">Semua Cabang (Konsolidasian)</option>
                     @foreach($branches as $b)
@@ -81,8 +81,8 @@
             @endif
 
             <!-- Filter Periode Cepat -->
-            <div class="{{ Auth::user()->isOwner() ? ($period === 'custom' ? 'lg:col-span-3' : 'lg:col-span-5') : ($period === 'custom' ? 'lg:col-span-5' : 'lg:col-span-8') }}">
-                <label class="block text-[11px] font-black uppercase text-slate-700 mb-1 tracking-wider">Rentang Waktu</label>
+            <div class="w-full sm:w-64">
+                <label class="block text-[11px] font-black uppercase text-slate-800 mb-1 tracking-wider">Rentang Waktu</label>
                 <select name="period" id="period-selector" onchange="toggleCustomDates(this.value);" class="neo-select w-full">
                     <option value="this_month" {{ $period === 'this_month' ? 'selected' : '' }}>Bulan Ini ({{ now()->translatedFormat('F Y') }})</option>
                     <option value="last_month" {{ $period === 'last_month' ? 'selected' : '' }}>Bulan Lalu ({{ now()->subMonth()->translatedFormat('F Y') }})</option>
@@ -93,25 +93,25 @@
                 </select>
             </div>
 
-            <!-- Custom Date Range Pickers -->
-            <div id="custom-date-container" class="{{ $period === 'custom' ? '' : 'hidden' }} lg:col-span-4 grid grid-cols-2 gap-2">
-                <div>
-                    <label class="block text-[10px] font-black uppercase text-slate-600 mb-1">Dari Tanggal</label>
+            <!-- Custom Date Range Pickers (Compact Inline) -->
+            <div id="custom-date-container" class="{{ $period === 'custom' ? 'flex' : 'hidden' }} flex-wrap items-end gap-2">
+                <div class="w-36">
+                    <label class="block text-[10px] font-black uppercase text-slate-600 mb-1">Dari</label>
                     <input type="date" name="date_from" value="{{ request('date_from', $startDate->format('Y-m-d')) }}" class="neo-input w-full text-xs" />
                 </div>
-                <div>
-                    <label class="block text-[10px] font-black uppercase text-slate-600 mb-1">Sampai Tanggal</label>
+                <div class="w-36">
+                    <label class="block text-[10px] font-black uppercase text-slate-600 mb-1">Sampai</label>
                     <input type="date" name="date_to" value="{{ request('date_to', $endDate->format('Y-m-d')) }}" class="neo-input w-full text-xs" />
                 </div>
             </div>
 
-            <!-- Reset Button (Auto-Active State) -->
-            <div class="{{ $period === 'custom' ? 'lg:col-span-2' : (Auth::user()->isOwner() ? 'lg:col-span-3' : 'lg:col-span-4') }}">
+            <!-- Reset Button (Compact) -->
+            <div class="w-auto">
                 <a href="{{ route('reports.finance') }}" 
                    title="Reset Filter ke Default" 
-                   class="w-full neo-btn {{ request()->anyFilled(['branch_id', 'date_from', 'date_to']) || (request('period') && request('period') !== 'this_month') ? 'bg-amber-200 hover:bg-amber-300 text-slate-900 border-slate-800 font-black' : 'bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold' }} text-xs py-2 px-3 shadow-[1.5px_1.5px_0px_0px_#0f172a] flex items-center justify-center gap-1.5 transition-all h-[40px]">
+                   class="neo-btn {{ request()->anyFilled(['branch_id', 'date_from', 'date_to']) || (request('period') && request('period') !== 'this_month') ? 'bg-amber-200 hover:bg-amber-300 text-slate-900 border-slate-800 font-black' : 'bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold' }} text-xs py-2 px-3.5 shadow-[1.5px_1.5px_0px_0px_#0f172a] flex items-center justify-center gap-1.5 transition-all h-[40px]">
                     <x-icon name="rotate-ccw" class="w-3.5 h-3.5" />
-                    <span>Reset Filter</span>
+                    <span>Reset</span>
                 </a>
             </div>
 
@@ -586,8 +586,10 @@
         if (!container) return;
         if (value === 'custom') {
             container.classList.remove('hidden');
+            container.classList.add('flex');
         } else {
             container.classList.add('hidden');
+            container.classList.remove('flex');
             const fromInput = container.querySelector('input[name="date_from"]');
             const toInput = container.querySelector('input[name="date_to"]');
             if (fromInput) fromInput.value = '';
