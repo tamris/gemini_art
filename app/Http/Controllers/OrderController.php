@@ -7,6 +7,7 @@ use App\Models\CashMovement;
 use App\Models\DesignAsset;
 use App\Models\DesignJob;
 use App\Models\Order;
+use App\Models\OrderItem;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -79,6 +80,11 @@ class OrderController extends Controller
         $user = Auth::user();
 
         // Sanitize nominal inputs before validation (removes dots, spaces, or currency prefixes)
+        if ($request->has('main_price')) {
+            $request->merge([
+                'main_price' => preg_replace('/[^\d]/', '', (string) $request->input('main_price')),
+            ]);
+        }
         if ($request->has('total_amount')) {
             $request->merge([
                 'total_amount' => preg_replace('/[^\d]/', '', (string) $request->input('total_amount')),
@@ -90,6 +96,21 @@ class OrderController extends Controller
             ]);
         }
 
+        // Sanitize add-on items
+        if ($request->has('items') && is_array($request->input('items'))) {
+            $cleanItems = [];
+            foreach ($request->input('items') as $it) {
+                if (!empty($it['name'])) {
+                    $cleanItems[] = [
+                        'name' => trim($it['name']),
+                        'qty' => max(1, (int) ($it['qty'] ?? 1)),
+                        'price' => (float) preg_replace('/[^\d]/', '', (string) ($it['price'] ?? 0)),
+                    ];
+                }
+            }
+            $request->merge(['items' => $cleanItems]);
+        }
+
         $rules = [
             'customer_name' => 'required|string|max:100',
             'customer_phone' => 'nullable|string|max:20',
@@ -99,10 +120,15 @@ class OrderController extends Controller
             'brief_notes' => 'nullable|string',
             'deadline_at' => 'nullable|date',
             'designer_id' => 'nullable|exists:users,id',
+            'main_price' => 'nullable|numeric|min:0',
             'total_amount' => 'required|numeric|min:1',
             'paid_amount' => 'required|numeric|min:0',
             'payment_method' => 'required|in:cash,qris,transfer',
             'brief_file' => 'nullable|file|max:51200', // max 50MB
+            'items' => 'nullable|array',
+            'items.*.name' => 'required_with:items|string|max:150',
+            'items.*.qty' => 'required_with:items|integer|min:1',
+            'items.*.price' => 'required_with:items|numeric|min:0',
         ];
 
         if ($user->isOwner()) {
@@ -118,6 +144,15 @@ class OrderController extends Controller
             $orderNumber = Order::generateOrderNumber($branch);
             $total = (float) $data['total_amount'];
             $paid = (float) $data['paid_amount'];
+
+            // Calculate main service price vs add-ons
+            $extraTotal = 0;
+            if (!empty($data['items'])) {
+                foreach ($data['items'] as $it) {
+                    $extraTotal += $it['qty'] * $it['price'];
+                }
+            }
+            $mainPrice = !empty($data['main_price']) ? (float) $data['main_price'] : max(0, $total - $extraTotal);
 
             // Determine payment status
             $paymentStatus = 'unpaid';
@@ -150,6 +185,29 @@ class OrderController extends Controller
                 'brief_notes' => $data['brief_notes'] ?? null,
                 'deadline_at' => !empty($data['deadline_at']) ? Carbon::parse($data['deadline_at']) : null,
             ]);
+
+            // Save Line Item #1: Main Design & Print service
+            OrderItem::create([
+                'order_id' => $order->id,
+                'item_name' => $data['title'],
+                'qty' => 1,
+                'unit_price' => $mainPrice,
+                'subtotal' => $mainPrice,
+            ]);
+
+            // Save Line Items #2..N: Add-on tools / items
+            if (!empty($data['items'])) {
+                foreach ($data['items'] as $extra) {
+                    $itemSubtotal = $extra['qty'] * $extra['price'];
+                    OrderItem::create([
+                        'order_id' => $order->id,
+                        'item_name' => $extra['name'],
+                        'qty' => $extra['qty'],
+                        'unit_price' => $extra['price'],
+                        'subtotal' => $itemSubtotal,
+                    ]);
+                }
+            }
 
             // Record cash movement if paid > 0
             if ($paid > 0) {

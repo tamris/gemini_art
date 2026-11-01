@@ -90,6 +90,22 @@
                 </div>
             </div>
 
+            @php
+                $extraAccessories = $order->items->slice(1);
+            @endphp
+            @if($extraAccessories->isNotEmpty())
+            <div class="p-3.5 bg-purple-50/90 border-[1.5px] border-slate-900 rounded-xl space-y-1.5 shadow-[1.5px_1.5px_0px_0px_#0f172a]">
+                <span class="text-[10px] font-black text-purple-900 uppercase tracking-wider block">Alat / Perlengkapan Display Terkait Order:</span>
+                <div class="flex items-center gap-2 flex-wrap">
+                    @foreach($extraAccessories as $ext)
+                        <span class="px-2.5 py-1 rounded-lg border-[1.5px] border-slate-900 bg-white text-xs font-black text-purple-950 shadow-[1px_1px_0px_0px_#0f172a]">
+                            📦 {{ $ext->item_name }} &bull; {{ $ext->qty }} Pcs
+                        </span>
+                    @endforeach
+                </div>
+            </div>
+            @endif
+
             <div class="pt-1 text-slate-500 text-[11px] font-medium flex items-center gap-2">
                 <x-icon name="info" class="w-4 h-4 text-slate-400 shrink-0" />
                 <span>File cetak telah disiapkan oleh tim desainer Gemini Art dalam format siap cetak (resolusi asli tanpa kompresi).</span>

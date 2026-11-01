@@ -328,19 +328,69 @@
                     </div>
                 </div>
 
+                <!-- Card 3: Alat & Layanan Tambahan (Add-on Opsional) -->
+                <div class="neo-box p-5 bg-white space-y-4">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-slate-200">
+                        <div>
+                            <h2 class="text-sm font-black text-slate-800 flex items-center gap-2">
+                                <div class="w-7 h-7 bg-purple-200 border-[1.5px] border-slate-800 rounded-lg flex items-center justify-center text-slate-900 shadow-[1px_1px_0px_0px_#0f172a]">
+                                    <x-icon name="plus-circle" class="w-4 h-4" />
+                                </div>
+                                <span>3. Alat & Layanan Tambahan (Add-on Opsional)</span>
+                            </h2>
+                            <p class="text-[11px] font-medium text-slate-500 mt-0.5">
+                                Tambahkan alat display, finishing ekstra, atau jasa pasang yang dibeli customer.
+                            </p>
+                        </div>
+                        <button type="button" 
+                                onclick="addExtraItemRow()" 
+                                class="neo-btn bg-purple-100 hover:bg-purple-200 text-purple-950 text-xs py-1.5 px-3 font-black shadow-[1.5px_1.5px_0px_0px_#0f172a] flex items-center gap-1.5 cursor-pointer self-start sm:self-center">
+                            <x-icon name="plus" class="w-3.5 h-3.5 stroke-[2.5]" />
+                            <span>Tambah Item / Alat</span>
+                        </button>
+                    </div>
+
+                    <!-- Quick Preset Chips -->
+                    <div class="flex items-center gap-1.5 flex-wrap">
+                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Cepat:</span>
+                        <button type="button" onclick="addExtraItemRow('Rangka X-Banner Fiber 60x160', 1, 35000)" class="px-2 py-0.5 rounded-md bg-slate-100 hover:bg-purple-100 border border-slate-300 text-slate-700 hover:text-purple-900 text-[11px] font-bold cursor-pointer transition-all">
+                            + Rangka X-Banner
+                        </button>
+                        <button type="button" onclick="addExtraItemRow('Rangka Roll-Up Aluminium 80x200', 1, 95000)" class="px-2 py-0.5 rounded-md bg-slate-100 hover:bg-purple-100 border border-slate-300 text-slate-700 hover:text-purple-900 text-[11px] font-bold cursor-pointer transition-all">
+                            + Rangka Roll-Up
+                        </button>
+                        <button type="button" onclick="addExtraItemRow('Mata Ayam Keliling (8 Titik)', 1, 10000)" class="px-2 py-0.5 rounded-md bg-slate-100 hover:bg-purple-100 border border-slate-300 text-slate-700 hover:text-purple-900 text-[11px] font-bold cursor-pointer transition-all">
+                            + Mata Ayam Ekstra
+                        </button>
+                        <button type="button" onclick="addExtraItemRow('Selongsong Kayu/Bambu (Atas-Bawah)', 1, 10000)" class="px-2 py-0.5 rounded-md bg-slate-100 hover:bg-purple-100 border border-slate-300 text-slate-700 hover:text-purple-900 text-[11px] font-bold cursor-pointer transition-all">
+                            + Selongsong Kayu
+                        </button>
+                        <button type="button" onclick="addExtraItemRow('Jasa Pasang & Instalasi Lokasi', 1, 30000)" class="px-2 py-0.5 rounded-md bg-slate-100 hover:bg-purple-100 border border-slate-300 text-slate-700 hover:text-purple-900 text-[11px] font-bold cursor-pointer transition-all">
+                            + Jasa Pasang Lokasi
+                        </button>
+                    </div>
+
+                    <!-- Items List Container -->
+                    <div id="extra-items-container" class="space-y-2.5">
+                        <div id="no-extra-items-msg" class="p-4 border-[1.5px] border-dashed border-slate-200 rounded-xl text-center text-xs text-slate-400 font-medium">
+                            Belum ada alat atau item tambahan. Klik tombol atau pilihan cepat di atas jika customer membeli alat/layanan ekstra.
+                        </div>
+                    </div>
+                </div>
+
             </div>
 
             <!-- Right Column: Payment & Commitments (4 cols, Sticky) -->
             <div class="lg:col-span-4 space-y-6 lg:sticky lg:top-24">
 
-                <!-- Card 3: Biaya & Pembayaran Awal -->
+                <!-- Card 4: Biaya & Pembayaran Awal -->
                 <div class="neo-box p-5 bg-amber-50/60 space-y-4">
                     <div class="flex items-center justify-between pb-3 border-b border-amber-200/80">
                         <h2 class="text-sm font-black text-slate-800 flex items-center gap-2">
                             <div class="w-7 h-7 bg-emerald-200 border-[1.5px] border-slate-800 rounded-lg flex items-center justify-center text-slate-900 shadow-[1px_1px_0px_0px_#0f172a]">
                                 <x-icon name="wallet" class="w-4 h-4" />
                             </div>
-                            <span>3. Biaya & Kas Awal</span>
+                            <span>4. Biaya & Kas Awal</span>
                         </h2>
                         <span class="text-[10px] font-black text-emerald-950 bg-emerald-100 border border-emerald-300 px-2 py-0.5 rounded">
                             SOP Kasir
@@ -348,13 +398,49 @@
                     </div>
 
                     <div class="space-y-4">
-                        <!-- Total Biaya Order -->
+                        <!-- Biaya Jasa Desain & Cetak Utama -->
                         <div>
-                            <label for="total_amount_display" class="block text-xs font-black uppercase text-slate-800 mb-1 tracking-wider">
-                                Total Biaya Order <span class="text-rose-500">*</span>
+                            <label for="main_price_display" class="block text-xs font-black uppercase text-slate-800 mb-1 tracking-wider">
+                                Biaya Desain & Cetak Utama <span class="text-rose-500">*</span>
                             </label>
                             <div class="flex rounded-xl overflow-hidden border-[1.5px] border-slate-300 bg-white shadow-[1.5px_1.5px_0px_0px_#e2e8f0] focus-within:border-slate-800 focus-within:shadow-[2.5px_2.5px_0px_0px_#0f172a] transition-all">
-                                <span class="inline-flex items-center px-3.5 bg-amber-200 border-r-[1.5px] border-slate-300 text-xs font-black text-slate-800 select-none">
+                                <span class="inline-flex items-center px-3.5 bg-sky-200 border-r-[1.5px] border-slate-300 text-xs font-black text-slate-800 select-none">
+                                    Rp
+                                </span>
+                                <input type="text" 
+                                       id="main_price_display" 
+                                       inputmode="numeric"
+                                       value="{{ old('main_price', old('total_amount')) ? number_format((float) old('main_price', old('total_amount')), 0, ',', '.') : '' }}" 
+                                       placeholder="0"
+                                       required 
+                                       autocomplete="off"
+                                       class="w-full px-3 py-2 text-base font-black text-black bg-transparent focus:outline-none placeholder:text-slate-300 tracking-wide">
+                            </div>
+                            <input type="hidden" 
+                                   id="main_price" 
+                                   name="main_price" 
+                                   value="{{ old('main_price', old('total_amount', '')) }}">
+                            <span class="text-[10px] text-slate-400 font-semibold mt-1 block">Harga dasar jasa desain dan cetak.</span>
+                        </div>
+
+                        <!-- Subtotal Alat & Item Tambahan (Appears if items exist) -->
+                        <div id="extra-summary-box" class="hidden p-3 bg-purple-50/80 border-[1.5px] border-purple-300 rounded-xl space-y-1">
+                            <div class="flex items-center justify-between text-xs font-bold text-purple-900">
+                                <span>Alat & Item Tambahan:</span>
+                                <span id="extra-total-display" class="font-black text-sm text-purple-950">+ Rp 0</span>
+                            </div>
+                            <div class="text-[10px] text-purple-700 font-medium">
+                                Otomatis diakumulasikan ke total tagihan invoice.
+                            </div>
+                        </div>
+
+                        <!-- Total Biaya Order (Grand Total) -->
+                        <div>
+                            <label for="total_amount_display" class="block text-xs font-black uppercase text-slate-800 mb-1 tracking-wider">
+                                Total Tagihan Order <span class="text-rose-500">*</span>
+                            </label>
+                            <div class="flex rounded-xl overflow-hidden border-2 border-slate-900 bg-amber-100/50 shadow-[2px_2px_0px_0px_#0f172a] transition-all">
+                                <span class="inline-flex items-center px-3.5 bg-amber-300 border-r-2 border-slate-900 text-xs font-black text-slate-950 select-none">
                                     Rp
                                 </span>
                                 <input type="text" 
@@ -363,14 +449,15 @@
                                        value="{{ old('total_amount') ? number_format((float) old('total_amount'), 0, ',', '.') : '' }}" 
                                        placeholder="0"
                                        required 
+                                       readonly
                                        autocomplete="off"
-                                       class="w-full px-3 py-2 text-base font-black text-black bg-transparent focus:outline-none placeholder:text-slate-300 tracking-wide">
+                                       class="w-full px-3 py-2 text-base font-black text-slate-950 bg-transparent focus:outline-none tracking-wide cursor-default">
                             </div>
                             <input type="hidden" 
                                    id="total_amount" 
                                    name="total_amount" 
                                    value="{{ old('total_amount', '') }}">
-                            <span class="text-[10px] text-slate-400 font-semibold mt-1 block">Otomatis terformat rupiah (misal: 250.000).</span>
+                            <span class="text-[10px] text-slate-500 font-semibold mt-1 block">Akumulasi Jasa Desain + Alat/Item Tambahan.</span>
                         </div>
 
                         <!-- Nominal Dibayar di Awal -->
@@ -480,6 +567,162 @@
 
 @push('scripts')
 <script>
+let extraItemIndex = 0;
+
+function escapeHtml(str) {
+    if (!str) return '';
+    return str.toString()
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+}
+
+function addExtraItemRow(name = '', qty = 1, price = 0) {
+    const container = document.getElementById('extra-items-container');
+    const noMsg = document.getElementById('no-extra-items-msg');
+    if (!container) return;
+
+    if (noMsg) noMsg.classList.add('hidden');
+
+    const idx = extraItemIndex++;
+    const row = document.createElement('div');
+    row.className = 'extra-item-row p-3 bg-slate-50 border-[1.5px] border-slate-800 rounded-xl flex flex-col sm:flex-row items-stretch sm:items-center gap-3 shadow-[1.5px_1.5px_0px_0px_#0f172a]';
+    row.dataset.index = idx;
+
+    const formattedPrice = price > 0 ? price.toLocaleString('id-ID') : '';
+    const initialSubtotal = (qty * price) > 0 ? 'Rp ' + (qty * price).toLocaleString('id-ID') : 'Rp 0';
+
+    row.innerHTML = `
+        <div class="flex-1 min-w-0">
+            <label class="block text-[10px] font-black uppercase text-slate-600 mb-0.5">Nama Item / Alat / Layanan</label>
+            <input type="text" 
+                   name="items[${idx}][name]" 
+                   value="${escapeHtml(name)}" 
+                   placeholder="Contoh: Rangka X-Banner Fiber, Mata Ayam, Jasa Pasang..." 
+                   required 
+                   class="w-full neo-input text-xs h-9 bg-white">
+        </div>
+        <div class="w-full sm:w-20 shrink-0">
+            <label class="block text-[10px] font-black uppercase text-slate-600 mb-0.5">Qty</label>
+            <input type="number" 
+                   name="items[${idx}][qty]" 
+                   value="${qty}" 
+                   min="1" 
+                   oninput="handleRowChange(this)" 
+                   class="w-full neo-input text-xs h-9 bg-white text-center font-bold">
+        </div>
+        <div class="w-full sm:w-36 shrink-0">
+            <label class="block text-[10px] font-black uppercase text-slate-600 mb-0.5">Harga Satuan (Rp)</label>
+            <div class="relative">
+                <input type="text" 
+                       inputmode="numeric" 
+                       placeholder="0" 
+                       value="${formattedPrice}"
+                       oninput="handleItemPriceInput(this)" 
+                       class="w-full neo-input text-xs h-9 bg-white font-bold item-price-display">
+                <input type="hidden" 
+                       name="items[${idx}][price]" 
+                       value="${price}" 
+                       class="item-price-raw">
+            </div>
+        </div>
+        <div class="w-full sm:w-28 shrink-0 text-left sm:text-right">
+            <label class="block text-[10px] font-black uppercase text-slate-600 mb-0.5">Subtotal</label>
+            <div class="h-9 flex items-center sm:justify-end font-black text-slate-900 text-xs item-subtotal-text">
+                ${initialSubtotal}
+            </div>
+        </div>
+        <div class="shrink-0 flex sm:items-end justify-end">
+            <button type="button" 
+                    onclick="removeExtraItemRow(this)" 
+                    title="Hapus baris item" 
+                    class="w-9 h-9 rounded-lg border-[1.5px] border-slate-800 bg-rose-200 hover:bg-rose-300 font-black text-xs flex items-center justify-center cursor-pointer shadow-[1px_1px_0px_0px_#0f172a] active:translate-x-[0.5px] active:translate-y-[0.5px]">
+                ✕
+            </button>
+        </div>
+    `;
+
+    container.appendChild(row);
+    recalculateAllTotals();
+}
+
+function removeExtraItemRow(btn) {
+    const row = btn.closest('.extra-item-row');
+    if (row) {
+        row.remove();
+        recalculateAllTotals();
+    }
+}
+
+function handleRowChange(input) {
+    recalculateAllTotals();
+}
+
+function handleItemPriceInput(displayEl) {
+    const row = displayEl.closest('.extra-item-row');
+    const rawInput = row.querySelector('.item-price-raw');
+    
+    let rawDigits = displayEl.value.replace(/\D/g, '');
+    if (!rawDigits) {
+        displayEl.value = '';
+        rawInput.value = '0';
+    } else {
+        const num = parseInt(rawDigits, 10);
+        displayEl.value = num.toLocaleString('id-ID');
+        rawInput.value = num;
+    }
+    recalculateAllTotals();
+}
+
+function recalculateAllTotals() {
+    const mainPriceHidden = document.getElementById('main_price');
+    const mainPrice = parseFloat(mainPriceHidden ? mainPriceHidden.value : 0) || 0;
+
+    let extraTotal = 0;
+    const rows = document.querySelectorAll('.extra-item-row');
+    rows.forEach(row => {
+        const qtyEl = row.querySelector('input[name*="[qty]"]');
+        const priceEl = row.querySelector('.item-price-raw');
+        const qty = parseInt(qtyEl ? qtyEl.value : 1, 10) || 1;
+        const price = parseFloat(priceEl ? priceEl.value : 0) || 0;
+        const subtotal = qty * price;
+        extraTotal += subtotal;
+
+        const subtotalTextEl = row.querySelector('.item-subtotal-text');
+        if (subtotalTextEl) subtotalTextEl.innerText = 'Rp ' + subtotal.toLocaleString('id-ID');
+    });
+
+    const extraBox = document.getElementById('extra-summary-box');
+    const extraTotalDisplay = document.getElementById('extra-total-display');
+    if (extraTotalDisplay) extraTotalDisplay.innerText = '+ Rp ' + extraTotal.toLocaleString('id-ID');
+    if (extraBox) {
+        if (extraTotal > 0 || rows.length > 0) {
+            extraBox.classList.remove('hidden');
+        } else {
+            extraBox.classList.add('hidden');
+        }
+    }
+
+    const noItemsMsg = document.getElementById('no-extra-items-msg');
+    if (noItemsMsg) {
+        if (rows.length > 0) {
+            noItemsMsg.classList.add('hidden');
+        } else {
+            noItemsMsg.classList.remove('hidden');
+        }
+    }
+
+    const grandTotal = mainPrice + extraTotal;
+    const totalHidden = document.getElementById('total_amount');
+    const totalDisplay = document.getElementById('total_amount_display');
+    if (totalHidden) totalHidden.value = grandTotal;
+    if (totalDisplay) totalDisplay.value = grandTotal > 0 ? grandTotal.toLocaleString('id-ID') : '';
+
+    calculateRemaining();
+}
+
 function setupRupiahMask(displayId, hiddenId) {
     const displayEl = document.getElementById(displayId);
     const hiddenEl = document.getElementById(hiddenId);
@@ -488,7 +731,6 @@ function setupRupiahMask(displayId, hiddenId) {
     displayEl.addEventListener('keydown', function(e) {
         if (e.key === 'Backspace') {
             const cursor = displayEl.selectionStart;
-            // If deleting right after a dot separator (e.g. "250.|000"), remove preceding digit
             if (cursor > 1 && displayEl.value[cursor - 1] === '.') {
                 e.preventDefault();
                 const val = displayEl.value;
@@ -514,7 +756,6 @@ function setupRupiahMask(displayId, hiddenId) {
             displayEl.value = formatted;
             hiddenEl.value = num;
 
-            // Maintain cursor position relative to added/removed dot separators
             const diff = formatted.length - oldVal.length;
             let newCursor = cursor + diff;
             if (newCursor < 0) newCursor = 0;
@@ -522,7 +763,11 @@ function setupRupiahMask(displayId, hiddenId) {
             displayEl.setSelectionRange(newCursor, newCursor);
         }
 
-        calculateRemaining();
+        if (hiddenId === 'main_price') {
+            recalculateAllTotals();
+        } else {
+            calculateRemaining();
+        }
     });
 
     displayEl.addEventListener('focus', function() {
@@ -621,9 +866,16 @@ function clearBriefFile(event) {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-    setupRupiahMask('total_amount_display', 'total_amount');
+    setupRupiahMask('main_price_display', 'main_price');
     setupRupiahMask('paid_amount_display', 'paid_amount');
-    calculateRemaining();
+    
+    @if(old('items'))
+        @foreach(old('items') as $oldIt)
+            addExtraItemRow("{{ addslashes($oldIt['name'] ?? '') }}", {{ (int)($oldIt['qty'] ?? 1) }}, {{ (float)($oldIt['price'] ?? 0) }});
+        @endforeach
+    @endif
+
+    recalculateAllTotals();
 });
 </script>
 @endpush

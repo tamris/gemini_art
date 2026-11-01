@@ -151,27 +151,37 @@
                 </div>
                 @endif
 
-                <!-- If Retail POS: Show Order Items -->
-                @if($order->order_type === 'retail_pos' && $order->items->count())
+                <!-- If Multi-items or Retail POS: Show Order Items -->
+                @if($order->items->count() > 1 || ($order->order_type === 'retail_pos' && $order->items->count()))
                 <div class="pt-3 border-t-[1.5px] border-slate-800">
-                    <h3 class="font-black text-sm text-slate-900 mb-2">Item Belanja POS:</h3>
-                    <div class="overflow-x-auto">
+                    <h3 class="font-black text-sm text-slate-900 mb-2 flex items-center gap-1.5">
+                        <x-icon name="list" class="w-4 h-4 text-slate-700" />
+                        <span>{{ $order->order_type === 'retail_pos' ? 'Item Belanja POS:' : 'Rincian Item & Alat Tambahan:' }}</span>
+                    </h3>
+                    <div class="overflow-x-auto border-[1.5px] border-slate-800 rounded-xl overflow-hidden shadow-[1.5px_1.5px_0px_0px_#0f172a]">
                         <table class="w-full text-xs">
                             <thead>
-                                <tr class="bg-slate-100 border-b-[1.5px] border-slate-800 text-slate-900 font-black uppercase">
+                                <tr class="bg-slate-100 border-b-[1.5px] border-slate-800 text-slate-900 font-black uppercase text-[10px]">
                                     <th class="py-2 px-3 text-left">Item Layanan / Barang</th>
                                     <th class="py-2 px-3 text-center">Qty</th>
                                     <th class="py-2 px-3 text-right">Harga Satuan</th>
                                     <th class="py-2 px-3 text-right">Subtotal</th>
                                 </tr>
                             </thead>
-                            <tbody class="divide-y divide-slate-800/20">
-                                @foreach($order->items as $item)
-                                <tr>
-                                    <td class="py-2 px-3 font-bold">{{ $item->item_name }}</td>
-                                    <td class="py-2 px-3 text-center font-bold">{{ $item->qty }}</td>
-                                    <td class="py-2 px-3 text-right">Rp {{ number_format($item->unit_price, 0, ',', '.') }}</td>
-                                    <td class="py-2 px-3 text-right font-black">Rp {{ number_format($item->subtotal, 0, ',', '.') }}</td>
+                            <tbody class="divide-y divide-slate-800/20 bg-white">
+                                @foreach($order->items as $idx => $item)
+                                <tr class="hover:bg-slate-50">
+                                    <td class="py-2.5 px-3">
+                                        <div class="font-black text-slate-900">{{ $item->item_name }}</div>
+                                        @if($idx === 0 && $order->designJob)
+                                            <span class="text-[10px] font-bold text-sky-700">Layanan Desain & Cetak Utama</span>
+                                        @elseif($order->designJob)
+                                            <span class="text-[10px] font-bold text-purple-700">Alat / Tambahan</span>
+                                        @endif
+                                    </td>
+                                    <td class="py-2.5 px-3 text-center font-bold">{{ $item->qty }}</td>
+                                    <td class="py-2.5 px-3 text-right font-medium">Rp {{ number_format($item->unit_price, 0, ',', '.') }}</td>
+                                    <td class="py-2.5 px-3 text-right font-black text-slate-900">Rp {{ number_format($item->subtotal, 0, ',', '.') }}</td>
                                 </tr>
                                 @endforeach
                             </tbody>

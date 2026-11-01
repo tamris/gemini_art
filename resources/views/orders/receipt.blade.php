@@ -65,7 +65,31 @@
 
         <!-- Order Content -->
         <div class="py-3 border-b-2 border-black border-dashed space-y-2">
-            @if($order->order_type === 'design_printing' && $order->designJob)
+            @if($order->items->count() > 0)
+                <div class="space-y-2">
+                    @foreach($order->items as $idx => $item)
+                    <div class="border-b border-dotted border-slate-300 pb-1.5 last:border-none last:pb-0">
+                        <div class="flex justify-between items-start text-xs">
+                            <span class="font-black text-slate-900">{{ $idx + 1 }}. {{ $item->item_name }}</span>
+                            <span class="font-black text-slate-900 whitespace-nowrap ml-2">Rp {{ number_format($item->subtotal, 0, ',', '.') }}</span>
+                        </div>
+                        <div class="flex justify-between text-[10px] text-slate-500 mt-0.5">
+                            <span>{{ $item->qty }} x Rp {{ number_format($item->unit_price, 0, ',', '.') }}</span>
+                        </div>
+                        @if($idx === 0 && $order->designJob)
+                            <div class="text-[10px] text-slate-600 mt-1 pl-2 border-l-2 border-slate-300 space-y-0.5">
+                                @if($order->designJob->dimensions)
+                                    <div>&bull; Ukuran: {{ $order->designJob->dimensions }}</div>
+                                @endif
+                                @if($order->designJob->material_notes)
+                                    <div>&bull; Bahan: {{ $order->designJob->material_notes }}</div>
+                                @endif
+                            </div>
+                        @endif
+                    </div>
+                    @endforeach
+                </div>
+            @elseif($order->order_type === 'design_printing' && $order->designJob)
                 <div>
                     <span class="font-black text-sm block mb-1">{{ $order->designJob->title }}</span>
                     <div class="text-[11px] text-slate-600 space-y-0.5">
@@ -79,19 +103,6 @@
                             <div>&bull; Deadline: <strong>{{ $order->designJob->deadline_at->format('d/m/Y H:i') }}</strong></div>
                         @endif
                     </div>
-                </div>
-            @else
-                <!-- POS Items -->
-                <div class="space-y-1.5">
-                    @foreach($order->items as $item)
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <span class="font-bold">{{ $item->item_name }}</span>
-                            <div class="text-[10px] text-slate-500">{{ $item->qty }} x Rp {{ number_format($item->unit_price, 0, ',', '.') }}</div>
-                        </div>
-                        <span class="font-black">Rp {{ number_format($item->subtotal, 0, ',', '.') }}</span>
-                    </div>
-                    @endforeach
                 </div>
             @endif
         </div>

@@ -218,7 +218,53 @@
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-100 text-slate-700">
-                        @if($order->order_type === 'design_printing' && $order->designJob)
+                        @if($order->items->count() > 0)
+                            @foreach($order->items as $idx => $item)
+                            <tr>
+                                <td class="py-3.5 px-4 text-center font-medium text-slate-400">{{ $idx + 1 }}</td>
+                                <td class="py-3.5 px-4">
+                                    <div class="flex items-center gap-2 flex-wrap">
+                                        <span class="font-bold text-slate-900 text-sm">{{ $item->item_name }}</span>
+                                        @if($order->designJob)
+                                            @if($idx === 0)
+                                                <span class="px-1.5 py-0.5 rounded text-[10px] font-black uppercase bg-sky-100 text-sky-800 border border-sky-300">
+                                                    Layanan Utama
+                                                </span>
+                                            @else
+                                                <span class="px-1.5 py-0.5 rounded text-[10px] font-black uppercase bg-purple-100 text-purple-800 border border-purple-300">
+                                                    Alat / Tambahan
+                                                </span>
+                                            @endif
+                                        @endif
+                                    </div>
+
+                                    @if($idx === 0 && $order->designJob)
+                                    <div class="mt-1 space-y-0.5 text-xs text-slate-500 leading-relaxed">
+                                        @if($order->designJob->dimensions)
+                                            <div>Ukuran Jadi: <strong class="text-slate-700">{{ $order->designJob->dimensions }}</strong></div>
+                                        @endif
+                                        @if($order->designJob->material_notes)
+                                            <div>Bahan & Finishing: <strong class="text-slate-700">{{ $order->designJob->material_notes }}</strong></div>
+                                        @endif
+                                        @if($order->designJob->brief_notes)
+                                            <div class="italic text-[11px] text-slate-400">Catatan: {{ $order->designJob->brief_notes }}</div>
+                                        @endif
+                                    </div>
+                                    @endif
+                                </td>
+                                <td class="py-3.5 px-4 text-center font-medium">
+                                    {{ $item->qty }} {{ ($idx === 0 && $order->designJob) ? 'Paket' : 'Pcs' }}
+                                </td>
+                                <td class="py-3.5 px-4 text-right font-medium">
+                                    Rp {{ number_format($item->unit_price, 0, ',', '.') }}
+                                </td>
+                                <td class="py-3.5 px-4 text-right font-bold text-slate-900">
+                                    Rp {{ number_format($item->subtotal, 0, ',', '.') }}
+                                </td>
+                            </tr>
+                            @endforeach
+                        @elseif($order->order_type === 'design_printing' && $order->designJob)
+                        {{-- Fallback for legacy orders created before line items was introduced --}}
                         <tr>
                             <td class="py-4 px-4 text-center font-medium text-slate-400">1</td>
                             <td class="py-4 px-4">
@@ -239,16 +285,6 @@
                             <td class="py-4 px-4 text-right font-medium">Rp {{ number_format($order->total_amount, 0, ',', '.') }}</td>
                             <td class="py-4 px-4 text-right font-bold text-slate-900">Rp {{ number_format($order->total_amount, 0, ',', '.') }}</td>
                         </tr>
-                        @else
-                            @foreach($order->items as $idx => $item)
-                            <tr>
-                                <td class="py-3 px-4 text-center font-medium text-slate-400">{{ $idx + 1 }}</td>
-                                <td class="py-3 px-4 font-semibold text-slate-800">{{ $item->item_name }}</td>
-                                <td class="py-3 px-4 text-center">{{ $item->qty }}</td>
-                                <td class="py-3 px-4 text-right">Rp {{ number_format($item->unit_price, 0, ',', '.') }}</td>
-                                <td class="py-3 px-4 text-right font-bold text-slate-900">Rp {{ number_format($item->subtotal, 0, ',', '.') }}</td>
-                            </tr>
-                            @endforeach
                         @endif
                     </tbody>
                 </table>
