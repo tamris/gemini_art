@@ -81,14 +81,14 @@
             @endif
 
             <!-- Filter Periode Cepat -->
-            <div class="w-full sm:w-64">
+            <div class="w-full sm:w-56">
                 <label class="block text-[11px] font-black uppercase text-slate-800 mb-1 tracking-wider">Rentang Waktu</label>
                 <select name="period" id="period-selector" onchange="toggleCustomDates(this.value);" class="neo-select w-full">
-                    <option value="this_month" {{ $period === 'this_month' ? 'selected' : '' }}>Bulan Ini ({{ now()->translatedFormat('F Y') }})</option>
-                    <option value="last_month" {{ $period === 'last_month' ? 'selected' : '' }}>Bulan Lalu ({{ now()->subMonth()->translatedFormat('F Y') }})</option>
+                    <option value="this_month" {{ $period === 'this_month' ? 'selected' : '' }}>Bulan Ini</option>
+                    <option value="last_month" {{ $period === 'last_month' ? 'selected' : '' }}>Bulan Lalu</option>
                     <option value="today" {{ $period === 'today' ? 'selected' : '' }}>Hari Ini</option>
                     <option value="this_week" {{ $period === 'this_week' ? 'selected' : '' }}>Minggu Ini</option>
-                    <option value="this_year" {{ $period === 'this_year' ? 'selected' : '' }}>Tahun Ini ({{ now()->year }})</option>
+                    <option value="this_year" {{ $period === 'this_year' ? 'selected' : '' }}>Tahun Ini</option>
                     <option value="custom" {{ $period === 'custom' ? 'selected' : '' }}>Pilih Rentang Tanggal Bebas...</option>
                 </select>
             </div>
