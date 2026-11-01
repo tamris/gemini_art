@@ -194,8 +194,15 @@
                                 </a>
                                 <a href="{{ route('orders.receipt', $order->id) }}" 
                                    target="_blank"
-                                   class="px-2.5 py-1 rounded-lg border-2 border-black bg-slate-100 hover:bg-slate-200 font-bold text-xs shadow-[1px_1px_0px_0px_#000]">
+                                   title="Cetak Struk Kasir"
+                                   class="px-2 py-1 rounded-lg border-2 border-black bg-slate-100 hover:bg-slate-200 font-bold text-xs shadow-[1px_1px_0px_0px_#000]">
                                     Struk
+                                </a>
+                                <a href="{{ route('orders.invoice', $order->id) }}" 
+                                   target="_blank"
+                                   title="Cetak Invoice Resmi A4"
+                                   class="px-2 py-1 rounded-lg border-2 border-black bg-amber-300 hover:bg-amber-400 font-black text-xs shadow-[1px_1px_0px_0px_#000]">
+                                    Invoice
                                 </a>
                             </div>
                         </td>

@@ -106,6 +106,8 @@ static $icons = [
         'circle-alert' => '<circle cx="12" cy="12" r="10" /><line x1="12" x2="12" y1="8" y2="12" /><line x1="12" x2="12.01" y1="16" y2="16" />',
         'circle-check' => '<circle cx="12" cy="12" r="10" /><path d="m16 9-5.5 5.5L8 12" />',
         'send' => '<path d="m22 2-7 20-4-9-9-4Z" /><path d="M22 2 11 13" />',
+        'bar-chart-3' => '<path d="M3 3v18h18" /><path d="M18 17V9" /><path d="M13 17V5" /><path d="M8 17v-3" />',
+        'pie-chart' => '<path d="M21.21 15.89A10 10 0 1 1 8 2.83" /><path d="M22 12A10 10 0 0 0 12 2v10z" />',
 ];
 
 $svgContent = $icons[$name] ?? ($icons['circle-dot'] ?? '');

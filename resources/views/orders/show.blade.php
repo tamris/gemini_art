@@ -31,10 +31,14 @@
             </div>
         </div>
 
-        <div class="flex items-center gap-2">
-            <a href="{{ route('orders.receipt', $order->id) }}" target="_blank" class="neo-btn bg-amber-300 hover:bg-amber-400 text-xs py-2 px-4 text-slate-900 flex items-center gap-2 font-black shadow-[2px_2px_0px_0px_#0f172a]">
+        <div class="flex items-center gap-2 flex-wrap">
+            <a href="{{ route('orders.receipt', $order->id) }}" target="_blank" class="neo-btn bg-amber-300 hover:bg-amber-400 text-xs py-2 px-3.5 text-slate-900 flex items-center gap-1.5 font-black shadow-[2px_2px_0px_0px_#0f172a]">
                 <x-icon name="printer" class="w-4 h-4" />
-                <span>Cetak Struk / SPK</span>
+                <span>Cetak Struk</span>
+            </a>
+            <a href="{{ route('orders.invoice', $order->id) }}" target="_blank" class="neo-btn bg-emerald-400 hover:bg-emerald-300 text-xs py-2 px-3.5 text-slate-900 flex items-center gap-1.5 font-black shadow-[2px_2px_0px_0px_#0f172a]">
+                <x-icon name="file-text" class="w-4 h-4" />
+                <span>Cetak Invoice A4</span>
             </a>
         </div>
     </div>

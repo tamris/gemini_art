@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BranchController;
 use App\Http\Controllers\CashMovementController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\FinancialReportController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PosController;
 use App\Http\Controllers\WorkdeskController;
@@ -37,6 +38,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/orders/create-design', [OrderController::class, 'store'])->name('orders.store-design');
     Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
     Route::get('/orders/{order}/receipt', [OrderController::class, 'printReceipt'])->name('orders.receipt');
+    Route::get('/orders/{order}/invoice', [OrderController::class, 'printInvoice'])->name('orders.invoice');
     Route::post('/orders/{order}/settle', [OrderController::class, 'settlePayment'])->name('orders.settle');
     Route::post('/orders/{order}/status', [OrderController::class, 'updateStatus'])->name('orders.status');
 
@@ -52,6 +54,9 @@ Route::middleware(['auth'])->group(function () {
     // Cash Book & Audit
     Route::get('/cash', [CashMovementController::class, 'index'])->name('cash.index');
     Route::post('/cash', [CashMovementController::class, 'store'])->name('cash.store');
+
+    // Financial Reports & Analytics
+    Route::get('/reports/finance', [FinancialReportController::class, 'index'])->name('reports.finance');
 
     // Cloud Design Archive
     Route::get('/archive', [ArchiveController::class, 'index'])->name('archive.index');

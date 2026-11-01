@@ -221,6 +221,17 @@ class OrderController extends Controller
         return view('orders.receipt', compact('order'));
     }
 
+    public function printInvoice(Order $order)
+    {
+        $user = Auth::user();
+        if (!$user->isOwner() && $order->branch_id !== $user->branch_id) {
+            abort(403, 'Akses ditolak.');
+        }
+
+        $order->load(['branch', 'creator', 'designJob.designer', 'items', 'cashMovements']);
+        return view('orders.invoice', compact('order'));
+    }
+
     public function settlePayment(Request $request, Order $order)
     {
         $user = Auth::user();

@@ -124,6 +124,15 @@
                     <span>Buku Kas & Mutasi</span>
                 </a>
 
+                <!-- Laporan Keuangan -->
+                <a href="{{ route('reports.finance') }}" 
+                   class="group flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-black border-[1.5px] transition-all {{ request()->routeIs('reports.finance*') ? 'bg-emerald-300 border-slate-800 shadow-[2px_2px_0px_0px_#0f172a] text-slate-900' : 'border-transparent text-slate-600 hover:border-slate-300 hover:bg-slate-100 hover:text-slate-900' }}">
+                    <div class="w-7 h-7 rounded-lg border-[1.5px] border-slate-800 flex items-center justify-center text-slate-900 shrink-0 transition-transform group-hover:scale-105 {{ request()->routeIs('reports.finance*') ? 'bg-white shadow-[1px_1px_0px_0px_#0f172a]' : 'bg-emerald-200' }}">
+                        <x-icon name="bar-chart-3" class="w-4 h-4" />
+                    </div>
+                    <span>Laporan Keuangan</span>
+                </a>
+
                 <!-- Arsip Cloud (S3/R2) -->
                 <a href="{{ route('archive.index') }}" 
                    class="group flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-black border-[1.5px] transition-all {{ request()->routeIs('archive.*') ? 'bg-yellow-200 border-slate-800 shadow-[2px_2px_0px_0px_#0f172a] text-slate-900' : 'border-transparent text-slate-600 hover:border-slate-300 hover:bg-slate-100 hover:text-slate-900' }}">

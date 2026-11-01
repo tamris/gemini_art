@@ -1,0 +1,599 @@
+@extends('layouts.app')
+
+@section('title', 'Laporan Keuangan & Analisis Laba Rugi')
+
+@section('content')
+<style>
+    @media print {
+        .no-print, aside, header, footer, #sidebar-backdrop { display: none !important; }
+        body { background: white !important; padding: 0 !important; color: #0f172a !important; }
+        .main-content, main, .print-container { padding: 0 !important; margin: 0 !important; width: 100% !important; max-width: 100% !important; }
+        .neo-box, .print-card { box-shadow: none !important; border: 1px solid #cbd5e1 !important; border-radius: 8px !important; }
+        .print-header { display: block !important; }
+        @page { size: A4 portrait; margin: 12mm 14mm; }
+    }
+    .print-header { display: none; }
+</style>
+
+<div class="print-container space-y-6">
+
+    <!-- Print-Only Formal Header -->
+    <div class="print-header pb-4 mb-4 border-b-2 border-slate-900">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-lg bg-slate-900 text-white font-black text-lg flex items-center justify-center">
+                    GA
+                </div>
+                <div>
+                    <h1 class="text-xl font-black text-slate-950 uppercase tracking-tight">GEMINI ART MULTI-CABANG</h1>
+                    <p class="text-xs text-slate-600 font-medium">Laporan Keuangan & Rekapitulasi Laba Rugi Operasional</p>
+                </div>
+            </div>
+            <div class="text-right text-xs text-slate-600">
+                <div>Periode: <strong>{{ $periodLabel }}</strong></div>
+                <div>Cabang: <strong>{{ $selectedBranch ? $selectedBranch->name : 'Konsolidasi Seluruh Cabang' }}</strong></div>
+                <div>Dicetak: {{ now()->translatedFormat('d F Y, H:i') }}</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header Section (Screen Only) -->
+    <div class="no-print flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b-2 border-black">
+        <div>
+            <div class="flex items-center gap-2 mb-1">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+                <span class="text-[11px] font-black uppercase tracking-wider text-emerald-900">
+                    Financial Analytics & Profit/Loss
+                </span>
+            </div>
+            <h1 class="text-2xl font-black text-slate-900 tracking-tight">Laporan Keuangan & Laba Rugi</h1>
+            <!-- <p class="text-xs font-semibold text-slate-500 mt-0.5">
+                Monitoring omset percetakan, beban operasional, saluran pembayaran, dan piutang pelanggan.
+            </p> -->
+        </div>
+
+        <div class="flex items-center gap-2">
+            <button onclick="window.print()" 
+                    class="neo-btn bg-slate-900 hover:bg-slate-800 text-xs py-2 px-4 font-black text-white flex items-center gap-2 cursor-pointer shadow-[2px_2px_0px_0px_#0f172a]">
+                <x-icon name="printer" class="w-4 h-4 text-amber-300" />
+                <span>Cetak / Unduh PDF</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Filter Bar (Screen Only - Auto Instant Filter) -->
+    <div class="no-print neo-box p-4 bg-white">
+        <form method="GET" action="{{ route('reports.finance') }}" data-auto-submit class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-3 items-end">
+            
+            <!-- Filter Cabang (Owner Only) -->
+            @if(Auth::user()->isOwner())
+            <div class="{{ $period === 'custom' ? 'lg:col-span-3' : 'lg:col-span-4' }}">
+                <label class="block text-[11px] font-black uppercase text-slate-700 mb-1 tracking-wider">Cabang</label>
+                <select name="branch_id" class="neo-select w-full">
+                    <option value="">Semua Cabang (Konsolidasian)</option>
+                    @foreach($branches as $b)
+                        <option value="{{ $b->id }}" {{ $branchId == $b->id ? 'selected' : '' }}>
+                            {{ $b->code }} - {{ $b->name }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+            @endif
+
+            <!-- Filter Periode Cepat -->
+            <div class="{{ Auth::user()->isOwner() ? ($period === 'custom' ? 'lg:col-span-3' : 'lg:col-span-5') : ($period === 'custom' ? 'lg:col-span-5' : 'lg:col-span-8') }}">
+                <label class="block text-[11px] font-black uppercase text-slate-700 mb-1 tracking-wider">Rentang Waktu</label>
+                <select name="period" id="period-selector" onchange="toggleCustomDates(this.value);" class="neo-select w-full">
+                    <option value="this_month" {{ $period === 'this_month' ? 'selected' : '' }}>Bulan Ini ({{ now()->translatedFormat('F Y') }})</option>
+                    <option value="last_month" {{ $period === 'last_month' ? 'selected' : '' }}>Bulan Lalu ({{ now()->subMonth()->translatedFormat('F Y') }})</option>
+                    <option value="today" {{ $period === 'today' ? 'selected' : '' }}>Hari Ini</option>
+                    <option value="this_week" {{ $period === 'this_week' ? 'selected' : '' }}>Minggu Ini</option>
+                    <option value="this_year" {{ $period === 'this_year' ? 'selected' : '' }}>Tahun Ini ({{ now()->year }})</option>
+                    <option value="custom" {{ $period === 'custom' ? 'selected' : '' }}>Pilih Rentang Tanggal Bebas...</option>
+                </select>
+            </div>
+
+            <!-- Custom Date Range Pickers -->
+            <div id="custom-date-container" class="{{ $period === 'custom' ? '' : 'hidden' }} lg:col-span-4 grid grid-cols-2 gap-2">
+                <div>
+                    <label class="block text-[10px] font-black uppercase text-slate-600 mb-1">Dari Tanggal</label>
+                    <input type="date" name="date_from" value="{{ request('date_from', $startDate->format('Y-m-d')) }}" class="neo-input w-full text-xs" />
+                </div>
+                <div>
+                    <label class="block text-[10px] font-black uppercase text-slate-600 mb-1">Sampai Tanggal</label>
+                    <input type="date" name="date_to" value="{{ request('date_to', $endDate->format('Y-m-d')) }}" class="neo-input w-full text-xs" />
+                </div>
+            </div>
+
+            <!-- Reset Button (Auto-Active State) -->
+            <div class="{{ $period === 'custom' ? 'lg:col-span-2' : (Auth::user()->isOwner() ? 'lg:col-span-3' : 'lg:col-span-4') }}">
+                <a href="{{ route('reports.finance') }}" 
+                   title="Reset Filter ke Default" 
+                   class="w-full neo-btn {{ request()->anyFilled(['branch_id', 'date_from', 'date_to']) || (request('period') && request('period') !== 'this_month') ? 'bg-amber-200 hover:bg-amber-300 text-slate-900 border-slate-800 font-black' : 'bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold' }} text-xs py-2 px-3 shadow-[1.5px_1.5px_0px_0px_#0f172a] flex items-center justify-center gap-1.5 transition-all h-[40px]">
+                    <x-icon name="rotate-ccw" class="w-3.5 h-3.5" />
+                    <span>Reset Filter</span>
+                </a>
+            </div>
+
+        </form>
+    </div>
+
+    <!-- Live Filter Results Container (Smooth Seamless Replacement) -->
+    <div id="filter-results-container" class="space-y-6">
+
+        <!-- Active Filter Ribbon -->
+        <div class="px-4 py-2.5 rounded-xl border-[1.5px] border-slate-800 bg-amber-50 text-xs font-bold text-slate-800 flex flex-wrap items-center justify-between gap-2 shadow-[2px_2px_0px_0px_#0f172a]">
+        <div class="flex items-center gap-2">
+            <span class="px-2 py-0.5 rounded-md border border-slate-800 bg-white font-black text-[10px] uppercase">
+                {{ $selectedBranch ? $selectedBranch->code : 'PUSAT' }}
+            </span>
+            <span>Cakupan: <strong>{{ $selectedBranch ? $selectedBranch->name : 'Seluruh Cabang (Konsolidasi)' }}</strong></span>
+            <span class="text-slate-400">&bull;</span>
+            <span>Periode: <strong>{{ $periodLabel }}</strong></span>
+        </div>
+        <div class="text-[11px] text-slate-600">
+            Rentang Data: {{ $startDate->translatedFormat('d M Y') }} - {{ $endDate->translatedFormat('d M Y') }}
+        </div>
+    </div>
+
+    <!-- 4 Executive KPI Cards -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        
+        <!-- Total Pendapatan Operasional (Omset) -->
+        <div class="p-5 bg-emerald-100 border-2 border-black rounded-2xl shadow-[4px_4px_0px_0px_#000] print-card">
+            <div class="text-xs font-black uppercase text-slate-700 mb-1 flex items-center justify-between">
+                <span>Total Omset Usaha</span>
+                <div class="w-7 h-7 rounded-lg bg-emerald-300 border border-black flex items-center justify-center">
+                    <x-icon name="trending-up" class="w-4 h-4 text-emerald-950" />
+                </div>
+            </div>
+            <div class="text-2xl font-black text-emerald-950 tracking-tight">
+                Rp {{ number_format($totalRevenue, 0, ',', '.') }}
+            </div>
+            <div class="mt-2 text-[11px] font-bold text-emerald-800 flex items-center gap-1">
+                <span>Cetak: Rp {{ number_format($orderRevenue, 0, ',', '.') }}</span>
+                <span>&bull;</span>
+                <span>POS: Rp {{ number_format($retailPosRevenue, 0, ',', '.') }}</span>
+            </div>
+        </div>
+
+        <!-- Total Beban Operasional -->
+        <div class="p-5 bg-rose-100 border-2 border-black rounded-2xl shadow-[4px_4px_0px_0px_#000] print-card">
+            <div class="text-xs font-black uppercase text-slate-700 mb-1 flex items-center justify-between">
+                <span>Total Beban Operasional</span>
+                <div class="w-7 h-7 rounded-lg bg-rose-300 border border-black flex items-center justify-center">
+                    <x-icon name="trending-down" class="w-4 h-4 text-rose-950" />
+                </div>
+            </div>
+            <div class="text-2xl font-black text-rose-950 tracking-tight">
+                Rp {{ number_format($totalOperatingExpense, 0, ',', '.') }}
+            </div>
+            <div class="mt-2 text-[11px] font-bold text-rose-800">
+                Petty cash, belanja toko, & refund
+            </div>
+        </div>
+
+        <!-- Estimasi Laba Bersih Operasional -->
+        <div class="p-5 {{ $netOperatingProfit >= 0 ? 'bg-cyan-100' : 'bg-rose-200' }} border-2 border-black rounded-2xl shadow-[4px_4px_0px_0px_#000] print-card">
+            <div class="text-xs font-black uppercase text-slate-700 mb-1 flex items-center justify-between">
+                <span>Laba Bersih Operasional</span>
+                <span class="px-2 py-0.5 rounded-full border border-black text-[10px] font-black {{ $netOperatingProfit >= 0 ? 'bg-cyan-300 text-cyan-950' : 'bg-rose-300 text-rose-950' }}">
+                    Margin: {{ round($profitMargin, 1) }}%
+                </span>
+            </div>
+            <div class="text-2xl font-black {{ $netOperatingProfit >= 0 ? 'text-cyan-950' : 'text-rose-900' }} tracking-tight">
+                {{ $netOperatingProfit >= 0 ? '+' : '' }} Rp {{ number_format($netOperatingProfit, 0, ',', '.') }}
+            </div>
+            <div class="mt-2 text-[11px] font-bold text-slate-700">
+                Omset dikurangi seluruh biaya operasional
+            </div>
+        </div>
+
+        <!-- Piutang Pelanggan (Outstanding) -->
+        <div class="p-5 bg-amber-100 border-2 border-black rounded-2xl shadow-[4px_4px_0px_0px_#000] print-card">
+            <div class="text-xs font-black uppercase text-slate-700 mb-1 flex items-center justify-between">
+                <span>Piutang Tertahan</span>
+                <div class="w-7 h-7 rounded-lg bg-amber-300 border border-black flex items-center justify-center">
+                    <x-icon name="clock" class="w-4 h-4 text-amber-950" />
+                </div>
+            </div>
+            <div class="text-2xl font-black text-amber-950 tracking-tight">
+                Rp {{ number_format($totalReceivables, 0, ',', '.') }}
+            </div>
+            <div class="mt-2 text-[11px] font-bold text-amber-800">
+                Dari {{ $unpaidOrdersCount }} pesanan belum lunas / DP
+            </div>
+        </div>
+
+    </div>
+
+    <!-- 2 Column Financial Breakdown: P&L vs Payment Split -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        
+        <!-- Left: Laporan Laba Rugi Detail (7 cols) -->
+        <div class="lg:col-span-7 neo-box p-6 bg-white space-y-5 print-card">
+            
+            <div class="flex items-center justify-between pb-3 border-b-2 border-slate-900">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-lg border-[1.5px] border-slate-800 bg-amber-300 flex items-center justify-center font-black text-slate-900">
+                        <x-icon name="file-text" class="w-4 h-4" />
+                    </div>
+                    <div>
+                        <h2 class="text-base font-black text-slate-900">Rincian Laba & Rugi (P&L)</h2>
+                        <p class="text-[11px] font-semibold text-slate-500">Kompilasi penerimaan dan pengeluaran operasional</p>
+                    </div>
+                </div>
+                <span class="text-[10px] font-black uppercase px-2 py-0.5 rounded-lg border border-slate-800 bg-slate-100">
+                    Akuntansi Kas
+                </span>
+            </div>
+
+            <!-- Revenue Section -->
+            <div class="space-y-2 text-xs">
+                <div class="font-black text-emerald-800 uppercase text-[11px] tracking-wider flex items-center justify-between">
+                    <span>1. PENDAPATAN OPERASIONAL</span>
+                    <span>NOMINAL</span>
+                </div>
+
+                <div class="p-3 rounded-xl border border-slate-200 bg-slate-50 space-y-2">
+                    <div class="flex justify-between items-center text-slate-700">
+                        <span class="font-bold flex items-center gap-1.5">
+                            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                            Omset Order Desain & Cetak (DP & Pelunasan)
+                        </span>
+                        <span class="font-black text-slate-900">Rp {{ number_format($orderRevenue, 0, ',', '.') }}</span>
+                    </div>
+                    <div class="flex justify-between items-center text-slate-700">
+                        <span class="font-bold flex items-center gap-1.5">
+                            <span class="w-2 h-2 rounded-full bg-cyan-500"></span>
+                            Omset Kasir Ritel POS (ATK, Fotokopi, Merchandise)
+                        </span>
+                        <span class="font-black text-slate-900">Rp {{ number_format($retailPosRevenue, 0, ',', '.') }}</span>
+                    </div>
+                    @if($otherIncome > 0)
+                    <div class="flex justify-between items-center text-slate-500 text-[11px]">
+                        <span>Pemasukan Lainnya / Modal Kas Awal</span>
+                        <span class="font-semibold text-slate-700">Rp {{ number_format($otherIncome, 0, ',', '.') }}</span>
+                    </div>
+                    @endif
+                </div>
+
+                <div class="flex justify-between items-center px-3 py-2 rounded-xl bg-emerald-50 border border-emerald-300 font-black text-emerald-950">
+                    <span>TOTAL OMSET / PENDAPATAN</span>
+                    <span class="text-sm">Rp {{ number_format($totalRevenue, 0, ',', '.') }}</span>
+                </div>
+            </div>
+
+            <!-- Expense Section -->
+            <div class="space-y-2 text-xs pt-2">
+                <div class="font-black text-rose-800 uppercase text-[11px] tracking-wider flex items-center justify-between">
+                    <span>2. BEBAN & PENGELUARAN OPERASIONAL</span>
+                    <span>NOMINAL</span>
+                </div>
+
+                <div class="p-3 rounded-xl border border-slate-200 bg-slate-50 space-y-2">
+                    <div class="flex justify-between items-center text-slate-700">
+                        <span class="font-bold flex items-center gap-1.5">
+                            <span class="w-2 h-2 rounded-full bg-rose-500"></span>
+                            Biaya Operasional Toko (Petty Cash, Listrik, Bahan)
+                        </span>
+                        <span class="font-black text-rose-700">Rp {{ number_format($operationalExpense, 0, ',', '.') }}</span>
+                    </div>
+                    @if($refundExpense > 0)
+                    <div class="flex justify-between items-center text-slate-700">
+                        <span class="font-bold flex items-center gap-1.5">
+                            <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+                            Pengembalian Dana Pelanggan (Refund DP Order)
+                        </span>
+                        <span class="font-black text-rose-700">Rp {{ number_format($refundExpense, 0, ',', '.') }}</span>
+                    </div>
+                    @endif
+                    @if($otherExpense > 0)
+                    <div class="flex justify-between items-center text-slate-500 text-[11px]">
+                        <span>Kas Keluar Lainnya</span>
+                        <span class="font-semibold text-rose-700">Rp {{ number_format($otherExpense, 0, ',', '.') }}</span>
+                    </div>
+                    @endif
+                </div>
+
+                <div class="flex justify-between items-center px-3 py-2 rounded-xl bg-rose-50 border border-rose-300 font-black text-rose-950">
+                    <span>TOTAL BEBAN OPERASIONAL</span>
+                    <span class="text-sm">- Rp {{ number_format($totalOperatingExpense, 0, ',', '.') }}</span>
+                </div>
+            </div>
+
+            <!-- Net Calculation Summary Box -->
+            <div class="pt-2 border-t-2 border-slate-900">
+                <div class="p-4 rounded-xl border-2 border-black {{ $netOperatingProfit >= 0 ? 'bg-cyan-100' : 'bg-rose-100' }} shadow-[3px_3px_0px_0px_#000] flex justify-between items-center">
+                    <div>
+                        <span class="text-[10px] font-black uppercase tracking-wider block text-slate-700">HASIL OPERASIONAL BERSIH</span>
+                        <span class="text-sm font-black text-slate-900">
+                            {{ $netOperatingProfit >= 0 ? 'SURPLUS / LABA BERSIH' : 'DEFISIT / RUGI OPERASIONAL' }}
+                        </span>
+                    </div>
+                    <div class="text-xl font-black {{ $netOperatingProfit >= 0 ? 'text-emerald-950' : 'text-rose-950' }}">
+                        {{ $netOperatingProfit >= 0 ? '+' : '' }} Rp {{ number_format($netOperatingProfit, 0, ',', '.') }}
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Right: Payment Method Breakdown & Cash Flow (5 cols) -->
+        <div class="lg:col-span-5 space-y-6">
+            
+            <!-- Saluran Pembayaran Card -->
+            <div class="neo-box p-6 bg-white space-y-4 print-card">
+                <div class="flex items-center justify-between pb-3 border-b-2 border-slate-900">
+                    <div class="flex items-center gap-2">
+                        <div class="w-8 h-8 rounded-lg border-[1.5px] border-slate-800 bg-sky-300 flex items-center justify-center font-black text-slate-900">
+                            <x-icon name="credit-card" class="w-4 h-4" />
+                        </div>
+                        <div>
+                            <h2 class="text-base font-black text-slate-900">Saluran Pembayaran</h2>
+                            <p class="text-[11px] font-semibold text-slate-500">Pemisahan fisik laci vs uang bank digital</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="space-y-3 text-xs">
+                    @foreach($paymentSplit as $key => $split)
+                    <div class="p-3 rounded-xl border-[1.5px] border-slate-800 bg-slate-50 space-y-2">
+                        <div class="flex justify-between items-center font-bold">
+                            <span class="text-slate-800 flex items-center gap-2">
+                                @if($key === 'cash')
+                                    <x-icon name="coins" class="w-4 h-4 text-amber-600" />
+                                @elseif($key === 'qris')
+                                    <x-icon name="qr-code" class="w-4 h-4 text-cyan-600" />
+                                @else
+                                    <x-icon name="credit-card" class="w-4 h-4 text-purple-600" />
+                                @endif
+                                <span>{{ $split['label'] }}</span>
+                            </span>
+                            <span class="font-black text-slate-950">
+                                Rp {{ number_format($split['amount'], 0, ',', '.') }}
+                            </span>
+                        </div>
+
+                        <!-- Progress Bar Percentage -->
+                        <div class="w-full bg-slate-200 h-2 rounded-full overflow-hidden border border-slate-400">
+                            <div class="h-full {{ $key === 'cash' ? 'bg-amber-400' : ($key === 'qris' ? 'bg-cyan-500' : 'bg-purple-500') }}" 
+                                 style="width: {{ $split['percentage'] }}%"></div>
+                        </div>
+
+                        <div class="text-[10px] text-slate-500 font-bold flex justify-between">
+                            <span>Porsi terhadap total kas masuk</span>
+                            <span>{{ $split['percentage'] }}%</span>
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
+
+                <div class="p-3 bg-amber-50 rounded-xl border border-amber-300 text-[11px] font-semibold text-amber-900 leading-relaxed">
+                    💡 <strong>Tips Audit:</strong> Pastikan nominal kas <em>Tunai</em> cocok dengan uang di laci fisik kasir cabang sebelum tutup buku.
+                </div>
+            </div>
+
+            <!-- Arus Kas Bersih (Cash Flow Summary) -->
+            <div class="neo-box p-5 bg-white space-y-3 print-card">
+                <div class="flex items-center justify-between pb-2 border-b border-slate-200">
+                    <span class="text-xs font-black uppercase text-slate-700">Ringkasan Arus Kas Masuk & Keluar</span>
+                    <span class="text-[10px] font-bold text-slate-500">Semua Kategori</span>
+                </div>
+
+                <div class="space-y-2 text-xs">
+                    <div class="flex justify-between">
+                        <span class="text-slate-600 font-semibold">Total Semua Kas Masuk:</span>
+                        <span class="font-bold text-emerald-700">+ Rp {{ number_format($totalCashIn, 0, ',', '.') }}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-slate-600 font-semibold">Total Semua Kas Keluar:</span>
+                        <span class="font-bold text-rose-700">- Rp {{ number_format($totalCashOut, 0, ',', '.') }}</span>
+                    </div>
+                    <div class="pt-2 border-t border-slate-300 flex justify-between items-center text-sm font-black">
+                        <span>Net Cashflow (Arus Kas Bersih):</span>
+                        <span class="{{ $netCashFlow >= 0 ? 'text-emerald-900' : 'text-rose-900' }}">
+                            {{ $netCashFlow >= 0 ? '+' : '' }} Rp {{ number_format($netCashFlow, 0, ',', '.') }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Multi-Branch Comparison Table (Shown if consolidating all branches / Owner) -->
+    @if(!$branchId && count($branchComparison) > 0)
+    <div class="neo-box p-6 bg-white space-y-4 print-card">
+        <div class="flex items-center justify-between pb-3 border-b-2 border-slate-900">
+            <div class="flex items-center gap-2">
+                <div class="w-8 h-8 rounded-lg border-[1.5px] border-slate-800 bg-purple-300 flex items-center justify-center font-black text-slate-900">
+                    <x-icon name="building-2" class="w-4 h-4" />
+                </div>
+                <div>
+                    <h2 class="text-base font-black text-slate-900">Performa Finansial Antar Cabang</h2>
+                    <p class="text-[11px] font-semibold text-slate-500">Perbandingan omset, efisiensi beban, laba, dan kas laci</p>
+                </div>
+            </div>
+            <span class="text-[10px] font-black uppercase px-2 py-0.5 rounded-lg border border-slate-800 bg-purple-100 text-purple-900">
+                Multi-Branch Leaderboard
+            </span>
+        </div>
+
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse text-xs">
+                <thead>
+                    <tr class="bg-slate-100 border-b-2 border-slate-900 font-black text-slate-800 uppercase text-[11px]">
+                        <th class="py-3 px-4">Cabang</th>
+                        <th class="py-3 px-4 text-right">Kas Masuk (Omset)</th>
+                        <th class="py-3 px-4 text-right">Beban Operasional</th>
+                        <th class="py-3 px-4 text-right">Laba Bersih Cabang</th>
+                        <th class="py-3 px-4 text-right">Saldo Kas Laci</th>
+                        <th class="py-3 px-4 text-right">Piutang Aktif</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-200 font-medium">
+                    @foreach($branchComparison as $comp)
+                    <tr class="hover:bg-slate-50">
+                        <td class="py-3.5 px-4">
+                            <div class="font-black text-slate-900 text-sm flex items-center gap-2">
+                                <span class="px-2 py-0.5 rounded bg-slate-200 border border-slate-400 font-mono text-[10px]">
+                                    {{ $comp['branch']->code }}
+                                </span>
+                                <span>{{ $comp['branch']->name }}</span>
+                            </div>
+                            <div class="text-[10px] text-slate-500 mt-0.5">{{ $comp['branch']->address }}</div>
+                        </td>
+                        <td class="py-3.5 px-4 text-right font-black text-emerald-800">
+                            Rp {{ number_format($comp['revenue'], 0, ',', '.') }}
+                        </td>
+                        <td class="py-3.5 px-4 text-right font-bold text-rose-800">
+                            Rp {{ number_format($comp['expense'], 0, ',', '.') }}
+                        </td>
+                        <td class="py-3.5 px-4 text-right font-black {{ $comp['profit'] >= 0 ? 'text-cyan-900' : 'text-rose-900' }}">
+                            {{ $comp['profit'] >= 0 ? '+' : '' }} Rp {{ number_format($comp['profit'], 0, ',', '.') }}
+                        </td>
+                        <td class="py-3.5 px-4 text-right font-bold text-slate-900">
+                            Rp {{ number_format($comp['cash_balance'], 0, ',', '.') }}
+                        </td>
+                        <td class="py-3.5 px-4 text-right font-bold text-amber-900">
+                            Rp {{ number_format($comp['receivables'], 0, ',', '.') }}
+                        </td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+    </div>
+    @endif
+
+    <!-- Top Outstanding Receivables (Daftar Piutang yang Perlu Ditagih) -->
+    <div class="neo-box p-6 bg-white space-y-4 print-card">
+        <div class="flex items-center justify-between pb-3 border-b-2 border-slate-900">
+            <div class="flex items-center gap-2">
+                <div class="w-8 h-8 rounded-lg border-[1.5px] border-slate-800 bg-amber-300 flex items-center justify-center font-black text-slate-900">
+                    <x-icon name="alert-circle" class="w-4 h-4" />
+                </div>
+                <div>
+                    <h2 class="text-base font-black text-slate-900">Tagihan & Piutang Pelanggan Belum Lunas</h2>
+                    <p class="text-[11px] font-semibold text-slate-500">Daftar order aktif yang masih memiliki sisa pembayaran</p>
+                </div>
+            </div>
+            <span class="text-[11px] font-black px-2.5 py-0.5 rounded-full border border-slate-900 bg-amber-100 text-amber-950">
+                Total Piutang: Rp {{ number_format($totalReceivables, 0, ',', '.') }}
+            </span>
+        </div>
+
+        @if($topUnpaidOrders->count() > 0)
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse text-xs">
+                <thead>
+                    <tr class="bg-slate-100 border-b-2 border-slate-900 font-black text-slate-800 uppercase text-[11px]">
+                        <th class="py-3 px-4">No. Order & Customer</th>
+                        <th class="py-3 px-4">Cabang</th>
+                        <th class="py-3 px-4">Pesanan</th>
+                        <th class="py-3 px-4 text-right">Total Biaya</th>
+                        <th class="py-3 px-4 text-right">Telah Dibayar</th>
+                        <th class="py-3 px-4 text-right">Sisa Tagihan</th>
+                        <th class="no-print py-3 px-4 text-center">Aksi / Tagih</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-200 font-medium">
+                    @foreach($topUnpaidOrders as $unpaid)
+                    <tr class="hover:bg-slate-50">
+                        <td class="py-3 px-4">
+                            <div class="font-black text-slate-900">{{ $unpaid->customer_name }}</div>
+                            <div class="text-[10px] font-mono text-slate-500">{{ $unpaid->order_number }}</div>
+                            @if($unpaid->customer_phone)
+                            <div class="text-[10px] text-slate-600 font-semibold">{{ $unpaid->customer_phone }}</div>
+                            @endif
+                        </td>
+                        <td class="py-3 px-4">
+                            <span class="px-2 py-0.5 rounded bg-slate-100 border border-slate-300 text-[10px] font-bold">
+                                {{ $unpaid->branch->code }}
+                            </span>
+                        </td>
+                        <td class="py-3 px-4">
+                            <span class="font-bold text-slate-900 block truncate max-w-[200px]">
+                                {{ $unpaid->designJob ? $unpaid->designJob->title : 'Pesanan Ritel POS' }}
+                            </span>
+                            <span class="text-[10px] font-semibold text-slate-500">
+                                Status: {{ $unpaid->status_label }}
+                            </span>
+                        </td>
+                        <td class="py-3 px-4 text-right font-bold text-slate-800">
+                            Rp {{ number_format($unpaid->total_amount, 0, ',', '.') }}
+                        </td>
+                        <td class="py-3 px-4 text-right font-bold text-emerald-700">
+                            Rp {{ number_format($unpaid->paid_amount, 0, ',', '.') }}
+                        </td>
+                        <td class="py-3 px-4 text-right font-black text-rose-700">
+                            Rp {{ number_format($unpaid->remaining_amount, 0, ',', '.') }}
+                        </td>
+                        <td class="no-print py-3 px-4 text-center">
+                            <div class="inline-flex items-center gap-1.5">
+                                <a href="{{ route('orders.show', $unpaid->id) }}" 
+                                   class="px-2 py-1 rounded-lg border border-slate-800 bg-white hover:bg-slate-100 text-[11px] font-bold shadow-[1px_1px_0px_0px_#0f172a]">
+                                    Detail
+                                </a>
+                                <a href="{{ route('orders.invoice', $unpaid->id) }}" 
+                                   target="_blank"
+                                   class="px-2 py-1 rounded-lg border border-slate-800 bg-amber-300 hover:bg-amber-400 text-[11px] font-black shadow-[1px_1px_0px_0px_#0f172a]">
+                                    Invoice
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+        @else
+        <div class="py-8 text-center text-slate-400 font-semibold text-xs">
+            🎉 Tidak ada tagihan atau piutang yang tertahan untuk kriteria saat ini. Semua pesanan telah lunas!
+        </div>
+        @endif
+    </div>
+
+    </div> <!-- Close filter-results-container -->
+
+    <!-- Print-Only Signature Section -->
+    <div class="print-header mt-12 pt-6 border-t-2 border-slate-900">
+        <div class="grid grid-cols-2 gap-12 text-xs text-center">
+            <div class="space-y-16">
+                <span class="font-bold text-slate-600 block">Dibuat & Diverifikasi Oleh:</span>
+                <div class="border-t border-slate-400 w-48 mx-auto pt-1 font-black text-slate-900">
+                    {{ Auth::user()->name }}
+                    <span class="block text-[10px] text-slate-500 font-normal">{{ Auth::user()->role_label }}</span>
+                </div>
+            </div>
+            <div class="space-y-16">
+                <span class="font-bold text-slate-600 block">Disetujui Oleh:</span>
+                <div class="border-t border-slate-400 w-48 mx-auto pt-1 font-black text-slate-900">
+                    Manajemen / Owner
+                    <span class="block text-[10px] text-slate-500 font-normal">Gemini Art Multi-Cabang</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    function toggleCustomDates(value) {
+        const container = document.getElementById('custom-date-container');
+        if (!container) return;
+        if (value === 'custom') {
+            container.classList.remove('hidden');
+        } else {
+            container.classList.add('hidden');
+            const fromInput = container.querySelector('input[name="date_from"]');
+            const toInput = container.querySelector('input[name="date_to"]');
+            if (fromInput) fromInput.value = '';
+            if (toInput) toInput.value = '';
+        }
+    }
+</script>
+@endsection
+
