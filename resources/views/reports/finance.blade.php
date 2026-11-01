@@ -70,7 +70,7 @@
             <div class="w-full sm:w-60">
                 <label class="block text-[11px] font-black uppercase text-slate-800 mb-1 tracking-wider">Cabang</label>
                 <select name="branch_id" class="neo-select w-full">
-                    <option value="">Semua Cabang (Konsolidasian)</option>
+                    <option value="">Semua Cabang</option>
                     @foreach($branches as $b)
                         <option value="{{ $b->id }}" {{ $branchId == $b->id ? 'selected' : '' }}>
                             {{ $b->code }} - {{ $b->name }}
