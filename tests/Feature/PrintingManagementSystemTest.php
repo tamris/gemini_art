@@ -23,6 +23,46 @@ class PrintingManagementSystemTest extends TestCase
         parent::setUp();
         $this->seed();
         Storage::fake('public');
+
+        $branchA = Branch::firstOrCreate(
+            ['code' => 'CBA'],
+            [
+                'name' => 'Cabang Solo (CBA)',
+                'address' => 'Jl. Slamet Riyadi No. 142, Surakarta',
+                'phone' => '0812-3456-7890',
+            ]
+        );
+
+        $branchB = Branch::firstOrCreate(
+            ['code' => 'CBB'],
+            [
+                'name' => 'Cabang Jogja (CBB)',
+                'address' => 'Jl. Gejayan No. 88, Sleman, D.I. Yogyakarta',
+                'phone' => '0819-8765-4321',
+            ]
+        );
+
+        User::firstOrCreate(
+            ['email' => 'kasir.solo@geminiart.test'],
+            [
+                'branch_id' => $branchA->id,
+                'name' => 'Siti Kasir Solo',
+                'password' => bcrypt('password'),
+                'role' => 'cashier',
+                'is_active' => true,
+            ]
+        );
+
+        User::firstOrCreate(
+            ['email' => 'desain.solo@geminiart.test'],
+            [
+                'branch_id' => $branchA->id,
+                'name' => 'Rian Desainer Solo',
+                'password' => bcrypt('password'),
+                'role' => 'designer',
+                'is_active' => true,
+            ]
+        );
     }
 
     public function test_login_page_renders_production_ready(): void

@@ -1,59 +1,59 @@
 <!-- Vendor Dispatch Modal (Soft Neo-Brutalism) -->
 <dialog id="vendor-dispatch-modal" closedby="any" class="p-0 bg-transparent max-w-lg w-full m-auto border-none outline-none overflow-visible">
-    <div class="neo-box p-6 bg-white w-full mx-auto shadow-[5px_5px_0px_0px_#0f172a] rounded-2xl border-2 border-slate-900 overflow-visible">
+    <div class="neo-box p-6 bg-white dark:bg-[#0c1222] w-full mx-auto shadow-[5px_5px_0px_0px_#0f172a] dark:shadow-[5px_5px_0px_0px_#000000] rounded-2xl border-2 border-slate-900 dark:border-slate-700 overflow-visible">
         
         <!-- Modal Header -->
-        <div class="flex items-center justify-between pb-3 border-b-2 border-slate-900 mb-4">
+        <div class="flex items-center justify-between pb-3 border-b-2 border-slate-900 dark:border-slate-800 mb-4">
             <div class="flex items-center gap-2.5">
-                <div class="w-8 h-8 rounded-lg bg-emerald-300 border-[1.5px] border-slate-900 flex items-center justify-center text-slate-900 shadow-[1px_1px_0px_0px_#0f172a]">
+                <div class="w-8 h-8 rounded-lg bg-emerald-300 dark:bg-emerald-400 border-[1.5px] border-slate-900 dark:border-slate-700 flex items-center justify-center text-slate-900 shadow-[1px_1px_0px_0px_#0f172a] dark:shadow-[1px_1px_0px_0px_#000000]">
                     <x-icon name="send" class="w-4 h-4" />
                 </div>
                 <div>
-                    <h3 class="font-black text-base text-slate-900">Kirim ke Rekanan Percetakan</h3>
-                    <p class="text-[11px] font-bold text-slate-500 font-mono" id="dispatch-modal-subtitle">ORD-...</p>
+                    <h3 class="font-black text-base text-slate-900 dark:text-white">Kirim ke Rekanan Percetakan</h3>
+                    <p class="text-[11px] font-bold text-slate-500 dark:text-slate-400 font-mono" id="dispatch-modal-subtitle">ORD-...</p>
                 </div>
             </div>
             <button type="button" 
                     onclick="closeVendorDispatchModal()"
                     aria-label="Tutup" 
-                    class="w-8 h-8 rounded-lg border-2 border-slate-900 bg-rose-200 hover:bg-rose-300 font-black text-sm flex items-center justify-center cursor-pointer shadow-[1px_1px_0px_0px_#0f172a] active:translate-x-[1px] active:translate-y-[1px]">
+                    class="w-8 h-8 rounded-lg border-2 border-slate-900 dark:border-slate-700 bg-rose-200 hover:bg-rose-300 dark:bg-rose-950/40 dark:hover:bg-rose-900/60 dark:border-rose-800 dark:text-rose-400 font-black text-sm flex items-center justify-center cursor-pointer shadow-[1px_1px_0px_0px_#0f172a] dark:shadow-[1px_1px_0px_0px_#000000] active:translate-x-[1px] active:translate-y-[1px]">
                 ✕
             </button>
         </div>
 
         <!-- File & Spec Summary Box -->
-        <div class="p-3 bg-slate-50 border-[1.5px] border-slate-900 rounded-xl text-xs space-y-1 mb-4 shadow-[1.5px_1.5px_0px_0px_#0f172a]">
+        <div class="p-3 bg-slate-50 dark:bg-slate-900 border-[1.5px] border-slate-900 dark:border-slate-700 rounded-xl text-xs space-y-1 mb-4 shadow-[1.5px_1.5px_0px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_0px_#000000]">
             <div class="flex items-center justify-between">
-                <span class="text-slate-500 font-medium">Berkas Siap Cetak:</span>
-                <span class="font-mono font-black text-slate-900 truncate max-w-[240px]" id="dispatch-file-name">-</span>
+                <span class="text-slate-500 dark:text-slate-400 font-medium">Berkas Siap Cetak:</span>
+                <span class="font-mono font-black text-slate-900 dark:text-white truncate max-w-[240px]" id="dispatch-file-name">-</span>
             </div>
             <div class="flex items-center justify-between">
-                <span class="text-slate-500 font-medium">Ukuran & Bahan:</span>
-                <span class="font-bold text-slate-800" id="dispatch-file-specs">-</span>
+                <span class="text-slate-500 dark:text-slate-400 font-medium">Ukuran & Bahan:</span>
+                <span class="font-bold text-slate-800 dark:text-slate-200" id="dispatch-file-specs">-</span>
             </div>
-            <div id="dispatch-files-list-box" class="hidden pt-2 border-t border-slate-200 mt-2 space-y-1 max-h-32 overflow-y-auto"></div>
+            <div id="dispatch-files-list-box" class="hidden pt-2 border-t border-slate-200 dark:border-slate-800 mt-2 space-y-1 max-h-32 overflow-y-auto"></div>
         </div>
 
         <!-- Mode Navigation Tabs -->
-        <div class="flex border-2 border-slate-900 rounded-xl overflow-hidden mb-4 p-1 bg-slate-100 gap-1 text-xs font-black shadow-[1.5px_1.5px_0px_0px_#0f172a]">
+        <div class="flex border-2 border-slate-900 dark:border-slate-700 rounded-xl overflow-hidden mb-4 p-1 bg-slate-100 dark:bg-slate-900 gap-1 text-xs font-black shadow-[1.5px_1.5px_0px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_0px_#000000]">
             <button type="button" 
                     id="tab-btn-wa" 
                     onclick="switchDispatchTab('wa')" 
-                    class="flex-1 py-1.5 px-2 rounded-lg bg-emerald-400 text-slate-950 border border-slate-900 shadow-[1px_1px_0px_0px_#0f172a] flex items-center justify-center gap-1.5 cursor-pointer transition-all">
+                    class="flex-1 py-1.5 px-2 rounded-lg bg-emerald-400 text-slate-950 border border-slate-900 dark:border-slate-800 shadow-[1px_1px_0px_0px_#0f172a] dark:shadow-[1px_1px_0px_0px_#000000] flex items-center justify-center gap-1.5 cursor-pointer transition-all">
                 <x-icon name="phone" class="w-3.5 h-3.5" />
                 <span>WhatsApp</span>
             </button>
             <button type="button" 
                     id="tab-btn-email" 
                     onclick="switchDispatchTab('email')" 
-                    class="flex-1 py-1.5 px-2 rounded-lg text-slate-600 hover:text-slate-900 flex items-center justify-center gap-1.5 cursor-pointer transition-all">
+                    class="flex-1 py-1.5 px-2 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white flex items-center justify-center gap-1.5 cursor-pointer transition-all">
                 <x-icon name="mail" class="w-3.5 h-3.5" />
                 <span>Email Vendor</span>
             </button>
             <button type="button" 
                     id="tab-btn-link" 
                     onclick="switchDispatchTab('link')" 
-                    class="flex-1 py-1.5 px-2 rounded-lg text-slate-600 hover:text-slate-900 flex items-center justify-center gap-1.5 cursor-pointer transition-all">
+                    class="flex-1 py-1.5 px-2 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white flex items-center justify-center gap-1.5 cursor-pointer transition-all">
                 <x-icon name="share2" class="w-3.5 h-3.5" />
                 <span>Salin Link</span>
             </button>
@@ -62,7 +62,7 @@
         <!-- TAB 1: WhatsApp Dispatch -->
         <div id="dispatch-tab-wa" class="space-y-4">
             <div>
-                <label class="block text-xs font-black uppercase text-slate-900 mb-1">
+                <label class="block text-xs font-black uppercase text-slate-900 dark:text-slate-300 mb-1">
                     Nomor WhatsApp Percetakan Rekanan
                 </label>
                 <div class="relative">
@@ -76,15 +76,15 @@
                 </p>
             </div>
 
-            <div class="pt-3 border-t-[1.5px] border-slate-200 flex items-center justify-end gap-2">
+            <div class="pt-3 border-t-[1.5px] border-slate-200 dark:border-slate-800 flex items-center justify-end gap-2">
                 <button type="button" 
                         onclick="closeVendorDispatchModal()" 
-                        class="neo-btn bg-slate-200 text-xs py-2 px-4 cursor-pointer font-bold">
+                        class="neo-btn bg-slate-200 hover:bg-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 dark:text-slate-300 dark:border-slate-700 text-xs py-2 px-4 cursor-pointer font-bold">
                     Batal
                 </button>
                 <button type="button" 
                         onclick="sendDispatchWhatsApp()" 
-                        class="neo-btn bg-emerald-400 hover:bg-emerald-300 text-xs py-2 px-5 font-black text-slate-950 shadow-[2px_2px_0px_0px_#0f172a] flex items-center gap-2 cursor-pointer">
+                        class="neo-btn bg-emerald-400 hover:bg-emerald-300 text-xs py-2 px-5 font-black text-slate-950 shadow-[2px_2px_0px_0px_#0f172a] dark:shadow-[2px_2px_0px_0px_#000000] flex items-center gap-2 cursor-pointer">
                     <x-icon name="send" class="w-3.5 h-3.5" />
                     <span>Buka & Kirim WhatsApp</span>
                 </button>
@@ -96,7 +96,7 @@
             <form id="dispatch-email-form" method="POST" action="" onsubmit="handleDispatchEmailSubmit(event)" class="space-y-4">
                 @csrf
                 <div>
-                    <label class="block text-xs font-black uppercase text-slate-900 mb-1">
+                    <label class="block text-xs font-black uppercase text-slate-900 dark:text-slate-300 mb-1">
                         Alamat Email Percetakan Rekanan
                     </label>
                     <input type="email" 
@@ -108,7 +108,7 @@
                 </div>
 
                 <div>
-                    <label class="block text-xs font-black uppercase text-slate-900 mb-1">
+                    <label class="block text-xs font-black uppercase text-slate-900 dark:text-slate-300 mb-1">
                         Catatan Tambahan untuk Operator (Opsional)
                     </label>
                     <textarea name="notes" 
@@ -121,25 +121,25 @@
                 <!-- Alert state for email result -->
                 <div id="dispatch-email-alert" class="hidden p-3 rounded-xl border-2 text-xs font-bold"></div>
 
-                <div class="pt-3 border-t-[1.5px] border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+                <div class="pt-3 border-t-[1.5px] border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
                     <a href="#" 
                        id="dispatch-email-preview-link" 
                        target="_blank" 
                        title="Buka pratinjau format email di tab baru"
-                       class="neo-btn bg-sky-100 hover:bg-sky-200 text-slate-800 text-xs py-2 px-3 font-bold border-slate-900 shadow-[1.5px_1.5px_0px_0px_#0f172a] inline-flex items-center justify-center gap-1.5 transition-all">
-                        <x-icon name="eye" class="w-3.5 h-3.5 text-slate-700" />
+                       class="neo-btn bg-sky-100 hover:bg-sky-200 dark:bg-sky-950/40 dark:hover:bg-sky-900/60 dark:text-sky-300 dark:border-sky-800 text-slate-800 text-xs py-2 px-3 font-bold border-slate-900 shadow-[1.5px_1.5px_0px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_0px_#000000] inline-flex items-center justify-center gap-1.5 transition-all">
+                        <x-icon name="eye" class="w-3.5 h-3.5 text-slate-700 dark:text-sky-400" />
                         <span>Pratinjau Email</span>
                     </a>
 
                     <div class="flex items-center justify-end gap-2">
                         <button type="button" 
                                 onclick="closeVendorDispatchModal()" 
-                                class="neo-btn bg-slate-200 hover:bg-slate-300 text-xs py-2 px-4 cursor-pointer font-bold text-slate-700">
+                                class="neo-btn bg-slate-200 hover:bg-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 dark:text-slate-300 dark:border-slate-700 text-xs py-2 px-4 cursor-pointer font-bold">
                             Batal
                         </button>
                         <button type="submit" 
                                 id="dispatch-email-submit-btn"
-                                class="neo-btn bg-emerald-400 hover:bg-emerald-300 text-xs py-2 px-5 font-black text-slate-950 shadow-[2px_2px_0px_0px_#0f172a] flex items-center gap-2 cursor-pointer">
+                                class="neo-btn bg-emerald-400 hover:bg-emerald-300 text-xs py-2 px-5 font-black text-slate-950 shadow-[2px_2px_0px_0px_#0f172a] dark:shadow-[2px_2px_0px_0px_#000000] flex items-center gap-2 cursor-pointer">
                             <x-icon name="send" class="w-3.5 h-3.5" />
                             <span id="dispatch-email-submit-text">Kirim Email</span>
                         </button>
@@ -151,7 +151,7 @@
         <!-- TAB 3: Share Direct Public Link -->
         <div id="dispatch-tab-link" class="hidden space-y-4">
             <div>
-                <label class="block text-xs font-black uppercase text-slate-900 mb-1">
+                <label class="block text-xs font-black uppercase text-slate-900 dark:text-slate-300 mb-1">
                     Link Portal Berkas Siap Cetak (Publik & Tanpa Login)
                 </label>
 
@@ -160,37 +160,37 @@
                         <input type="text" 
                                id="dispatch-public-url" 
                                readonly 
-                               class="neo-input text-xs font-mono font-bold w-full py-2 px-3 bg-slate-50 select-all">
+                               class="neo-input text-xs font-mono font-bold w-full py-2 px-3 bg-slate-50 dark:bg-slate-900 select-all">
                         <button type="button" 
                                 onclick="copyPublicUrlToClipboard()" 
                                 id="btn-copy-public-url"
-                                class="neo-btn bg-amber-300 hover:bg-amber-400 text-xs py-2 px-4 font-black text-slate-950 shrink-0 shadow-[1.5px_1.5px_0px_0px_#0f172a]">
+                                class="neo-btn bg-amber-300 hover:bg-amber-400 dark:bg-amber-400 dark:hover:bg-amber-300 text-xs py-2 px-4 font-black text-slate-950 shrink-0 shadow-[1.5px_1.5px_0px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_0px_#000000]">
                             Salin
                         </button>
                     </div>
                 </div>
 
                 <div id="dispatch-all-links-container" class="hidden space-y-2">
-                    <textarea id="dispatch-all-links-text" rows="5" readonly class="neo-input text-xs font-mono font-bold w-full p-2.5 bg-slate-50 select-all"></textarea>
+                    <textarea id="dispatch-all-links-text" rows="5" readonly class="neo-input text-xs font-mono font-bold w-full p-2.5 bg-slate-50 dark:bg-slate-900 select-all"></textarea>
                     <div class="flex justify-end">
                         <button type="button" 
                                 onclick="copyAllLinksToClipboard()" 
                                 id="btn-copy-all-links"
-                                class="neo-btn bg-amber-300 hover:bg-amber-400 text-xs py-1.5 px-3 font-black text-slate-950 shadow-[1.5px_1.5px_0px_0px_#0f172a] cursor-pointer">
+                                class="neo-btn bg-amber-300 hover:bg-amber-400 dark:bg-amber-400 dark:hover:bg-amber-300 text-xs py-1.5 px-3 font-black text-slate-950 shadow-[1.5px_1.5px_0px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_0px_#000000] cursor-pointer">
                             Salin Semua Link
                         </button>
                     </div>
                 </div>
 
-                <p class="text-[11px] text-slate-500 font-medium mt-1 leading-relaxed">
+                <p class="text-[11px] text-slate-500 dark:text-slate-400 font-medium mt-1 leading-relaxed">
                     Link ini aman dan dapat dibuka oleh siapa saja (rekanan percetakan) untuk mengunduh berkas resolusi penuh dan melihat spesifikasi cetak tanpa harus login.
                 </p>
             </div>
 
-            <div class="pt-3 border-t-[1.5px] border-slate-200 flex items-center justify-end">
+            <div class="pt-3 border-t-[1.5px] border-slate-200 dark:border-slate-800 flex items-center justify-end">
                 <button type="button" 
                         onclick="closeVendorDispatchModal()" 
-                        class="neo-btn bg-slate-200 hover:bg-slate-300 text-xs py-2 px-5 cursor-pointer font-bold text-slate-700">
+                        class="neo-btn bg-slate-200 hover:bg-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 text-xs py-2 px-5 cursor-pointer font-bold text-slate-700 dark:text-slate-300 dark:border-slate-700">
                     Tutup
                 </button>
             </div>

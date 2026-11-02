@@ -6,22 +6,22 @@
 <div class="space-y-6">
 
     <!-- Header Section -->
-    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b-2 border-black">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b-2 border-black dark:border-slate-800">
         <div>
             <div class="flex items-center gap-2 mb-1">
                 <span class="w-3 h-3 rounded-full bg-rose-500"></span>
-                <span class="text-xs font-black uppercase tracking-wider text-rose-900">
+                <span class="text-xs font-black uppercase tracking-wider text-rose-900 dark:text-rose-400">
                     Konfigurasi Multi-Cabang
                 </span>
             </div>
-            <h1 class="text-2xl font-black text-black">Daftar Cabang & Outlet Percetakan</h1>
+            <h1 class="text-2xl font-black text-black dark:text-white">Daftar Cabang & Outlet Percetakan</h1>
             <!-- <p class="text-xs font-semibold text-slate-600 mt-0.5">
                 Kelola kode cabang (contoh: CBA, CBB) untuk otomatisasi penomoran order dan struktur path arsip cloud.
             </p> -->
         </div>
         <button type="button" 
                 onclick="document.getElementById('add-branch-modal').showModal()"
-                class="neo-btn bg-amber-300 hover:bg-amber-400 text-xs py-2 px-4 font-black text-black flex items-center gap-1.5 cursor-pointer">
+                class="neo-btn bg-amber-300 hover:bg-amber-400 dark:bg-amber-400 dark:hover:bg-amber-300 text-xs py-2 px-4 font-black text-black dark:text-slate-950 flex items-center gap-1.5 cursor-pointer dark:border-slate-800 dark:shadow-[2px_2px_0px_0px_#000000]">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/>
             </svg>
@@ -32,26 +32,26 @@
     <!-- Branch Cards Grid -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         @foreach($branches as $b)
-        <div class="neo-box p-6 bg-white space-y-4">
-            <div class="flex items-start justify-between pb-3 border-b-2 border-black">
+        <div class="neo-box p-6 bg-white dark:bg-[#0c1222] border-2 border-black dark:border-slate-700 shadow-[3px_3px_0px_0px_#000] dark:shadow-[3px_3px_0px_0px_#000000] space-y-4">
+            <div class="flex items-start justify-between pb-3 border-b-2 border-black dark:border-slate-800">
                 <div>
                     <div class="flex items-center gap-2">
-                        <span class="px-2 py-0.5 rounded bg-black text-white font-mono font-black text-sm">
+                        <span class="px-2 py-0.5 rounded bg-black dark:bg-slate-800 text-white dark:text-amber-400 border border-transparent dark:border-slate-700 font-mono font-black text-sm">
                             {{ $b->code }}
                         </span>
-                        <h2 class="font-black text-lg text-black">{{ $b->name }}</h2>
+                        <h2 class="font-black text-lg text-black dark:text-white">{{ $b->name }}</h2>
                     </div>
-                    <p class="text-xs text-slate-500 font-medium mt-1">{{ $b->address ?? 'Alamat belum diatur' }}</p>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 font-medium mt-1">{{ $b->address ?? 'Alamat belum diatur' }}</p>
                 </div>
                 <div class="flex items-center gap-2 shrink-0">
-                    <span class="text-xs font-bold text-slate-700 bg-slate-100 border border-black px-2.5 py-1 rounded-lg">
+                    <span class="text-xs font-bold text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 border border-black dark:border-slate-700 px-2.5 py-1 rounded-lg">
                         {{ $b->phone ?? '-' }}
                     </span>
                     <button type="button" 
                             onclick="document.getElementById('edit-branch-modal-{{ $b->id }}').showModal()"
                             title="Edit data cabang {{ $b->name }}"
                             aria-label="Edit Cabang"
-                            class="w-8 h-8 rounded-lg border-[1.5px] border-slate-800 bg-white hover:bg-slate-100 text-slate-800 shadow-[1.5px_1.5px_0px_0px_#0f172a] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none flex items-center justify-center transition-all cursor-pointer">
+                            class="w-8 h-8 rounded-lg border-[1.5px] border-slate-800 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-800 dark:text-white shadow-[1.5px_1.5px_0px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_0px_#000000] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none flex items-center justify-center transition-all cursor-pointer">
                         <x-icon name="pencil" class="w-3.5 h-3.5" />
                     </button>
                 </div>
@@ -60,26 +60,26 @@
             <div class="grid grid-cols-3 gap-3">
                 <a href="{{ route('users.index', ['branch_id' => $b->id]) }}" 
                    title="Lihat dan kelola staf cabang {{ $b->code }}"
-                   class="p-3 bg-slate-50 hover:bg-amber-100/70 border-2 border-black rounded-lg text-center transition-all block group cursor-pointer shadow-[1px_1px_0px_0px_#000]">
-                    <span class="text-[10px] font-black uppercase text-slate-500 group-hover:text-amber-900 block flex items-center justify-center gap-1">
+                   class="p-3 bg-slate-50 dark:bg-slate-900 hover:bg-amber-100/70 dark:hover:bg-slate-800 border-2 border-black dark:border-slate-700 rounded-lg text-center transition-all block group cursor-pointer shadow-[1px_1px_0px_0px_#000] dark:shadow-[1px_1px_0px_0px_#000000]">
+                    <span class="text-[10px] font-black uppercase text-slate-500 dark:text-slate-400 group-hover:text-amber-900 dark:group-hover:text-amber-300 block flex items-center justify-center gap-1">
                         <span>Karyawan</span>
                         <x-icon name="arrow-right" class="w-2.5 h-2.5 opacity-0 group-hover:opacity-100 transition-opacity" />
                     </span>
-                    <span class="text-base font-black text-black group-hover:text-amber-950">{{ $b->users_count }} Orang</span>
+                    <span class="text-base font-black text-black dark:text-white group-hover:text-amber-950 dark:group-hover:text-amber-300">{{ $b->users_count }} Orang</span>
                 </a>
-                <div class="p-3 bg-slate-50 border-2 border-black rounded-lg text-center">
-                    <span class="text-[10px] font-black uppercase text-slate-500 block">Total Order</span>
-                    <span class="text-base font-black text-black">{{ $b->orders_count }} Order</span>
+                <div class="p-3 bg-slate-50 dark:bg-slate-900 border-2 border-black dark:border-slate-700 rounded-lg text-center shadow-[1px_1px_0px_0px_#000] dark:shadow-[1px_1px_0px_0px_#000000]">
+                    <span class="text-[10px] font-black uppercase text-slate-500 dark:text-slate-400 block">Total Order</span>
+                    <span class="text-base font-black text-black dark:text-white">{{ $b->orders_count }} Order</span>
                 </div>
-                <div class="p-3 bg-amber-100 border-2 border-black rounded-lg text-center">
-                    <span class="text-[10px] font-black uppercase text-slate-700 block">Kas Aktif</span>
-                    <span class="text-xs font-black text-black">Rp {{ number_format($b->cash_balance, 0, ',', '.') }}</span>
+                <div class="p-3 bg-amber-100 dark:bg-amber-950/40 border-2 border-black dark:border-slate-700 rounded-lg text-center shadow-[1px_1px_0px_0px_#000] dark:shadow-[1px_1px_0px_0px_#000000]">
+                    <span class="text-[10px] font-black uppercase text-slate-700 dark:text-amber-400 block">Kas Aktif</span>
+                    <span class="text-xs font-black text-black dark:text-white">Rp {{ number_format($b->cash_balance, 0, ',', '.') }}</span>
                 </div>
             </div>
 
-            <div class="pt-2 border-t border-slate-200 flex items-center justify-between text-xs">
-                <span class="text-slate-500 font-medium">Path S3/R2 Cloud: <code>designs/{{ $b->code }}/...</code></span>
-                <a href="{{ route('orders.index', ['branch_id' => $b->id]) }}" class="font-bold text-blue-700 hover:underline">
+            <div class="pt-2 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between text-xs">
+                <span class="text-slate-500 dark:text-slate-400 font-medium">Path S3/R2 Cloud: <code>designs/{{ $b->code }}/...</code></span>
+                <a href="{{ route('orders.index', ['branch_id' => $b->id]) }}" class="font-bold text-blue-700 dark:text-sky-400 hover:underline">
                     Filter Order Cabang Ini →
                 </a>
             </div>
@@ -87,14 +87,14 @@
 
         <!-- Edit Branch Modal -->
         <dialog id="edit-branch-modal-{{ $b->id }}" closedby="any" class="p-0 bg-transparent max-w-md w-full m-auto border-none outline-none overflow-visible">
-            <div class="neo-box p-6 bg-white w-full mx-auto shadow-[4px_4px_0px_0px_#0f172a] rounded-2xl border-2 border-slate-900 overflow-visible">
-                <div class="flex items-center justify-between pb-3 border-b-2 border-black mb-4">
+            <div class="neo-box p-6 bg-white dark:bg-[#0c1222] w-full mx-auto shadow-[4px_4px_0px_0px_#0f172a] dark:shadow-[4px_4px_0px_0px_#000000] rounded-2xl border-2 border-slate-900 dark:border-slate-700 overflow-visible">
+                <div class="flex items-center justify-between pb-3 border-b-2 border-black dark:border-slate-800 mb-4">
                     <div>
-                        <h3 class="font-black text-base text-black">Edit Data Cabang</h3>
-                        <span class="text-xs font-mono text-slate-500 font-bold">{{ $b->code }} - {{ $b->name }}</span>
+                        <h3 class="font-black text-base text-black dark:text-white">Edit Data Cabang</h3>
+                        <span class="text-xs font-mono text-slate-500 dark:text-slate-400 font-bold">{{ $b->code }} - {{ $b->name }}</span>
                     </div>
                     <form method="dialog">
-                        <button class="w-8 h-8 rounded-lg border-2 border-black bg-rose-200 hover:bg-rose-300 font-black text-base flex items-center justify-center cursor-pointer">
+                        <button class="w-8 h-8 rounded-lg border-2 border-black dark:border-slate-700 bg-rose-200 hover:bg-rose-300 dark:bg-rose-500/20 dark:hover:bg-rose-500/30 dark:text-rose-300 text-black font-black text-base flex items-center justify-center cursor-pointer">
                             ✕
                         </button>
                     </form>
@@ -105,31 +105,31 @@
                     @method('PUT')
 
                     <div>
-                        <label class="block text-xs font-black uppercase text-black mb-1">Nama Cabang *</label>
+                        <label class="block text-xs font-black uppercase text-black dark:text-slate-300 mb-1">Nama Cabang *</label>
                         <input type="text" name="name" value="{{ old('name', $b->name) }}" required placeholder="Contoh: Gemini Art - Cabang Solo" class="neo-input text-xs font-bold">
                     </div>
 
                     <div>
-                        <label class="block text-xs font-black uppercase text-black mb-1">Kode Cabang (Maks 10 Huruf, Unik) *</label>
+                        <label class="block text-xs font-black uppercase text-black dark:text-slate-300 mb-1">Kode Cabang (Maks 10 Huruf, Unik) *</label>
                         <input type="text" name="code" value="{{ old('code', $b->code) }}" required maxlength="10" class="neo-input text-xs font-mono font-bold uppercase">
-                        <span class="text-[10px] text-slate-500 font-medium">Digunakan untuk format order (e.g. ORD-{{ $b->code }}-...) dan direktori storage cloud.</span>
+                        <span class="text-[10px] text-slate-500 dark:text-slate-400 font-medium">Digunakan untuk format order (e.g. ORD-{{ $b->code }}-...) dan direktori storage cloud.</span>
                     </div>
 
                     <div>
-                        <label class="block text-xs font-black uppercase text-black mb-1">Alamat Lengkap</label>
+                        <label class="block text-xs font-black uppercase text-black dark:text-slate-300 mb-1">Alamat Lengkap</label>
                         <textarea name="address" rows="2" placeholder="Jl. Pandanaran No. 10..." class="neo-input text-xs">{{ old('address', $b->address) }}</textarea>
                     </div>
 
                     <div>
-                        <label class="block text-xs font-black uppercase text-black mb-1">No. Telepon / WhatsApp Cabang</label>
+                        <label class="block text-xs font-black uppercase text-black dark:text-slate-300 mb-1">No. Telepon / WhatsApp Cabang</label>
                         <input type="text" name="phone" value="{{ old('phone', $b->phone) }}" placeholder="0812-..." class="neo-input text-xs">
                     </div>
 
-                    <div class="pt-3 border-t-2 border-black flex items-center justify-end gap-2">
-                        <button type="button" onclick="document.getElementById('edit-branch-modal-{{ $b->id }}').close()" class="neo-btn bg-slate-200 text-xs py-2 px-4 cursor-pointer font-bold">
+                    <div class="pt-3 border-t-2 border-black dark:border-slate-800 flex items-center justify-end gap-2">
+                        <button type="button" onclick="document.getElementById('edit-branch-modal-{{ $b->id }}').close()" class="neo-btn bg-slate-200 hover:bg-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 dark:text-slate-200 dark:border-slate-700 text-xs py-2 px-4 cursor-pointer font-bold">
                             Batal
                         </button>
-                        <button type="submit" class="neo-btn bg-amber-300 hover:bg-amber-400 text-xs py-2 px-4 font-black text-black cursor-pointer shadow-[2px_2px_0px_0px_#0f172a]">
+                        <button type="submit" class="neo-btn bg-amber-300 hover:bg-amber-400 text-xs py-2 px-4 font-black text-black dark:text-slate-950 cursor-pointer shadow-[2px_2px_0px_0px_#0f172a] dark:shadow-[2px_2px_0px_0px_#000000] dark:border-slate-700">
                             Simpan Perubahan
                         </button>
                     </div>
@@ -143,11 +143,11 @@
 
 <!-- Add Branch Modal -->
 <dialog id="add-branch-modal" closedby="any" class="p-0 bg-transparent max-w-md w-full m-auto border-none outline-none overflow-visible">
-    <div class="neo-box p-6 bg-white w-full mx-auto shadow-[4px_4px_0px_0px_#0f172a] rounded-2xl border-2 border-slate-900 overflow-visible">
-        <div class="flex items-center justify-between pb-3 border-b-2 border-black mb-4">
-            <h3 class="font-black text-base text-black">Tambah Cabang Baru</h3>
+    <div class="neo-box p-6 bg-white dark:bg-[#0c1222] w-full mx-auto shadow-[4px_4px_0px_0px_#0f172a] dark:shadow-[4px_4px_0px_0px_#000000] rounded-2xl border-2 border-slate-900 dark:border-slate-700 overflow-visible">
+        <div class="flex items-center justify-between pb-3 border-b-2 border-black dark:border-slate-800 mb-4">
+            <h3 class="font-black text-base text-black dark:text-white">Tambah Cabang Baru</h3>
             <form method="dialog">
-                <button class="w-8 h-8 rounded-lg border-2 border-black bg-rose-200 hover:bg-rose-300 font-black text-base flex items-center justify-center cursor-pointer">
+                <button class="w-8 h-8 rounded-lg border-2 border-black dark:border-slate-700 bg-rose-200 hover:bg-rose-300 dark:bg-rose-500/20 dark:hover:bg-rose-500/30 dark:text-rose-300 text-black font-black text-base flex items-center justify-center cursor-pointer">
                     ✕
                 </button>
             </form>
@@ -157,31 +157,31 @@
             @csrf
 
             <div>
-                <label class="block text-xs font-black uppercase text-black mb-1">Nama Cabang</label>
+                <label class="block text-xs font-black uppercase text-black dark:text-slate-300 mb-1">Nama Cabang</label>
                 <input type="text" name="name" required placeholder="Contoh: Gemini Art - Cabang Semarang" class="neo-input text-xs font-bold">
             </div>
 
             <div>
-                <label class="block text-xs font-black uppercase text-black mb-1">Kode Cabang (Maks 10 Huruf, Unik)</label>
+                <label class="block text-xs font-black uppercase text-black dark:text-slate-300 mb-1">Kode Cabang (Maks 10 Huruf, Unik)</label>
                 <input type="text" name="code" required placeholder="Contoh: CBC" maxlength="10" class="neo-input text-xs font-mono font-bold uppercase">
-                <span class="text-[10px] text-slate-500 font-medium">Digunakan untuk format order (e.g. ORD-CBC-...) dan direktori storage.</span>
+                <span class="text-[10px] text-slate-500 dark:text-slate-400 font-medium">Digunakan untuk format order (e.g. ORD-CBC-...) dan direktori storage.</span>
             </div>
 
             <div>
-                <label class="block text-xs font-black uppercase text-black mb-1">Alamat Lengkap</label>
+                <label class="block text-xs font-black uppercase text-black dark:text-slate-300 mb-1">Alamat Lengkap</label>
                 <textarea name="address" rows="2" placeholder="Jl. Pandanaran No. 10..." class="neo-input text-xs"></textarea>
             </div>
 
             <div>
-                <label class="block text-xs font-black uppercase text-black mb-1">No. Telepon / WhatsApp Cabang</label>
+                <label class="block text-xs font-black uppercase text-black dark:text-slate-300 mb-1">No. Telepon / WhatsApp Cabang</label>
                 <input type="text" name="phone" placeholder="0812-..." class="neo-input text-xs">
             </div>
 
-            <div class="pt-3 border-t-2 border-black flex justify-end gap-2">
-                <button type="button" onclick="document.getElementById('add-branch-modal').close()" class="neo-btn bg-slate-200 text-xs py-2 px-4 cursor-pointer">
+            <div class="pt-3 border-t-2 border-black dark:border-slate-800 flex justify-end gap-2">
+                <button type="button" onclick="document.getElementById('add-branch-modal').close()" class="neo-btn bg-slate-200 hover:bg-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 dark:text-slate-200 dark:border-slate-700 text-xs py-2 px-4 cursor-pointer">
                     Batal
                 </button>
-                <button type="submit" class="neo-btn bg-emerald-400 hover:bg-emerald-300 text-xs py-2 px-4 font-black flex items-center gap-1.5 cursor-pointer">
+                <button type="submit" class="neo-btn bg-emerald-400 hover:bg-emerald-300 dark:bg-emerald-500 dark:hover:bg-emerald-400 text-black dark:text-slate-950 text-xs py-2 px-4 font-black flex items-center gap-1.5 cursor-pointer dark:border-slate-700">
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
                     </svg>

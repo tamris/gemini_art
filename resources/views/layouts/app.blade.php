@@ -4,10 +4,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="color-scheme" content="light dark">
     <title>@yield('title', 'Sistem Manajemen Percetakan') - Gemini Art</title>
+    <script>
+        (function() {
+            const savedTheme = localStorage.getItem('theme');
+            const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const isDark = savedTheme === 'dark' || (!savedTheme && systemPrefersDark);
+            if (isDark) {
+                document.documentElement.classList.add('dark');
+                document.querySelector('meta[name="color-scheme"]')?.setAttribute('content', 'dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+                document.querySelector('meta[name="color-scheme"]')?.setAttribute('content', 'light');
+            }
+        })();
+    </script>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="bg-[#F8FAFC] text-slate-900 font-sans min-h-screen flex antialiased selection:bg-amber-300 selection:text-black">
+<body class="bg-[#F8FAFC] dark:bg-[#0b0f19] text-slate-900 dark:text-slate-100 font-sans min-h-screen flex antialiased selection:bg-amber-300 selection:text-black transition-colors duration-150">
 
     <!-- Mobile Sidebar Backdrop Overlay -->
     <div id="sidebar-backdrop" 
@@ -16,19 +31,19 @@
 
     <!-- Left Sidebar (Soft Neo-Brutalism) -->
     <aside id="main-sidebar" 
-           class="fixed inset-y-0 left-0 z-50 w-72 bg-white border-r-[1.5px] border-slate-800 flex flex-col justify-between transform -translate-x-full lg:translate-x-0 transition-transform duration-200 ease-in-out">
+           class="fixed inset-y-0 left-0 z-50 w-72 bg-white dark:bg-[#0c1222] border-r-[1.5px] border-slate-800 dark:border-slate-800 flex flex-col justify-between transform -translate-x-full lg:translate-x-0 transition-transform duration-200 ease-in-out">
         
         <!-- Top: Brand Header -->
-        <div class="h-20 px-5 border-b-[1.5px] border-slate-800 bg-white flex items-center justify-between">
+        <div class="h-20 px-5 border-b-[1.5px] border-slate-800 dark:border-slate-800 bg-white dark:bg-[#0c1222] flex items-center justify-between">
             <a href="{{ route('dashboard') }}" class="flex items-center gap-3 group text-decoration-none">
-                <div class="w-11 h-11 bg-amber-200 border-[1.5px] border-slate-800 rounded-xl shadow-[2px_2px_0px_0px_#0f172a] flex items-center justify-center font-black text-xl group-hover:translate-x-[1px] group-hover:translate-y-[1px] transition-transform text-slate-900">
+                <div class="w-11 h-11 bg-amber-200 border-[1.5px] border-slate-800 rounded-xl shadow-[2px_2px_0px_0px_#0f172a] dark:shadow-[2px_2px_0px_0px_#000000] flex items-center justify-center font-black text-xl group-hover:translate-x-[1px] group-hover:translate-y-[1px] transition-transform text-slate-900">
                     GA
                 </div>
                 <div>
                     <div class="flex items-center gap-1.5">
-                        <span class="font-black text-lg tracking-tight text-slate-900">GEMINI ART</span>
+                        <span class="font-black text-lg tracking-tight text-slate-900 dark:text-white">GEMINI ART</span>
                     </div>
-                    <p class="text-[10px] font-bold uppercase tracking-wider text-slate-500">
+                    <p class="text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                         Studio & Percetakan
                     </p>
                 </div>
@@ -47,14 +62,14 @@
             
             <!-- Group 1: Ringkasan & Order -->
             <div class="space-y-1.5">
-                <div class="px-3 text-[10px] font-black uppercase tracking-wider text-slate-400">
+                <div class="px-3 text-[10px] font-black uppercase tracking-wider text-slate-400 dark:text-slate-500">
                     Menu Utama
                 </div>
 
                 <!-- Dashboard -->
                 <a href="{{ route('dashboard') }}" 
-                   class="group flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-black border-[1.5px] transition-all {{ request()->routeIs('dashboard') ? 'bg-amber-300 border-slate-800 shadow-[2px_2px_0px_0px_#0f172a] text-slate-900' : 'border-transparent text-slate-600 hover:border-slate-300 hover:bg-slate-100 hover:text-slate-900' }}">
-                    <div class="w-7 h-7 rounded-lg border-[1.5px] border-slate-800 flex items-center justify-center text-slate-900 shrink-0 transition-transform group-hover:scale-105 {{ request()->routeIs('dashboard') ? 'bg-white shadow-[1px_1px_0px_0px_#0f172a]' : 'bg-amber-100' }}">
+                   class="group flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-black border-[1.5px] transition-all {{ request()->routeIs('dashboard') ? 'bg-amber-300 border-slate-800 shadow-[2px_2px_0px_0px_#0f172a] dark:shadow-[2px_2px_0px_0px_#000000] text-slate-900' : 'border-transparent text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800/80 hover:text-slate-900 dark:hover:text-white' }}">
+                    <div class="w-7 h-7 rounded-lg border-[1.5px] border-slate-800 dark:border-slate-700 flex items-center justify-center text-slate-900 shrink-0 transition-transform group-hover:scale-105 {{ request()->routeIs('dashboard') ? 'bg-white keep-white shadow-[1px_1px_0px_0px_#0f172a] dark:shadow-[1px_1px_0px_0px_#000000]' : 'bg-amber-100 dark:bg-slate-800 dark:text-slate-400 group-hover:dark:text-amber-400 group-hover:dark:border-amber-400/50' }}">
                         <x-icon name="layout-dashboard" class="w-4 h-4" />
                     </div>
                     <span>Dashboard</span>
@@ -62,14 +77,14 @@
 
                 <!-- Semua Order -->
                 <a href="{{ route('orders.index') }}" 
-                   class="group flex items-center justify-between px-3 py-2 rounded-xl text-xs font-black border-[1.5px] transition-all {{ request()->routeIs('orders.index') || request()->routeIs('orders.show') ? 'bg-amber-300 border-slate-800 shadow-[2px_2px_0px_0px_#0f172a] text-slate-900' : 'border-transparent text-slate-600 hover:border-slate-300 hover:bg-slate-100 hover:text-slate-900' }}">
+                   class="group flex items-center justify-between px-3 py-2 rounded-xl text-xs font-black border-[1.5px] transition-all {{ request()->routeIs('orders.index') || request()->routeIs('orders.show') ? 'bg-amber-300 border-slate-800 shadow-[2px_2px_0px_0px_#0f172a] dark:shadow-[2px_2px_0px_0px_#000000] text-slate-900' : 'border-transparent text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800/80 hover:text-slate-900 dark:hover:text-white' }}">
                     <div class="flex items-center gap-3">
-                        <div class="w-7 h-7 rounded-lg border-[1.5px] border-slate-800 flex items-center justify-center text-slate-900 shrink-0 transition-transform group-hover:scale-105 {{ request()->routeIs('orders.index') || request()->routeIs('orders.show') ? 'bg-white shadow-[1px_1px_0px_0px_#0f172a]' : 'bg-amber-100' }}">
+                        <div class="w-7 h-7 rounded-lg border-[1.5px] border-slate-800 dark:border-slate-700 flex items-center justify-center text-slate-900 shrink-0 transition-transform group-hover:scale-105 {{ request()->routeIs('orders.index') || request()->routeIs('orders.show') ? 'bg-white keep-white shadow-[1px_1px_0px_0px_#0f172a] dark:shadow-[1px_1px_0px_0px_#000000]' : 'bg-amber-100 dark:bg-slate-800 dark:text-slate-400 group-hover:dark:text-amber-400 group-hover:dark:border-amber-400/50' }}">
                             <x-icon name="clipboard-list" class="w-4 h-4" />
                         </div>
                         <span>Semua Order</span>
                     </div>
-                    <span class="text-[10px] font-extrabold bg-white border border-slate-400 px-1.5 py-0.2 rounded shadow-[1px_1px_0px_0px_#e2e8f0]">
+                    <span class="text-[10px] font-extrabold bg-white dark:bg-slate-800 border border-slate-400 dark:border-slate-700 px-1.5 py-0.2 rounded shadow-[1px_1px_0px_0px_#e2e8f0] dark:shadow-[1px_1px_0px_0px_#000000] text-slate-900 dark:text-slate-200">
                         {{ \App\Models\Order::count() }}
                     </span>
                 </a>
@@ -77,14 +92,14 @@
 
             <!-- Group 2: Operasional Kasir & Workdesk -->
             <div class="space-y-1.5">
-                <div class="px-3 text-[10px] font-black uppercase tracking-wider text-slate-400">
+                <div class="px-3 text-[10px] font-black uppercase tracking-wider text-slate-400 dark:text-slate-500">
                     Operasional & Kasir
                 </div>
 
                 <!-- Order Desain Baru -->
                 <a href="{{ route('orders.create-design') }}" 
-                   class="group flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-black border-[1.5px] transition-all {{ request()->routeIs('orders.create-design') ? 'bg-sky-300 border-slate-800 shadow-[2px_2px_0px_0px_#0f172a] text-slate-900' : 'border-transparent text-slate-600 hover:border-slate-300 hover:bg-slate-100 hover:text-slate-900' }}">
-                    <div class="w-7 h-7 rounded-lg border-[1.5px] border-slate-800 flex items-center justify-center text-slate-900 shrink-0 transition-transform group-hover:scale-105 {{ request()->routeIs('orders.create-design') ? 'bg-white shadow-[1px_1px_0px_0px_#0f172a]' : 'bg-sky-200' }}">
+                   class="group flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-black border-[1.5px] transition-all {{ request()->routeIs('orders.create-design') ? 'bg-sky-300 border-slate-800 shadow-[2px_2px_0px_0px_#0f172a] dark:shadow-[2px_2px_0px_0px_#000000] text-slate-900' : 'border-transparent text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800/80 hover:text-slate-900 dark:hover:text-white' }}">
+                    <div class="w-7 h-7 rounded-lg border-[1.5px] border-slate-800 dark:border-slate-700 flex items-center justify-center text-slate-900 shrink-0 transition-transform group-hover:scale-105 {{ request()->routeIs('orders.create-design') ? 'bg-white keep-white shadow-[1px_1px_0px_0px_#0f172a] dark:shadow-[1px_1px_0px_0px_#000000]' : 'bg-sky-200 dark:bg-slate-800 dark:text-slate-400 group-hover:dark:text-sky-400 group-hover:dark:border-sky-400/50' }}">
                         <x-icon name="palette" class="w-4 h-4" />
                     </div>
                     <span>Order Desain Baru</span>
@@ -92,8 +107,8 @@
 
                 <!-- Kasir POS Ritel -->
                 <a href="{{ route('pos.index') }}" 
-                   class="group flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-black border-[1.5px] transition-all {{ request()->routeIs('pos.*') ? 'bg-emerald-300 border-slate-800 shadow-[2px_2px_0px_0px_#0f172a] text-slate-900' : 'border-transparent text-slate-600 hover:border-slate-300 hover:bg-slate-100 hover:text-slate-900' }}">
-                    <div class="w-7 h-7 rounded-lg border-[1.5px] border-slate-800 flex items-center justify-center text-slate-900 shrink-0 transition-transform group-hover:scale-105 {{ request()->routeIs('pos.*') ? 'bg-white shadow-[1px_1px_0px_0px_#0f172a]' : 'bg-emerald-200' }}">
+                   class="group flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-black border-[1.5px] transition-all {{ request()->routeIs('pos.*') ? 'bg-emerald-300 border-slate-800 shadow-[2px_2px_0px_0px_#0f172a] dark:shadow-[2px_2px_0px_0px_#000000] text-slate-900' : 'border-transparent text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800/80 hover:text-slate-900 dark:hover:text-white' }}">
+                    <div class="w-7 h-7 rounded-lg border-[1.5px] border-slate-800 dark:border-slate-700 flex items-center justify-center text-slate-900 shrink-0 transition-transform group-hover:scale-105 {{ request()->routeIs('pos.*') ? 'bg-white keep-white shadow-[1px_1px_0px_0px_#0f172a] dark:shadow-[1px_1px_0px_0px_#000000]' : 'bg-emerald-200 dark:bg-slate-800 dark:text-slate-400 group-hover:dark:text-emerald-400 group-hover:dark:border-emerald-400/50' }}">
                         <x-icon name="shopping-cart" class="w-4 h-4" />
                     </div>
                     <span>Kasir POS Ritel (FC/ATK)</span>
@@ -101,8 +116,8 @@
 
                 <!-- Workdesk Desainer -->
                 <a href="{{ route('workdesk.index') }}" 
-                   class="group flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-black border-[1.5px] transition-all {{ request()->routeIs('workdesk.*') ? 'bg-blue-300 border-slate-800 shadow-[2px_2px_0px_0px_#0f172a] text-slate-900' : 'border-transparent text-slate-600 hover:border-slate-300 hover:bg-slate-100 hover:text-slate-900' }}">
-                    <div class="w-7 h-7 rounded-lg border-[1.5px] border-slate-800 flex items-center justify-center text-slate-900 shrink-0 transition-transform group-hover:scale-105 {{ request()->routeIs('workdesk.*') ? 'bg-white shadow-[1px_1px_0px_0px_#0f172a]' : 'bg-blue-200' }}">
+                   class="group flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-black border-[1.5px] transition-all {{ request()->routeIs('workdesk.*') ? 'bg-blue-300 border-slate-800 shadow-[2px_2px_0px_0px_#0f172a] dark:shadow-[2px_2px_0px_0px_#000000] text-slate-900' : 'border-transparent text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800/80 hover:text-slate-900 dark:hover:text-white' }}">
+                    <div class="w-7 h-7 rounded-lg border-[1.5px] border-slate-800 dark:border-slate-700 flex items-center justify-center text-slate-900 shrink-0 transition-transform group-hover:scale-105 {{ request()->routeIs('workdesk.*') ? 'bg-white keep-white shadow-[1px_1px_0px_0px_#0f172a] dark:shadow-[1px_1px_0px_0px_#000000]' : 'bg-blue-200 dark:bg-slate-800 dark:text-slate-400 group-hover:dark:text-blue-400 group-hover:dark:border-blue-400/50' }}">
                         <x-icon name="layers" class="w-4 h-4" />
                     </div>
                     <span>Workdesk Desainer</span>
@@ -111,14 +126,14 @@
 
             <!-- Group 3: Finansial & Arsip Cloud -->
             <div class="space-y-1.5">
-                <div class="px-3 text-[10px] font-black uppercase tracking-wider text-slate-400">
+                <div class="px-3 text-[10px] font-black uppercase tracking-wider text-slate-400 dark:text-slate-500">
                     Keuangan & Arsip
                 </div>
 
                 <!-- Buku Kas & Mutasi -->
                 <a href="{{ route('cash.index') }}" 
-                   class="group flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-black border-[1.5px] transition-all {{ request()->routeIs('cash.*') ? 'bg-purple-300 border-slate-800 shadow-[2px_2px_0px_0px_#0f172a] text-slate-900' : 'border-transparent text-slate-600 hover:border-slate-300 hover:bg-slate-100 hover:text-slate-900' }}">
-                    <div class="w-7 h-7 rounded-lg border-[1.5px] border-slate-800 flex items-center justify-center text-slate-900 shrink-0 transition-transform group-hover:scale-105 {{ request()->routeIs('cash.*') ? 'bg-white shadow-[1px_1px_0px_0px_#0f172a]' : 'bg-purple-200' }}">
+                   class="group flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-black border-[1.5px] transition-all {{ request()->routeIs('cash.*') ? 'bg-purple-300 border-slate-800 shadow-[2px_2px_0px_0px_#0f172a] dark:shadow-[2px_2px_0px_0px_#000000] text-slate-900' : 'border-transparent text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800/80 hover:text-slate-900 dark:hover:text-white' }}">
+                    <div class="w-7 h-7 rounded-lg border-[1.5px] border-slate-800 dark:border-slate-700 flex items-center justify-center text-slate-900 shrink-0 transition-transform group-hover:scale-105 {{ request()->routeIs('cash.*') ? 'bg-white keep-white shadow-[1px_1px_0px_0px_#0f172a] dark:shadow-[1px_1px_0px_0px_#000000]' : 'bg-purple-200 dark:bg-slate-800 dark:text-slate-400 group-hover:dark:text-purple-400 group-hover:dark:border-purple-400/50' }}">
                         <x-icon name="wallet" class="w-4 h-4" />
                     </div>
                     <span>Buku Kas & Mutasi</span>
@@ -126,8 +141,8 @@
 
                 <!-- Laporan Keuangan -->
                 <a href="{{ route('reports.finance') }}" 
-                   class="group flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-black border-[1.5px] transition-all {{ request()->routeIs('reports.finance*') ? 'bg-emerald-300 border-slate-800 shadow-[2px_2px_0px_0px_#0f172a] text-slate-900' : 'border-transparent text-slate-600 hover:border-slate-300 hover:bg-slate-100 hover:text-slate-900' }}">
-                    <div class="w-7 h-7 rounded-lg border-[1.5px] border-slate-800 flex items-center justify-center text-slate-900 shrink-0 transition-transform group-hover:scale-105 {{ request()->routeIs('reports.finance*') ? 'bg-white shadow-[1px_1px_0px_0px_#0f172a]' : 'bg-emerald-200' }}">
+                   class="group flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-black border-[1.5px] transition-all {{ request()->routeIs('reports.finance*') ? 'bg-emerald-300 border-slate-800 shadow-[2px_2px_0px_0px_#0f172a] dark:shadow-[2px_2px_0px_0px_#000000] text-slate-900' : 'border-transparent text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800/80 hover:text-slate-900 dark:hover:text-white' }}">
+                    <div class="w-7 h-7 rounded-lg border-[1.5px] border-slate-800 dark:border-slate-700 flex items-center justify-center text-slate-900 shrink-0 transition-transform group-hover:scale-105 {{ request()->routeIs('reports.finance*') ? 'bg-white keep-white shadow-[1px_1px_0px_0px_#0f172a] dark:shadow-[1px_1px_0px_0px_#000000]' : 'bg-emerald-200 dark:bg-slate-800 dark:text-slate-400 group-hover:dark:text-emerald-400 group-hover:dark:border-emerald-400/50' }}">
                         <x-icon name="bar-chart-3" class="w-4 h-4" />
                     </div>
                     <span>Laporan Keuangan</span>
@@ -135,8 +150,8 @@
 
                 <!-- Arsip Cloud (S3/R2) -->
                 <a href="{{ route('archive.index') }}" 
-                   class="group flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-black border-[1.5px] transition-all {{ request()->routeIs('archive.*') ? 'bg-yellow-200 border-slate-800 shadow-[2px_2px_0px_0px_#0f172a] text-slate-900' : 'border-transparent text-slate-600 hover:border-slate-300 hover:bg-slate-100 hover:text-slate-900' }}">
-                    <div class="w-7 h-7 rounded-lg border-[1.5px] border-slate-800 flex items-center justify-center text-slate-900 shrink-0 transition-transform group-hover:scale-105 {{ request()->routeIs('archive.*') ? 'bg-white shadow-[1px_1px_0px_0px_#0f172a]' : 'bg-amber-200' }}">
+                   class="group flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-black border-[1.5px] transition-all {{ request()->routeIs('archive.*') ? 'bg-yellow-200 border-slate-800 shadow-[2px_2px_0px_0px_#0f172a] dark:shadow-[2px_2px_0px_0px_#000000] text-slate-900' : 'border-transparent text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800/80 hover:text-slate-900 dark:hover:text-white' }}">
+                    <div class="w-7 h-7 rounded-lg border-[1.5px] border-slate-800 dark:border-slate-700 flex items-center justify-center text-slate-900 shrink-0 transition-transform group-hover:scale-105 {{ request()->routeIs('archive.*') ? 'bg-white keep-white shadow-[1px_1px_0px_0px_#0f172a] dark:shadow-[1px_1px_0px_0px_#000000]' : 'bg-amber-200 dark:bg-slate-800 dark:text-slate-400 group-hover:dark:text-amber-400 group-hover:dark:border-amber-400/50' }}">
                         <x-icon name="archive" class="w-4 h-4" />
                     </div>
                     <span>Arsip Cloud</span>
@@ -146,14 +161,14 @@
             <!-- Group 4: Administrasi & Cabang (Khusus Owner) -->
             @if(Auth::user()->isOwner())
             <div class="space-y-1.5 pt-1">
-                <div class="px-3 text-[10px] font-black uppercase tracking-wider text-slate-400">
+                <div class="px-3 text-[10px] font-black uppercase tracking-wider text-slate-400 dark:text-slate-500">
                     Administrasi & Cabang
                 </div>
 
                 <!-- Kelola Cabang -->
                 <a href="{{ route('branches.index') }}" 
-                   class="group flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-black border-[1.5px] transition-all {{ request()->routeIs('branches.*') ? 'bg-rose-300 border-slate-800 shadow-[2px_2px_0px_0px_#0f172a] text-slate-900' : 'border-transparent text-slate-600 hover:border-slate-300 hover:bg-slate-100 hover:text-slate-900' }}">
-                    <div class="w-7 h-7 rounded-lg border-[1.5px] border-slate-800 flex items-center justify-center text-slate-900 shrink-0 transition-transform group-hover:scale-105 {{ request()->routeIs('branches.*') ? 'bg-white shadow-[1px_1px_0px_0px_#0f172a]' : 'bg-rose-200' }}">
+                   class="group flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-black border-[1.5px] transition-all {{ request()->routeIs('branches.*') ? 'bg-rose-300 border-slate-800 shadow-[2px_2px_0px_0px_#0f172a] dark:shadow-[2px_2px_0px_0px_#000000] text-slate-900' : 'border-transparent text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800/80 hover:text-slate-900 dark:hover:text-white' }}">
+                    <div class="w-7 h-7 rounded-lg border-[1.5px] border-slate-800 dark:border-slate-700 flex items-center justify-center text-slate-900 shrink-0 transition-transform group-hover:scale-105 {{ request()->routeIs('branches.*') ? 'bg-white keep-white shadow-[1px_1px_0px_0px_#0f172a] dark:shadow-[1px_1px_0px_0px_#000000]' : 'bg-rose-200 dark:bg-slate-800 dark:text-slate-400 group-hover:dark:text-rose-400 group-hover:dark:border-rose-400/50' }}">
                         <x-icon name="building-2" class="w-4 h-4" />
                     </div>
                     <span>Kelola Cabang</span>
@@ -161,8 +176,8 @@
 
                 <!-- Kelola Staf / Karyawan -->
                 <a href="{{ route('users.index') }}" 
-                   class="group flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-black border-[1.5px] transition-all {{ request()->routeIs('users.*') ? 'bg-indigo-300 border-slate-800 shadow-[2px_2px_0px_0px_#0f172a] text-slate-900' : 'border-transparent text-slate-600 hover:border-slate-300 hover:bg-slate-100 hover:text-slate-900' }}">
-                    <div class="w-7 h-7 rounded-lg border-[1.5px] border-slate-800 flex items-center justify-center text-slate-900 shrink-0 transition-transform group-hover:scale-105 {{ request()->routeIs('users.*') ? 'bg-white shadow-[1px_1px_0px_0px_#0f172a]' : 'bg-indigo-200' }}">
+                   class="group flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-black border-[1.5px] transition-all {{ request()->routeIs('users.*') ? 'bg-indigo-300 border-slate-800 shadow-[2px_2px_0px_0px_#0f172a] dark:shadow-[2px_2px_0px_0px_#000000] text-slate-900' : 'border-transparent text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800/80 hover:text-slate-900 dark:hover:text-white' }}">
+                    <div class="w-7 h-7 rounded-lg border-[1.5px] border-slate-800 dark:border-slate-700 flex items-center justify-center text-slate-900 shrink-0 transition-transform group-hover:scale-105 {{ request()->routeIs('users.*') ? 'bg-white keep-white shadow-[1px_1px_0px_0px_#0f172a] dark:shadow-[1px_1px_0px_0px_#000000]' : 'bg-indigo-200 dark:bg-slate-800 dark:text-slate-400 group-hover:dark:text-indigo-400 group-hover:dark:border-indigo-400/50' }}">
                         <x-icon name="users" class="w-4 h-4" />
                     </div>
                     <span>Kelola Staf</span>
@@ -173,7 +188,7 @@
         </div>
 
         <!-- Bottom: Realtime Branch Drawer Widget & User Account Card -->
-        <div class="p-4 border-t-[1.5px] border-slate-800 bg-slate-50 space-y-3">
+        <div class="p-4 border-t-[1.5px] border-slate-800 dark:border-slate-800 bg-slate-50 dark:bg-[#0c1222] space-y-3">
             
             <!-- Realtime Branch Drawer Widget -->
             @php
@@ -189,31 +204,31 @@
                     $branchLabel = $user->branch ? ($user->branch->code . ' - ' . $user->branch->name) : 'CABANG';
                 }
             @endphp
-            <div class="p-3 bg-white border-[1.5px] border-slate-800 rounded-xl shadow-[2px_2px_0px_0px_#0f172a] text-xs">
+            <div class="p-3 bg-white dark:bg-slate-900 border-[1.5px] border-slate-800 dark:border-slate-700 rounded-xl shadow-[2px_2px_0px_0px_#0f172a] dark:shadow-[2px_2px_0px_0px_#000000] text-xs">
                 <div class="flex items-center justify-between mb-1">
-                    <span class="text-[9px] font-black uppercase text-slate-500 truncate max-w-[130px]">
+                    <span class="text-[9px] font-black uppercase text-slate-500 dark:text-slate-400 truncate max-w-[130px]">
                         {{ $branchLabel }}
                     </span>
                     <span class="w-2 h-2 rounded-full {{ $isOwner ? 'bg-purple-600' : 'bg-emerald-500' }}"></span>
                 </div>
-                <div class="text-[10px] text-slate-600 font-bold flex items-center gap-1.5">
-                    <x-icon name="coins" class="w-3.5 h-3.5 text-slate-500" />
+                <div class="text-[10px] text-slate-600 dark:text-slate-400 font-bold flex items-center gap-1.5">
+                    <x-icon name="coins" class="w-3.5 h-3.5 text-slate-500 dark:text-slate-400" />
                     Saldo Kas Laci:
                 </div>
-                <div class="text-sm font-black text-slate-900">
+                <div class="text-sm font-black text-slate-900 dark:text-white">
                     Rp {{ number_format($activeBalance, 0, ',', '.') }}
                 </div>
             </div>
 
             <!-- User Info Pill & Quick Switch / Logout -->
-            <div class="p-2.5 bg-white border-[1.5px] border-slate-800 rounded-xl shadow-[2px_2px_0px_0px_#0f172a] flex items-center justify-between gap-2">
+            <div class="p-2.5 bg-white dark:bg-slate-900 border-[1.5px] border-slate-800 dark:border-slate-700 rounded-xl shadow-[2px_2px_0px_0px_#0f172a] dark:shadow-[2px_2px_0px_0px_#000000] flex items-center justify-between gap-2">
                 <div class="flex items-center gap-2 min-w-0">
-                    <div class="w-8 h-8 rounded-lg border-[1.5px] border-slate-800 bg-amber-200 flex items-center justify-center font-black text-xs shrink-0 text-slate-900">
+                    <div class="w-8 h-8 rounded-lg border-[1.5px] border-slate-800 dark:border-slate-700 bg-amber-200 flex items-center justify-center font-black text-xs shrink-0 text-slate-900">
                         {{ substr($user->name, 0, 2) }}
                     </div>
                     <div class="min-w-0">
-                        <div class="text-xs font-black text-slate-900 truncate leading-tight">{{ $user->name }}</div>
-                        <div class="text-[10px] font-bold uppercase text-slate-500">{{ $user->role }}</div>
+                        <div class="text-xs font-black text-slate-900 dark:text-white truncate leading-tight">{{ $user->name }}</div>
+                        <div class="text-[10px] font-bold uppercase text-slate-500 dark:text-slate-400">{{ $user->role }}</div>
                     </div>
                 </div>
 
@@ -222,7 +237,7 @@
                     <button type="button" 
                             onclick="document.getElementById('quick-switch-modal').showModal()"
                             title="Ganti Akun Role"
-                            class="p-1.5 bg-amber-300 hover:bg-amber-400 border border-slate-800 rounded-lg text-slate-900 shadow-[1px_1px_0px_0px_#0f172a] active:translate-x-[1px] active:translate-y-[1px] cursor-pointer">
+                            class="p-1.5 bg-amber-300 hover:bg-amber-400 border border-slate-800 dark:border-slate-700 rounded-lg text-slate-900 shadow-[1px_1px_0px_0px_#0f172a] dark:shadow-[1px_1px_0px_0px_#000000] active:translate-x-[1px] active:translate-y-[1px] cursor-pointer">
                         <x-icon name="refresh-cw" class="w-3.5 h-3.5" />
                     </button>
 
@@ -231,7 +246,7 @@
                         @csrf
                         <button type="submit" 
                                 title="Keluar"
-                                class="p-1.5 bg-rose-200 hover:bg-rose-300 border border-slate-800 rounded-lg text-slate-900 shadow-[1px_1px_0px_0px_#0f172a] active:translate-x-[1px] active:translate-y-[1px] cursor-pointer">
+                                class="p-1.5 bg-rose-200 hover:bg-rose-300 dark:bg-rose-500/20 dark:hover:bg-rose-500/30 dark:border-rose-500/50 dark:text-rose-300 border border-slate-800 rounded-lg text-slate-900 shadow-[1px_1px_0px_0px_#0f172a] dark:shadow-[1px_1px_0px_0px_#000000] active:translate-x-[1px] active:translate-y-[1px] cursor-pointer">
                             <x-icon name="log-out" class="w-3.5 h-3.5" />
                         </button>
                     </form>
@@ -246,27 +261,44 @@
     <div class="flex-1 lg:pl-72 flex flex-col min-h-screen min-w-0">
         
         <!-- Top Minimal Utility Bar -->
-        <header class="h-20 bg-white border-b-[1.5px] border-slate-800 sticky top-0 z-30 px-4 sm:px-8 flex items-center justify-between">
+        <header class="h-20 bg-white dark:bg-[#0c1222] border-b-[1.5px] border-slate-800 dark:border-slate-800 sticky top-0 z-30 px-4 sm:px-8 flex items-center justify-between transition-colors duration-150">
             
             <!-- Left: Mobile Toggle & Page Title -->
             <div class="flex items-center gap-3">
                 <button type="button" 
                         onclick="toggleSidebar()" 
-                        class="lg:hidden p-2 rounded-xl border-[1.5px] border-slate-800 bg-amber-300 hover:bg-amber-400 active:translate-x-[1px] active:translate-y-[1px] shadow-[1.5px_1.5px_0px_0px_#0f172a] cursor-pointer">
+                        class="lg:hidden p-2 rounded-xl border-[1.5px] border-slate-800 dark:border-slate-700 bg-amber-300 hover:bg-amber-400 dark:text-slate-950 active:translate-x-[1px] active:translate-y-[1px] shadow-[1.5px_1.5px_0px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_0px_#000000] cursor-pointer">
                     <x-icon name="menu" class="w-5 h-5 text-slate-900" stroke-width="2.5" />
                 </button>
 
                 <div>
-                    <h2 class="font-black text-sm sm:text-base text-slate-900 tracking-tight flex items-center gap-2">
+                    <h2 class="font-black text-sm sm:text-base text-slate-900 dark:text-white tracking-tight flex items-center gap-2">
                         <span>@yield('title', 'Gemini Art')</span>
                     </h2>
                 </div>
             </div>
 
-            <!-- Right: Indonesian Date Only -->
-            <div>
-                <span class="inline-flex items-center gap-1.5 text-xs font-bold text-slate-700 bg-slate-100 border-[1.5px] border-slate-700 px-3 py-1.5 rounded-xl shadow-[1.5px_1.5px_0px_0px_#0f172a]">
-                    <x-icon name="calendar" class="w-3.5 h-3.5 text-slate-500" />
+            <!-- Right: Theme Switcher & Indonesian Date -->
+            <div class="flex items-center gap-2.5">
+                <!-- Theme Toggle Switcher -->
+                <button type="button" 
+                        id="theme-toggle-btn"
+                        onclick="toggleTheme()"
+                        aria-label="Toggle Dark/Light Mode"
+                        class="inline-flex items-center gap-1.5 text-xs font-black px-3 py-1.5 rounded-xl border-[1.5px] border-slate-800 bg-amber-200 hover:bg-amber-300 text-slate-900 dark:bg-slate-800 dark:border-slate-700 dark:text-amber-400 dark:hover:bg-slate-700 shadow-[1.5px_1.5px_0px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_0px_#000000] cursor-pointer transition-all active:translate-x-[1px] active:translate-y-[1px]">
+                    <span class="dark:hidden flex items-center gap-1.5">
+                        <x-icon name="moon" class="w-3.5 h-3.5 text-slate-800" stroke-width="2.5" />
+                        <!-- <span class="hidden sm:inline">GELAP</span> -->
+                    </span>
+                    <span class="hidden dark:flex items-center gap-1.5">
+                        <x-icon name="sun" class="w-3.5 h-3.5 text-amber-400" stroke-width="2.5" />
+                        <!-- <span class="hidden sm:inline text-amber-300">TERANG</span> -->
+                    </span>
+                </button>
+
+                <!-- Date Capsule -->
+                <span class="inline-flex items-center gap-1.5 text-xs font-bold text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800/80 border-[1.5px] border-slate-700 dark:border-slate-700 px-3 py-1.5 rounded-xl shadow-[1.5px_1.5px_0px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_0px_#000000]">
+                    <x-icon name="calendar" class="w-3.5 h-3.5 text-slate-500 dark:text-slate-400" />
                     <span>{{ \Carbon\Carbon::now('Asia/Jakarta')->locale('id')->isoFormat('dddd, D MMMM Y') }}</span>
                 </span>
             </div>
@@ -328,12 +360,12 @@
         </main>
 
         <!-- Minimal Footer -->
-        <footer class="bg-white border-t-[1.5px] border-slate-800 py-3.5 mt-auto">
-            <div class="w-full px-4 sm:px-8 flex flex-col sm:flex-row items-center justify-between gap-1 text-xs font-semibold text-slate-500 text-center sm:text-left">
+        <footer class="bg-white dark:bg-[#0c1222] border-t-[1.5px] border-slate-800 dark:border-slate-800 py-3.5 mt-auto transition-colors duration-150">
+            <div class="w-full px-4 sm:px-8 flex flex-col sm:flex-row items-center justify-between gap-1 text-xs font-semibold text-slate-500 dark:text-slate-400 text-center sm:text-left">
                 <div>
-                    <strong>Gemini Art Multi-Cabang</strong> &bull; ERP Percetakan & Studio Desain
+                    <strong class="text-slate-700 dark:text-slate-200">Gemini Art Multi-Cabang</strong> &bull; ERP Percetakan & Studio Desain
                 </div>
-                <div class="text-[11px] text-slate-400">
+                <div class="text-[11px] text-slate-400 dark:text-slate-500">
                     &copy; {{ date('Y') }} Gemini Art. Hak cipta dilindungi.
                 </div>
             </div>
@@ -343,21 +375,21 @@
 
     <!-- Quick Role Switcher Modal (Accessible Native <dialog>) -->
     <dialog id="quick-switch-modal" closedby="any" class="p-0 bg-transparent max-w-md w-full m-auto border-none outline-none overflow-visible">
-        <div class="neo-box p-6 bg-white w-full mx-auto shadow-[4px_4px_0px_0px_#0f172a] rounded-2xl border-2 border-slate-900 overflow-visible">
-            <div class="flex items-center justify-between pb-3 border-b border-slate-200 mb-4">
+        <div class="neo-box p-6 bg-white dark:bg-[#0c1222] w-full mx-auto shadow-[4px_4px_0px_0px_#0f172a] dark:shadow-[4px_4px_0px_0px_#000000] rounded-2xl border-2 border-slate-900 dark:border-slate-700 overflow-visible">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-800 mb-4">
                 <div class="flex items-center gap-2">
                     <div class="w-7 h-7 bg-amber-300 border-[1.5px] border-slate-800 shadow-[1px_1px_0px_0px_#0f172a] rounded-lg flex items-center justify-center text-slate-900">
                         <x-icon name="refresh-cw" class="w-4 h-4" />
                     </div>
-                    <h3 class="font-extrabold text-lg text-slate-900">Beralih Akun (Role Switcher)</h3>
+                    <h3 class="font-extrabold text-lg text-slate-900 dark:text-white">Beralih Akun (Role Switcher)</h3>
                 </div>
                 <form method="dialog">
-                    <button class="w-8 h-8 rounded-lg border-[1.5px] border-slate-800 shadow-[1.5px_1.5px_0px_0px_#0f172a] bg-rose-100 hover:bg-rose-200 font-bold text-slate-700 text-base flex items-center justify-center cursor-pointer">
+                    <button class="w-8 h-8 rounded-lg border-[1.5px] border-slate-800 shadow-[1.5px_1.5px_0px_0px_#0f172a] bg-rose-100 dark:bg-rose-900/40 hover:bg-rose-200 dark:hover:bg-rose-800/60 font-bold text-slate-700 dark:text-rose-300 text-base flex items-center justify-center cursor-pointer">
                         ✕
                     </button>
                 </form>
             </div>
-            <p class="text-xs font-medium text-slate-500 mb-4">Pilih peran akun untuk menguji alur kasir cabang, workdesk desainer, atau command center owner:</p>
+            <p class="text-xs font-medium text-slate-500 dark:text-slate-400 mb-4">Pilih peran akun untuk menguji alur kasir cabang, workdesk desainer, atau command center owner:</p>
             
             <div class="space-y-2.5">
                 @php
@@ -368,15 +400,15 @@
                     @csrf
                     <input type="hidden" name="user_id" value="{{ $u->id }}">
                     <button type="submit" 
-                            class="w-full text-left p-3 rounded-xl border-[1.5px] border-slate-800 {{ $u->id === Auth::id() ? 'bg-amber-100/90 shadow-[2.5px_2.5px_0px_0px_#0f172a]' : 'bg-slate-50 hover:bg-amber-50 shadow-[1.5px_1.5px_0px_0px_#0f172a]' }} active:translate-x-[1px] active:translate-y-[1px] active:shadow-none transition-all flex items-center justify-between cursor-pointer">
+                            class="w-full text-left p-3 rounded-xl border-[1.5px] border-slate-800 dark:border-slate-700 {{ $u->id === Auth::id() ? 'bg-amber-100/90 dark:bg-amber-400/20 shadow-[2.5px_2.5px_0px_0px_#0f172a] dark:shadow-[2.5px_2.5px_0px_0px_#000000]' : 'bg-slate-50 dark:bg-slate-900/80 hover:bg-amber-50 dark:hover:bg-slate-800 shadow-[1.5px_1.5px_0px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_0px_#000000]' }} active:translate-x-[1px] active:translate-y-[1px] active:shadow-none transition-all flex items-center justify-between cursor-pointer">
                         <div>
-                            <div class="font-extrabold text-sm text-slate-900 flex items-center gap-2">
+                            <div class="font-extrabold text-sm text-slate-900 dark:text-white flex items-center gap-2">
                                 {{ $u->name }}
                                 @if($u->id === Auth::id())
-                                    <span class="text-[10px] bg-emerald-400 border-[1.5px] border-slate-800 px-1.5 py-0.2 rounded font-black uppercase shadow-[1px_1px_0px_0px_#0f172a]">Aktif</span>
+                                    <span class="text-[10px] bg-emerald-400 border-[1.5px] border-slate-800 px-1.5 py-0.2 rounded font-black uppercase shadow-[1px_1px_0px_0px_#0f172a] text-slate-950">Aktif</span>
                                 @endif
                             </div>
-                            <div class="text-xs text-slate-500 font-medium">
+                            <div class="text-xs text-slate-500 dark:text-slate-400 font-medium">
                                 {{ $u->branch ? $u->branch->name : 'Multi-Cabang (Pusat)' }}
                             </div>
                         </div>
@@ -388,9 +420,9 @@
                 @endforeach
             </div>
 
-            <div class="mt-5 pt-3 border-t border-slate-200 text-right">
+            <div class="mt-5 pt-3 border-t border-slate-200 dark:border-slate-800 text-right">
                 <form method="dialog">
-                    <button type="submit" class="neo-btn bg-slate-200 hover:bg-slate-300 text-xs py-2 px-4 cursor-pointer">Tutup</button>
+                    <button type="submit" class="neo-btn bg-slate-200 hover:bg-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 dark:text-slate-200 text-xs py-2 px-4 cursor-pointer">Tutup</button>
                 </form>
             </div>
         </div>
@@ -401,19 +433,19 @@
 
     <!-- Global File Preview Modal (Soft Neo-Brutalism Lightbox) -->
     <dialog id="file-preview-modal" closedby="any" class="p-0 bg-transparent max-w-4xl w-full m-auto border-none outline-none overflow-visible">
-        <div class="neo-box p-5 bg-white w-full mx-auto shadow-[6px_6px_0px_0px_#0f172a] rounded-2xl border-2 border-slate-900 overflow-hidden flex flex-col max-h-[90vh]">
+        <div class="neo-box p-5 bg-white dark:bg-[#0c1222] w-full mx-auto shadow-[6px_6px_0px_0px_#0f172a] dark:shadow-[6px_6px_0px_0px_#000000] rounded-2xl border-2 border-slate-900 dark:border-slate-700 overflow-hidden flex flex-col max-h-[90vh]">
             
             <!-- Modal Header -->
-            <div class="flex items-center justify-between pb-3.5 border-b-2 border-slate-900 gap-3 shrink-0">
+            <div class="flex items-center justify-between pb-3.5 border-b-2 border-slate-900 dark:border-slate-800 gap-3 shrink-0">
                 <div class="flex items-center gap-2.5 min-w-0">
-                    <span id="preview-badge" class="text-[10px] font-black uppercase px-2 py-0.5 rounded border border-slate-900 bg-amber-200 shrink-0">
+                    <span id="preview-badge" class="text-[10px] font-black uppercase px-2 py-0.5 rounded border border-slate-900 bg-amber-200 shrink-0 text-slate-900">
                         File Arsip
                     </span>
                     <div class="min-w-0">
-                        <h3 id="preview-filename" class="font-black font-mono text-sm sm:text-base text-slate-900 truncate">
+                        <h3 id="preview-filename" class="font-black font-mono text-sm sm:text-base text-slate-900 dark:text-white truncate">
                             filename.ext
                         </h3>
-                        <span id="preview-filesize" class="text-xs font-mono text-slate-500 font-bold block mt-0.5">
+                        <span id="preview-filesize" class="text-xs font-mono text-slate-500 dark:text-slate-400 font-bold block mt-0.5">
                             0 KB
                         </span>
                     </div>
@@ -421,36 +453,36 @@
 
                 <div class="flex items-center gap-2 shrink-0">
                     <!-- Open in new tab button -->
-                    <a id="preview-tab-btn" href="#" target="_blank" title="Buka di Tab Baru" class="neo-btn bg-sky-100 hover:bg-sky-200 text-slate-900 text-xs py-1.5 px-3 flex items-center gap-1.5 shadow-[1.5px_1.5px_0px_0px_#0f172a]">
+                    <a id="preview-tab-btn" href="#" target="_blank" title="Buka di Tab Baru" class="neo-btn bg-sky-100 hover:bg-sky-200 text-slate-900 text-xs py-1.5 px-3 flex items-center gap-1.5 shadow-[1.5px_1.5px_0px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_0px_#000000]">
                         <x-icon name="external-link" class="w-3.5 h-3.5" />
                         <span class="hidden sm:inline">Tab Baru</span>
                     </a>
 
                     <!-- Direct Download button -->
-                    <a id="preview-download-btn" href="#" title="Download Berkas" class="neo-btn bg-amber-300 hover:bg-amber-400 text-slate-900 text-xs py-1.5 px-3 flex items-center gap-1.5 shadow-[1.5px_1.5px_0px_0px_#0f172a]">
+                    <a id="preview-download-btn" href="#" title="Download Berkas" class="neo-btn bg-amber-300 hover:bg-amber-400 text-slate-900 text-xs py-1.5 px-3 flex items-center gap-1.5 shadow-[1.5px_1.5px_0px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_0px_#000000]">
                         <x-icon name="download" class="w-3.5 h-3.5" />
                         <span class="hidden sm:inline">Download</span>
                     </a>
 
                     <!-- Close button -->
-                    <button type="button" onclick="closeFilePreview()" aria-label="Tutup" class="w-8 h-8 rounded-lg border-2 border-slate-900 bg-rose-200 hover:bg-rose-300 font-black text-sm flex items-center justify-center cursor-pointer shadow-[1.5px_1.5px_0px_0px_#0f172a] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none">
+                    <button type="button" onclick="closeFilePreview()" aria-label="Tutup" class="w-8 h-8 rounded-lg border-2 border-slate-900 bg-rose-200 hover:bg-rose-300 font-black text-sm flex items-center justify-center cursor-pointer shadow-[1.5px_1.5px_0px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_0px_#000000] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none text-slate-900">
                         ✕
                     </button>
                 </div>
             </div>
 
             <!-- Modal Body (Preview Content Area) -->
-            <div class="flex-1 overflow-auto p-4 bg-slate-950/5 flex items-center justify-center min-h-[350px] relative">
+            <div class="flex-1 overflow-auto p-4 bg-slate-950/5 dark:bg-slate-950/40 flex items-center justify-center min-h-[350px] relative">
                 
                 <!-- Loading State (Soft Neo-Brutalism Spinner) -->
                 <div id="preview-loader" class="flex flex-col items-center justify-center p-8 space-y-3.5 text-center">
                     <div class="relative w-12 h-12 flex items-center justify-center">
-                        <div class="w-12 h-12 rounded-full border-4 border-slate-200 border-t-amber-400 border-r-slate-800 animate-spin"></div>
-                        <x-icon name="cloud" class="w-5 h-5 text-slate-800 absolute" />
+                        <div class="w-12 h-12 rounded-full border-4 border-slate-200 dark:border-slate-800 border-t-amber-400 border-r-slate-800 animate-spin"></div>
+                        <x-icon name="cloud" class="w-5 h-5 text-slate-800 dark:text-slate-200 absolute" />
                     </div>
                     <div class="space-y-1">
-                        <p class="text-xs font-black text-slate-900 tracking-wide">Mengunduh Pratinjau dari Cloud Storage...</p>
-                        <p class="text-[10px] font-bold text-slate-500 font-mono" id="preview-loader-filename">Memuat berkas...</p>
+                        <p class="text-xs font-black text-slate-900 dark:text-white tracking-wide">Mengunduh Pratinjau dari Cloud Storage...</p>
+                        <p class="text-[10px] font-bold text-slate-500 dark:text-slate-400 font-mono" id="preview-loader-filename">Memuat berkas...</p>
                     </div>
                 </div>
 
@@ -851,6 +883,14 @@
         });
     }
     window.initAjaxUploads = initAjaxUploads;
+    </script>
+
+    <script>
+        function toggleTheme() {
+            const isDark = document.documentElement.classList.toggle('dark');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            document.querySelector('meta[name="color-scheme"]')?.setAttribute('content', isDark ? 'dark' : 'light');
+        }
     </script>
 
     @stack('scripts')

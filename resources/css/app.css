@@ -1,5 +1,7 @@
 @import 'tailwindcss';
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
 @source '../views/**/*.blade.php';
@@ -33,6 +35,24 @@
     border: 1.5px solid #1e293b;
     box-shadow: 4px 4px 0px 0px #0f172a;
     border-radius: 1.25rem;
+}
+
+.dark .neo-box {
+    background-color: #0c1222;
+    border-color: #334155;
+    box-shadow: 3px 3px 0px 0px #000000;
+}
+
+.dark .neo-box-sm {
+    background-color: #0c1222;
+    border-color: #334155;
+    box-shadow: 2px 2px 0px 0px #000000;
+}
+
+.dark .neo-box-lg {
+    background-color: #0c1222;
+    border-color: #334155;
+    box-shadow: 4px 4px 0px 0px #000000;
 }
 
 .neo-btn {
@@ -81,6 +101,22 @@ textarea.neo-input {
     box-shadow: 2.5px 2.5px 0px 0px #0f172a;
 }
 
+.dark .neo-input {
+    background-color: #0c1222;
+    border-color: #334155;
+    color: #f8fafc;
+    box-shadow: 1.5px 1.5px 0px 0px #000000;
+}
+
+.dark .neo-input::placeholder {
+    color: #64748b;
+}
+
+.dark .neo-input:focus {
+    border-color: #fde047;
+    box-shadow: 2.5px 2.5px 0px 0px #000000;
+}
+
 .neo-badge {
     display: inline-flex;
     align-items: center;
@@ -93,6 +129,11 @@ textarea.neo-input {
     padding: 0.25rem 0.75rem;
     text-transform: uppercase;
     letter-spacing: 0.05em;
+}
+
+.dark .neo-badge {
+    border-color: #334155;
+    box-shadow: 1.5px 1.5px 0px 0px #000000;
 }
 
 /* Custom Scrollbar for Soft Neo-Brutalism */
@@ -111,6 +152,16 @@ textarea.neo-input {
     background: #64748b;
 }
 
+.dark ::-webkit-scrollbar-track {
+    background: #0f172a;
+}
+.dark ::-webkit-scrollbar-thumb {
+    background: #475569;
+}
+.dark ::-webkit-scrollbar-thumb:hover {
+    background: #64748b;
+}
+
 /* Dialog Backdrop & Container styling */
 dialog {
     border: none;
@@ -121,6 +172,11 @@ dialog {
 dialog::backdrop {
     background-color: rgba(15, 23, 42, 0.45);
     backdrop-filter: blur(4px);
+}
+
+.dark dialog::backdrop {
+    background-color: rgba(2, 6, 23, 0.75);
+    backdrop-filter: blur(6px);
 }
 
 /* Prevent FOUC: Give uninitialized native select identical height and soft neo-brutal styling */
@@ -136,6 +192,14 @@ select.neo-input {
     font-weight: 700;
     color: #1e293b;
     box-shadow: 1.5px 1.5px 0px 0px #e2e8f0;
+}
+
+.dark select.neo-select,
+.dark select.neo-input {
+    background-color: #0c1222;
+    border-color: #334155;
+    color: #ffffff;
+    box-shadow: 1.5px 1.5px 0px 0px #000000;
 }
 
 select[data-neo-select-initialized="true"] {
@@ -156,6 +220,18 @@ select[data-neo-select-initialized="true"] {
     transition: border-color 150ms ease, box-shadow 150ms ease, background-color 150ms ease;
 }
 
+.dark .neo-select-trigger {
+    background-color: #0c1222;
+    border-color: #334155;
+    color: #f8fafc;
+    box-shadow: 1.5px 1.5px 0px 0px #000000;
+}
+
+.dark .neo-select-trigger:hover,
+.dark .neo-select-trigger:focus {
+    border-color: #fde047;
+}
+
 .neo-select-menu {
     opacity: 0;
     visibility: hidden;
@@ -166,6 +242,12 @@ select[data-neo-select-initialized="true"] {
     transition: opacity 150ms cubic-bezier(0.16, 1, 0.3, 1),
                 transform 150ms cubic-bezier(0.16, 1, 0.3, 1),
                 visibility 0s linear 150ms;
+}
+
+.dark .neo-select-menu {
+    background-color: #0c1222;
+    border-color: #334155;
+    box-shadow: 3.5px 3.5px 0px 0px #000000;
 }
 
 .neo-select-menu.is-open {
@@ -192,6 +274,25 @@ select[data-neo-select-initialized="true"] {
     transition: background-color 120ms ease, color 120ms ease;
 }
 
+.dark .neo-select-option {
+    color: #cbd5e1;
+}
+
+.dark .neo-select-option:hover {
+    background-color: #1e293b;
+    color: #ffffff;
+}
+
+.dark .neo-select-option[aria-selected="true"] {
+    background-color: #1e293b;
+    color: #fde047;
+    border-left-color: #fde047;
+}
+
+.dark .neo-select-check {
+    color: #fde047;
+}
+
 /* Neo-Select Dropdown Custom Scrollbar */
 .neo-select-menu::-webkit-scrollbar {
     width: 6px;
@@ -199,12 +300,21 @@ select[data-neo-select-initialized="true"] {
 .neo-select-menu::-webkit-scrollbar-track {
     background: #f8fafc;
 }
+.dark .neo-select-menu::-webkit-scrollbar-track {
+    background: #0c1222;
+}
 .neo-select-menu::-webkit-scrollbar-thumb {
     background: #cbd5e1;
     border-radius: 9999px;
 }
+.dark .neo-select-menu::-webkit-scrollbar-thumb {
+    background: #334155;
+}
 .neo-select-menu::-webkit-scrollbar-thumb:hover {
     background: #94a3b8;
+}
+.dark .neo-select-menu::-webkit-scrollbar-thumb:hover {
+    background: #475569;
 }
 
 /* Filter Results Live Container */
