@@ -111,7 +111,7 @@
                     <div class="w-7 h-7 rounded-lg border-[1.5px] border-slate-800 dark:border-slate-700 flex items-center justify-center text-slate-900 shrink-0 transition-transform group-hover:scale-105 {{ request()->routeIs('pos.*') ? 'bg-white keep-white shadow-[1px_1px_0px_0px_#0f172a] dark:shadow-[1px_1px_0px_0px_#000000]' : 'bg-emerald-200 dark:bg-slate-800 dark:text-slate-400 group-hover:dark:text-emerald-400 group-hover:dark:border-emerald-400/50' }}">
                         <x-icon name="shopping-cart" class="w-4 h-4" />
                     </div>
-                    <span>Kasir POS Ritel (FC/ATK)</span>
+                    <span>Kasir POS</span>
                 </a>
 
                 <!-- Workdesk Desainer -->
