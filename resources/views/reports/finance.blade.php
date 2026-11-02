@@ -402,8 +402,8 @@
 
         </div>
 
-        <!-- Right: Payment Method Breakdown & Cash Flow (5 cols) -->
-        <div class="lg:col-span-5 space-y-6">
+        <!-- Right: Payment Method Breakdown (5 cols) -->
+        <div class="lg:col-span-5">
             
             <!-- Saluran Pembayaran Card -->
             <div class="neo-box p-6 bg-white dark:bg-[#0c1222] border-2 border-black dark:border-slate-700 shadow-[3px_3px_0px_0px_#000] dark:shadow-[3px_3px_0px_0px_#000000] space-y-4 print-card">
@@ -454,31 +454,6 @@
 
                 <div class="p-3 bg-amber-50 dark:bg-amber-950/30 rounded-xl border border-amber-300 dark:border-amber-700 text-[11px] font-semibold text-amber-900 dark:text-amber-300 leading-relaxed">
                     💡 <strong>Tips Audit:</strong> Pastikan nominal kas <em>Tunai</em> cocok dengan uang di laci fisik kasir cabang sebelum tutup buku.
-                </div>
-            </div>
-
-            <!-- Arus Kas Bersih (Cash Flow Summary) -->
-            <div class="neo-box p-5 bg-white dark:bg-[#0c1222] border-2 border-black dark:border-slate-700 shadow-[3px_3px_0px_0px_#000] dark:shadow-[3px_3px_0px_0px_#000000] space-y-3 print-card">
-                <div class="flex items-center justify-between pb-2 border-b border-slate-200 dark:border-slate-800">
-                    <span class="text-xs font-black uppercase text-slate-700 dark:text-slate-300">Ringkasan Arus Kas Masuk & Keluar</span>
-                    <span class="text-[10px] font-bold text-slate-500 dark:text-slate-400">Semua Kategori</span>
-                </div>
-
-                <div class="space-y-2 text-xs">
-                    <div class="flex justify-between">
-                        <span class="text-slate-600 dark:text-slate-400 font-semibold">Total Semua Kas Masuk:</span>
-                        <span class="font-bold text-emerald-700 dark:text-emerald-400">+ Rp {{ number_format($totalCashIn, 0, ',', '.') }}</span>
-                    </div>
-                    <div class="flex justify-between">
-                        <span class="text-slate-600 dark:text-slate-400 font-semibold">Total Semua Kas Keluar:</span>
-                        <span class="font-bold text-rose-700 dark:text-rose-400">- Rp {{ number_format($totalCashOut, 0, ',', '.') }}</span>
-                    </div>
-                    <div class="pt-2 border-t border-slate-300 dark:border-slate-800 flex justify-between items-center text-sm font-black text-slate-900 dark:text-white">
-                        <span>Net Cashflow (Arus Kas Bersih):</span>
-                        <span class="{{ $netCashFlow >= 0 ? 'text-emerald-900 dark:text-emerald-400' : 'text-rose-900 dark:text-rose-400' }}">
-                            {{ $netCashFlow >= 0 ? '+' : '' }} Rp {{ number_format($netCashFlow, 0, ',', '.') }}
-                        </span>
-                    </div>
                 </div>
             </div>
 
