@@ -13,7 +13,7 @@
                 Semua pesanan desain kustom dan transaksi kasir ritel cepat di cabang.
             </p> -->
         </div>
-        <div class="flex items-center gap-3">
+        <div class="flex flex-wrap sm:flex-nowrap items-center gap-2 sm:gap-3">
             <a href="{{ route('orders.create-design') }}" class="neo-btn bg-sky-400 hover:bg-sky-300 dark:text-slate-950 text-xs py-2 px-3.5 text-black font-black flex items-center gap-2 dark:border-slate-800 dark:shadow-[2px_2px_0px_0px_#000000]">
                 <x-icon name="plus" class="w-4 h-4" stroke-width="2.5" />
                 <span>Order Desain Baru</span>
@@ -189,20 +189,24 @@
                         <td class="py-3.5 px-4 text-center whitespace-nowrap">
                             <div class="inline-flex items-center gap-1.5">
                                 <a href="{{ route('orders.show', $order->id) }}" 
-                                   class="px-2.5 py-1 rounded-lg border-2 border-black dark:border-slate-700 bg-white hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700 font-bold text-xs shadow-[1px_1px_0px_0px_#000] dark:shadow-[1px_1px_0px_0px_#000000] text-black dark:text-white">
-                                    Detail
+                                   title="Lihat Detail Order"
+                                   aria-label="Detail Order"
+                                   class="w-7 h-7 rounded-lg border-[1.5px] border-black dark:border-slate-700 bg-white hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700 text-black dark:text-white shadow-[1px_1px_0px_0px_#000] dark:shadow-[1px_1px_0px_0px_#000000] flex items-center justify-center transition-all cursor-pointer">
+                                    <x-icon name="eye" class="w-3.5 h-3.5" />
                                 </a>
                                 <a href="{{ route('orders.receipt', $order->id) }}" 
                                    target="_blank"
-                                   title="Cetak Struk Kasir"
-                                   class="px-2 py-1 rounded-lg border-2 border-black dark:border-slate-700 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 font-bold text-xs shadow-[1px_1px_0px_0px_#000] dark:shadow-[1px_1px_0px_0px_#000000] text-black dark:text-white">
-                                    Struk
+                                   title="Cetak Struk Kasir Thermal"
+                                   aria-label="Cetak Struk"
+                                   class="w-7 h-7 rounded-lg border-[1.5px] border-black dark:border-slate-700 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-black dark:text-white shadow-[1px_1px_0px_0px_#000] dark:shadow-[1px_1px_0px_0px_#000000] flex items-center justify-center transition-all cursor-pointer">
+                                    <x-icon name="printer" class="w-3.5 h-3.5 text-slate-700 dark:text-slate-300" />
                                 </a>
                                 <a href="{{ route('orders.invoice', $order->id) }}" 
                                    target="_blank"
-                                   title="Cetak Invoice Resmi A4"
-                                   class="px-2 py-1 rounded-lg border-2 border-black dark:border-slate-700 bg-amber-300 hover:bg-amber-400 font-black text-xs shadow-[1px_1px_0px_0px_#000] dark:shadow-[1px_1px_0px_0px_#000000] text-black dark:text-slate-950">
-                                    Invoice
+                                   title="Cetak Invoice Formal A4"
+                                   aria-label="Cetak Invoice"
+                                   class="w-7 h-7 rounded-lg border-[1.5px] border-black dark:border-slate-700 bg-amber-300 hover:bg-amber-400 text-black dark:text-slate-950 shadow-[1px_1px_0px_0px_#000] dark:shadow-[1px_1px_0px_0px_#000000] flex items-center justify-center transition-all cursor-pointer">
+                                    <x-icon name="file-text" class="w-3.5 h-3.5 text-slate-950" />
                                 </a>
                             </div>
                         </td>

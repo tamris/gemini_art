@@ -21,7 +21,7 @@
         </div>
         <button type="button" 
                 onclick="document.getElementById('add-expense-modal').showModal()"
-                class="neo-btn bg-rose-300 hover:bg-rose-400 dark:bg-rose-500/20 dark:hover:bg-rose-500/30 dark:border-rose-500/40 dark:text-rose-300 text-xs py-2 px-4 font-black text-black cursor-pointer dark:shadow-[2px_2px_0px_0px_#000000]">
+                class="neo-btn bg-rose-300 hover:bg-rose-400 dark:bg-rose-500/20 dark:hover:bg-rose-500/30 dark:border-rose-500/40 dark:text-rose-300 text-xs py-2 px-4 font-black text-black cursor-pointer dark:shadow-[2px_2px_0px_0px_#000000] self-start sm:self-auto">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M20 12H4"/>
             </svg>
@@ -308,7 +308,7 @@
             </div>
             @endif
 
-            <div class="grid grid-cols-2 gap-3">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                     <label class="block text-xs font-black uppercase text-black dark:text-slate-300 mb-1">Jenis Mutasi</label>
                     <select name="type" required class="neo-select">

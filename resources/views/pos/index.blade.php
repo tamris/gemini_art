@@ -110,7 +110,7 @@
 
         <!-- Right Column: Interactive Cart & Checkout (5 cols) -->
         <div class="lg:col-span-5">
-            <div class="neo-box p-6 bg-white dark:bg-[#0c1222] border-2 border-black dark:border-slate-700 shadow-[3px_3px_0px_0px_#000] dark:shadow-[3px_3px_0px_0px_#000000] space-y-4 sticky top-24">
+            <div id="cart-card" class="neo-box p-4 sm:p-6 bg-white dark:bg-[#0c1222] border-2 border-black dark:border-slate-700 shadow-[3px_3px_0px_0px_#000] dark:shadow-[3px_3px_0px_0px_#000000] space-y-4 sticky top-24">
                 
                 <div class="flex items-center justify-between pb-3 border-b-2 border-black dark:border-slate-800">
                     <h2 class="font-black text-base text-black dark:text-white flex items-center gap-2.5">
@@ -223,6 +223,20 @@
 
     </div>
 
+    <!-- Mobile Floating Cart Bar (Visible on screens < lg when cart is not empty) -->
+    <div id="mobile-cart-bar" class="lg:hidden fixed bottom-4 left-3 right-3 z-40 hidden transition-all duration-200">
+        <a href="#cart-card" onclick="document.getElementById('cart-card')?.scrollIntoView({behavior: 'smooth'})" class="neo-btn w-full bg-amber-300 dark:bg-amber-400 text-slate-950 font-black text-xs py-3 px-4 flex items-center justify-between shadow-[3px_3px_0px_0px_#000] dark:shadow-[3px_3px_0px_0px_#000000] border-2 border-black dark:border-slate-800 rounded-xl cursor-pointer">
+            <div class="flex items-center gap-2">
+                <x-icon name="shopping-cart" class="w-4 h-4" />
+                <span id="mobile-cart-count">0 Barang</span>
+            </div>
+            <div class="flex items-center gap-2">
+                <span id="mobile-cart-total" class="font-extrabold text-sm">Rp 0</span>
+                <span>Lihat Keranjang ➜</span>
+            </div>
+        </a>
+    </div>
+
 </div>
 
 @push('scripts')
@@ -292,6 +306,9 @@ function renderCart() {
     const emptyMsg = document.getElementById('empty-cart-msg');
     const totalText = document.getElementById('cart-total-text');
     const btnCheckout = document.getElementById('btn-checkout');
+    const mobileCartBar = document.getElementById('mobile-cart-bar');
+    const mobileCartCount = document.getElementById('mobile-cart-count');
+    const mobileCartTotal = document.getElementById('mobile-cart-total');
 
     if (cart.length === 0) {
         container.innerHTML = `
@@ -302,6 +319,7 @@ function renderCart() {
         hiddenInputs.innerHTML = '';
         totalText.innerText = 'Rp 0';
         btnCheckout.disabled = true;
+        if (mobileCartBar) mobileCartBar.classList.add('hidden');
         calculateChange();
         return;
     }
@@ -343,6 +361,14 @@ function renderCart() {
     hiddenInputs.innerHTML = inputsHtml;
     totalText.innerText = 'Rp ' + total.toLocaleString('id-ID');
     btnCheckout.disabled = false;
+
+    if (mobileCartBar && mobileCartCount && mobileCartTotal) {
+        const totalQty = cart.reduce((sum, item) => sum + item.qty, 0);
+        mobileCartCount.innerText = totalQty + ' Barang';
+        mobileCartTotal.innerText = 'Rp ' + total.toLocaleString('id-ID');
+        mobileCartBar.classList.remove('hidden');
+    }
+
     calculateChange();
 }
 
