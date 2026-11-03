@@ -62,13 +62,7 @@
     <!-- Screen-Only Minimalist Action Bar -->
     <div class="no-print sticky top-4 z-50 w-full max-w-4xl bg-white/90 backdrop-blur-md border border-slate-200/80 rounded-xl shadow-sm px-4 py-3 mb-6 flex flex-wrap items-center justify-between gap-3">
         <div class="flex items-center gap-2.5">
-            <a href="{{ route('orders.show', $order->id) }}" 
-               class="px-3 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 font-semibold text-xs text-slate-700 flex items-center gap-1.5 transition-colors">
-                <x-icon name="arrow-left" class="w-3.5 h-3.5 text-slate-500" />
-                <span>Kembali</span>
-            </a>
-            <div class="h-4 w-px bg-slate-200 hidden sm:block"></div>
-            <span class="text-xs font-medium text-slate-500 hidden sm:inline">
+            <span class="text-xs font-medium text-slate-500">
                 Format Cetak: <strong>Standar A4 Formal</strong>
             </span>
         </div>

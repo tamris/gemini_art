@@ -147,22 +147,22 @@
                     </span>
                 </div>
 
-                <div class="grid grid-cols-3 gap-3 mb-4">
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 sm:gap-3 mb-4">
                     <div class="p-3 bg-slate-100 dark:bg-slate-900 border-2 border-black dark:border-slate-700 rounded-lg">
                         <div class="text-[10px] font-black uppercase text-slate-500 dark:text-slate-400">Omset Hari Ini</div>
-                        <div class="text-base font-black text-black dark:text-white mt-0.5">
+                        <div class="text-sm sm:text-base font-black text-black dark:text-white mt-0.5 truncate">
                             Rp {{ number_format($branch->today_turnover, 0, ',', '.') }}
                         </div>
                     </div>
                     <div class="p-3 bg-slate-100 dark:bg-slate-900 border-2 border-black dark:border-slate-700 rounded-lg">
                         <div class="text-[10px] font-black uppercase text-slate-500 dark:text-slate-400">Saldo Kas Laci</div>
-                        <div class="text-base font-black text-black dark:text-white mt-0.5">
+                        <div class="text-sm sm:text-base font-black text-black dark:text-white mt-0.5 truncate">
                             Rp {{ number_format($branch->cash_balance, 0, ',', '.') }}
                         </div>
                     </div>
                     <div class="p-3 bg-slate-100 dark:bg-slate-900 border-2 border-black dark:border-slate-700 rounded-lg">
                         <div class="text-[10px] font-black uppercase text-slate-500 dark:text-slate-400">Order Berjalan</div>
-                        <div class="text-base font-black text-black dark:text-white mt-0.5">
+                        <div class="text-sm sm:text-base font-black text-black dark:text-white mt-0.5 truncate">
                             {{ $branch->active_orders_count }} Order
                         </div>
                     </div>

@@ -31,7 +31,7 @@
 
     <!-- Left Sidebar (Soft Neo-Brutalism) -->
     <aside id="main-sidebar" 
-           class="fixed inset-y-0 left-0 z-50 w-72 bg-white dark:bg-[#0c1222] border-r-[1.5px] border-slate-800 dark:border-slate-800 flex flex-col justify-between transform -translate-x-full lg:translate-x-0 transition-transform duration-200 ease-in-out">
+           class="fixed inset-y-0 left-0 z-50 w-72 max-w-[85vw] bg-white dark:bg-[#0c1222] border-r-[1.5px] border-slate-800 dark:border-slate-800 flex flex-col justify-between transform -translate-x-full lg:translate-x-0 transition-transform duration-200 ease-in-out">
         
         <!-- Top: Brand Header -->
         <div class="h-20 px-5 border-b-[1.5px] border-slate-800 dark:border-slate-800 bg-white dark:bg-[#0c1222] flex items-center justify-between">
@@ -261,31 +261,32 @@
     <div class="flex-1 lg:pl-72 flex flex-col min-h-screen min-w-0">
         
         <!-- Top Minimal Utility Bar -->
-        <header class="h-20 bg-white dark:bg-[#0c1222] border-b-[1.5px] border-slate-800 dark:border-slate-800 sticky top-0 z-30 px-4 sm:px-8 flex items-center justify-between transition-colors duration-150">
+        <header class="h-16 sm:h-20 bg-white dark:bg-[#0c1222] border-b-[1.5px] border-slate-800 dark:border-slate-800 sticky top-0 z-30 px-3.5 sm:px-6 lg:px-8 flex items-center justify-between transition-colors duration-150">
             
             <!-- Left: Mobile Toggle & Page Title -->
-            <div class="flex items-center gap-3">
+            <div class="flex items-center gap-2.5 sm:gap-3 min-w-0">
                 <button type="button" 
                         onclick="toggleSidebar()" 
-                        class="lg:hidden p-2 rounded-xl border-[1.5px] border-slate-800 dark:border-slate-700 bg-amber-300 hover:bg-amber-400 dark:text-slate-950 active:translate-x-[1px] active:translate-y-[1px] shadow-[1.5px_1.5px_0px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_0px_#000000] cursor-pointer">
-                    <x-icon name="menu" class="w-5 h-5 text-slate-900" stroke-width="2.5" />
+                        aria-label="Buka Menu"
+                        class="lg:hidden p-2 rounded-xl border-[1.5px] border-slate-800 dark:border-slate-700 bg-amber-300 hover:bg-amber-400 dark:text-slate-950 active:translate-x-[1px] active:translate-y-[1px] shadow-[1.5px_1.5px_0px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_0px_#000000] cursor-pointer shrink-0">
+                    <x-icon name="menu" class="w-4 h-4 sm:w-5 sm:h-5 text-slate-900" stroke-width="2.5" />
                 </button>
 
-                <div>
-                    <h2 class="font-black text-sm sm:text-base text-slate-900 dark:text-white tracking-tight flex items-center gap-2">
-                        <span>@yield('title', 'Gemini Art')</span>
+                <div class="min-w-0">
+                    <h2 class="font-black text-xs sm:text-base text-slate-900 dark:text-white tracking-tight truncate">
+                        @yield('title', 'Gemini Art')
                     </h2>
                 </div>
             </div>
 
             <!-- Right: Theme Switcher & Indonesian Date -->
-            <div class="flex items-center gap-2.5">
+            <div class="flex items-center gap-2 sm:gap-2.5 shrink-0">
                 <!-- Theme Toggle Switcher -->
                 <button type="button" 
                         id="theme-toggle-btn"
                         onclick="toggleTheme()"
                         aria-label="Toggle Dark/Light Mode"
-                        class="inline-flex items-center gap-1.5 text-xs font-black px-3 py-1.5 rounded-xl border-[1.5px] border-slate-800 bg-amber-200 hover:bg-amber-300 text-slate-900 dark:bg-slate-800 dark:border-slate-700 dark:text-amber-400 dark:hover:bg-slate-700 shadow-[1.5px_1.5px_0px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_0px_#000000] cursor-pointer transition-all active:translate-x-[1px] active:translate-y-[1px]">
+                        class="inline-flex items-center gap-1.5 text-xs font-black px-2.5 sm:px-3 py-1.5 rounded-xl border-[1.5px] border-slate-800 bg-amber-200 hover:bg-amber-300 text-slate-900 dark:bg-slate-800 dark:border-slate-700 dark:text-amber-400 dark:hover:bg-slate-700 shadow-[1.5px_1.5px_0px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_0px_#000000] cursor-pointer transition-all active:translate-x-[1px] active:translate-y-[1px]">
                     <span class="dark:hidden flex items-center gap-1.5">
                         <x-icon name="moon" class="w-3.5 h-3.5 text-slate-800" stroke-width="2.5" />
                         <!-- <span class="hidden sm:inline">GELAP</span> -->
@@ -296,8 +297,8 @@
                     </span>
                 </button>
 
-                <!-- Date Capsule -->
-                <span class="inline-flex items-center gap-1.5 text-xs font-bold text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800/80 border-[1.5px] border-slate-700 dark:border-slate-700 px-3 py-1.5 rounded-xl shadow-[1.5px_1.5px_0px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_0px_#000000]">
+                <!-- Date Capsule (Hidden on small mobile screens to prevent overflow) -->
+                <span class="hidden md:inline-flex items-center gap-1.5 text-xs font-bold text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800/80 border-[1.5px] border-slate-700 dark:border-slate-700 px-3 py-1.5 rounded-xl shadow-[1.5px_1.5px_0px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_0px_#000000]">
                     <x-icon name="calendar" class="w-3.5 h-3.5 text-slate-500 dark:text-slate-400" />
                     <span>{{ \Carbon\Carbon::now('Asia/Jakarta')->locale('id')->isoFormat('dddd, D MMMM Y') }}</span>
                 </span>
@@ -306,7 +307,7 @@
         </header>
 
         <!-- Main Workspace Area (Full-Width Fluid Responsive) -->
-        <main class="flex-1 w-full px-4 sm:px-8 py-6">
+        <main class="flex-1 w-full px-3.5 sm:px-6 lg:px-8 py-4 sm:py-6">
 
             <!-- Flash Notifications -->
             @if(session('success'))

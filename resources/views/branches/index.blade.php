@@ -32,7 +32,7 @@
     <!-- Branch Cards Grid -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         @foreach($branches as $b)
-        <div class="neo-box p-6 bg-white dark:bg-[#0c1222] border-2 border-black dark:border-slate-700 shadow-[3px_3px_0px_0px_#000] dark:shadow-[3px_3px_0px_0px_#000000] space-y-4">
+        <div class="neo-box p-4 sm:p-6 bg-white dark:bg-[#0c1222] border-2 border-black dark:border-slate-700 shadow-[3px_3px_0px_0px_#000] dark:shadow-[3px_3px_0px_0px_#000000] space-y-4">
             <div class="flex items-start justify-between pb-3 border-b-2 border-black dark:border-slate-800">
                 <div>
                     <div class="flex items-center gap-2">
@@ -57,7 +57,7 @@
                 </div>
             </div>
 
-            <div class="grid grid-cols-3 gap-3">
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 sm:gap-3">
                 <a href="{{ route('users.index', ['branch_id' => $b->id]) }}" 
                    title="Lihat dan kelola staf cabang {{ $b->code }}"
                    class="p-3 bg-slate-50 dark:bg-slate-900 hover:bg-amber-100/70 dark:hover:bg-slate-800 border-2 border-black dark:border-slate-700 rounded-lg text-center transition-all block group cursor-pointer shadow-[1px_1px_0px_0px_#000] dark:shadow-[1px_1px_0px_0px_#000000]">
@@ -77,8 +77,7 @@
                 </div>
             </div>
 
-            <div class="pt-2 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between text-xs">
-                <span class="text-slate-500 dark:text-slate-400 font-medium">Path S3/R2 Cloud: <code>designs/{{ $b->code }}/...</code></span>
+            <div class="pt-2 border-t border-slate-200 dark:border-slate-800 flex items-center justify-end text-xs">
                 <a href="{{ route('orders.index', ['branch_id' => $b->id]) }}" class="font-bold text-blue-700 dark:text-sky-400 hover:underline">
                     Filter Order Cabang Ini →
                 </a>

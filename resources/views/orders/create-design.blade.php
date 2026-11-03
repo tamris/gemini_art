@@ -8,21 +8,8 @@
     <!-- Header Section -->
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b-2 border-black dark:border-slate-800">
         <div>
-            <!-- <div class="flex items-center gap-2 mb-1">
-                <span class="w-3 h-3 rounded-full bg-sky-500"></span>
-                <span class="text-xs font-black uppercase tracking-wider text-sky-800 dark:text-sky-400">
-                    SOP Tahap 1: Penerimaan Order & Komitmen Biaya
-                </span>
-            </div> -->
             <h1 class="text-2xl font-black text-black dark:text-white">Input Tiket Order Desain & Cetak</h1>
-            <!-- <p class="text-xs font-semibold text-slate-600 dark:text-slate-400 mt-0.5">
-                Data spesifikasi pengerjaan, deadline, dan komitmen DP/Lunas yang otomatis tercatat ke buku kas cabang.
-            </p> -->
         </div>
-        <a href="{{ route('orders.index') }}" class="neo-btn bg-slate-200 hover:bg-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 dark:text-white dark:border-slate-700 text-xs py-2 px-3.5 flex items-center gap-1.5 self-start sm:self-center dark:shadow-[2px_2px_0px_0px_#000000]">
-            <x-icon name="arrow-left" class="w-3.5 h-3.5" stroke-width="2.5" />
-            <span>Kembali ke Daftar Order</span>
-        </a>
     </div>
 
     <!-- Main Split Form: Left Specs (8 cols), Right Payment & Actions (4 cols) -->
@@ -41,7 +28,7 @@
                             <div class="w-7 h-7 bg-amber-200 border-[1.5px] border-slate-800 dark:border-slate-700 rounded-lg flex items-center justify-center text-slate-900 shadow-[1px_1px_0px_0px_#0f172a] dark:shadow-[1px_1px_0px_0px_#000000]">
                                 <x-icon name="user" class="w-4 h-4" />
                             </div>
-                            <span>1. Data Pelanggan & Cabang Pelaksana</span>
+                            <span>1. Data Pelanggan</span>
                         </span>
                         <span class="text-[10px] font-black text-amber-950 dark:text-amber-300 bg-amber-100 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-400/40 px-2 py-0.5 rounded">
                             Wajib Diisi
@@ -121,7 +108,7 @@
                             <div class="w-7 h-7 bg-blue-200 border-[1.5px] border-slate-800 dark:border-slate-700 rounded-lg flex items-center justify-center text-slate-900 shadow-[1px_1px_0px_0px_#0f172a] dark:shadow-[1px_1px_0px_0px_#000000]">
                                 <x-icon name="palette" class="w-4 h-4" />
                             </div>
-                            <span>2. Spesifikasi Desain & Bahan Produksi</span>
+                            <span>2. Spesifikasi & Brief Desain</span>
                         </span>
                         <span class="text-[10px] font-black text-blue-950 dark:text-sky-300 bg-blue-100 dark:bg-sky-950/40 border border-blue-300 dark:border-sky-400/40 px-2 py-0.5 rounded">
                             Detail Teknis
@@ -329,51 +316,61 @@
                 </div>
 
                 <!-- Card 3: Alat & Layanan Tambahan (Add-on Opsional) -->
-                <div class="neo-box p-5 bg-white dark:bg-[#0c1222] border-2 border-black dark:border-slate-700 shadow-[3px_3px_0px_0px_#000] dark:shadow-[3px_3px_0px_0px_#000000] space-y-4">
-                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-slate-200 dark:border-slate-800">
-                        <div>
-                            <h2 class="text-sm font-black text-slate-800 dark:text-white flex items-center gap-2">
-                                <div class="w-7 h-7 bg-purple-200 border-[1.5px] border-slate-800 dark:border-slate-700 rounded-lg flex items-center justify-center text-slate-900 shadow-[1px_1px_0px_0px_#0f172a] dark:shadow-[1px_1px_0px_0px_#000000]">
-                                    <x-icon name="plus-circle" class="w-4 h-4" />
-                                </div>
-                                <span>3. Alat & Layanan Tambahan (Add-on Opsional)</span>
-                            </h2>
-                            <p class="text-[11px] font-medium text-slate-500 dark:text-slate-400 mt-0.5">
-                                Tambahkan alat display, finishing ekstra, atau jasa pasang yang dibeli customer.
-                            </p>
+                <div class="neo-box p-4 sm:p-5 bg-white dark:bg-[#0c1222] border-2 border-black dark:border-slate-700 shadow-[3px_3px_0px_0px_#000] dark:shadow-[3px_3px_0px_0px_#000000] space-y-4">
+                    <div class="flex items-center justify-between gap-3 pb-3 border-b border-slate-200 dark:border-slate-800">
+                        <div class="flex items-center gap-2.5 min-w-0">
+                            <div class="w-8 h-8 rounded-lg bg-purple-200 dark:bg-purple-900/50 border-[1.5px] border-slate-800 dark:border-purple-500/50 flex items-center justify-center text-purple-950 dark:text-purple-300 shadow-[1px_1px_0px_0px_#0f172a] dark:shadow-[1px_1px_0px_0px_#000000] shrink-0">
+                                <x-icon name="plus-circle" class="w-4 h-4" />
+                            </div>
+                            <div class="min-w-0">
+                                <h2 class="text-sm font-black text-slate-900 dark:text-white truncate">
+                                    3. Alat & Layanan Tambahan
+                                </h2>
+                                <p class="text-[11px] font-semibold text-slate-500 dark:text-slate-400 truncate">
+                                    Add-on display, finishing & jasa pasang
+                                </p>
+                            </div>
                         </div>
                         <button type="button" 
                                 onclick="addExtraItemRow()" 
-                                class="neo-btn bg-purple-100 hover:bg-purple-200 dark:bg-purple-950/40 dark:hover:bg-purple-900/60 dark:border-purple-700 dark:text-purple-300 text-purple-950 text-xs py-1.5 px-3 font-black shadow-[1.5px_1.5px_0px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_0px_#000000] flex items-center gap-1.5 cursor-pointer self-start sm:self-center">
+                                class="neo-btn bg-purple-300 hover:bg-purple-400 dark:bg-purple-400 dark:hover:bg-purple-300 text-slate-950 text-xs py-1.5 px-3 font-black shadow-[1.5px_1.5px_0px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_0px_#000000] flex items-center gap-1.5 cursor-pointer shrink-0 border border-slate-900">
                             <x-icon name="plus" class="w-3.5 h-3.5 stroke-[2.5]" />
-                            <span>Tambah Item / Alat</span>
+                            <span class="hidden sm:inline">Tambah Item</span>
+                            <span class="sm:hidden">Tambah</span>
                         </button>
                     </div>
 
-                    <!-- Quick Preset Chips -->
-                    <div class="flex items-center gap-1.5 flex-wrap">
-                        <span class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Cepat:</span>
-                        <button type="button" onclick="addExtraItemRow('Rangka X-Banner Fiber 60x160', 1, 35000)" class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 hover:bg-purple-100 dark:hover:bg-purple-950/50 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:text-purple-900 dark:hover:text-purple-300 text-[11px] font-bold cursor-pointer transition-all">
-                            + Rangka X-Banner
-                        </button>
-                        <button type="button" onclick="addExtraItemRow('Rangka Roll-Up Aluminium 80x200', 1, 95000)" class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 hover:bg-purple-100 dark:hover:bg-purple-950/50 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:text-purple-900 dark:hover:text-purple-300 text-[11px] font-bold cursor-pointer transition-all">
-                            + Rangka Roll-Up
-                        </button>
-                        <button type="button" onclick="addExtraItemRow('Mata Ayam Keliling (8 Titik)', 1, 10000)" class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 hover:bg-purple-100 dark:hover:bg-purple-950/50 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:text-purple-900 dark:hover:text-purple-300 text-[11px] font-bold cursor-pointer transition-all">
-                            + Mata Ayam Ekstra
-                        </button>
-                        <button type="button" onclick="addExtraItemRow('Selongsong Kayu/Bambu (Atas-Bawah)', 1, 10000)" class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 hover:bg-purple-100 dark:hover:bg-purple-950/50 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:text-purple-900 dark:hover:text-purple-300 text-[11px] font-bold cursor-pointer transition-all">
-                            + Selongsong Kayu
-                        </button>
-                        <button type="button" onclick="addExtraItemRow('Jasa Pasang & Instalasi Lokasi', 1, 30000)" class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 hover:bg-purple-100 dark:hover:bg-purple-950/50 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:text-purple-900 dark:hover:text-purple-300 text-[11px] font-bold cursor-pointer transition-all">
-                            + Jasa Pasang Lokasi
-                        </button>
+                    <!-- Quick Preset Section (3 Pilihan Utama Saja) -->
+                    <div class="space-y-1.5">
+                        <span class="text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
+                            <x-icon name="sparkles" class="w-3 h-3 text-amber-500 dark:text-amber-400" />
+                            <span>Pilihan Cepat Populer:</span>
+                        </span>
+
+                        <div class="grid grid-cols-3 gap-2">
+                            <button type="button" 
+                                    onclick="addExtraItemRow('Rangka X-Banner Fiber 60x160', 1, 35000)" 
+                                    class="py-1.5 px-2 rounded-lg bg-slate-100 hover:bg-purple-200 dark:bg-slate-800/90 dark:hover:bg-purple-400 dark:hover:text-slate-950 border-[1.5px] border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 text-xs font-bold cursor-pointer transition-all text-center truncate shadow-[1px_1px_0px_0px_#e2e8f0] dark:shadow-[1px_1px_0px_0px_#000000] active:translate-x-[0.5px] active:translate-y-[0.5px]">
+                                + X-Banner
+                            </button>
+                            <button type="button" 
+                                    onclick="addExtraItemRow('Rangka Roll-Up Aluminium 80x200', 1, 95000)" 
+                                    class="py-1.5 px-2 rounded-lg bg-slate-100 hover:bg-purple-200 dark:bg-slate-800/90 dark:hover:bg-purple-400 dark:hover:text-slate-950 border-[1.5px] border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 text-xs font-bold cursor-pointer transition-all text-center truncate shadow-[1px_1px_0px_0px_#e2e8f0] dark:shadow-[1px_1px_0px_0px_#000000] active:translate-x-[0.5px] active:translate-y-[0.5px]">
+                                + Roll-Up
+                            </button>
+                            <button type="button" 
+                                    onclick="addExtraItemRow('Jasa Pasang & Instalasi Lokasi', 1, 30000)" 
+                                    class="py-1.5 px-2 rounded-lg bg-slate-100 hover:bg-purple-200 dark:bg-slate-800/90 dark:hover:bg-purple-400 dark:hover:text-slate-950 border-[1.5px] border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 text-xs font-bold cursor-pointer transition-all text-center truncate shadow-[1px_1px_0px_0px_#e2e8f0] dark:shadow-[1px_1px_0px_0px_#000000] active:translate-x-[0.5px] active:translate-y-[0.5px]">
+                                + Jasa Pasang
+                            </button>
+                        </div>
                     </div>
 
                     <!-- Items List Container -->
                     <div id="extra-items-container" class="space-y-2.5">
-                        <div id="no-extra-items-msg" class="p-4 border-[1.5px] border-dashed border-slate-200 dark:border-slate-800 rounded-xl text-center text-xs text-slate-400 dark:text-slate-500 font-medium">
-                            Belum ada alat atau item tambahan. Klik tombol atau pilihan cepat di atas jika customer membeli alat/layanan ekstra.
+                        <div id="no-extra-items-msg" class="p-3.5 border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-xl text-center text-xs text-slate-400 dark:text-slate-500 font-semibold bg-slate-50/50 dark:bg-slate-900/40">
+                            <span class="text-slate-600 dark:text-slate-400 font-bold block mb-0.5">Belum ada alat atau item tambahan.</span>
+                            <span>Pilih preset cepat di atas atau klik tombol <strong>+ Tambah Item</strong> jika customer membeli alat/layanan ekstra.</span>
                         </div>
                     </div>
                 </div>
@@ -392,9 +389,9 @@
                             </div>
                             <span>4. Biaya & Kas Awal</span>
                         </h2>
-                        <span class="text-[10px] font-black text-emerald-950 dark:text-emerald-300 bg-emerald-100 dark:bg-emerald-950/40 border border-emerald-300 dark:border-emerald-400/40 px-2 py-0.5 rounded">
+                        <!-- <span class="text-[10px] font-black text-emerald-950 dark:text-emerald-300 bg-emerald-100 dark:bg-emerald-950/40 border border-emerald-300 dark:border-emerald-400/40 px-2 py-0.5 rounded">
                             SOP Kasir
-                        </span>
+                        </span> -->
                     </div>
 
                     <div class="space-y-4">
@@ -403,8 +400,8 @@
                             <label for="main_price_display" class="block text-xs font-black uppercase text-slate-800 dark:text-slate-300 mb-1 tracking-wider">
                                 Biaya Desain & Cetak Utama <span class="text-rose-500">*</span>
                             </label>
-                            <div class="flex rounded-xl overflow-hidden border-[1.5px] border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-[1.5px_1.5px_0px_0px_#e2e8f0] dark:shadow-[1.5px_1.5px_0px_0px_#000000] focus-within:border-slate-800 dark:focus-within:border-amber-400 focus-within:shadow-[2.5px_2.5px_0px_0px_#0f172a] transition-all">
-                                <span class="inline-flex items-center px-3.5 bg-sky-200 dark:bg-sky-950/60 dark:text-sky-300 border-r-[1.5px] border-slate-300 dark:border-slate-700 text-xs font-black text-slate-800 select-none">
+                            <div class="flex rounded-xl overflow-hidden border-2 border-black dark:border-slate-700 bg-white dark:bg-slate-900 shadow-[2px_2px_0px_0px_#000] dark:shadow-[2px_2px_0px_0px_#000000] focus-within:border-black dark:focus-within:border-amber-400 transition-all">
+                                <span class="inline-flex items-center px-3.5 bg-sky-200 dark:bg-sky-400 text-slate-950 border-r-2 border-black dark:border-slate-700 text-xs font-black select-none">
                                     Rp
                                 </span>
                                 <input type="text" 
@@ -604,43 +601,45 @@ function addExtraItemRow(name = '', qty = 1, price = 0) {
                    required 
                    class="w-full neo-input text-xs h-9 bg-white dark:bg-[#0c1222] dark:text-white">
         </div>
-        <div class="w-full sm:w-20 shrink-0">
-            <label class="block text-[10px] font-black uppercase text-slate-600 dark:text-slate-400 mb-0.5">Qty</label>
-            <input type="number" 
-                   name="items[${idx}][qty]" 
-                   value="${qty}" 
-                   min="1" 
-                   oninput="handleRowChange(this)" 
-                   class="w-full neo-input text-xs h-9 bg-white dark:bg-[#0c1222] dark:text-white text-center font-bold">
-        </div>
-        <div class="w-full sm:w-36 shrink-0">
-            <label class="block text-[10px] font-black uppercase text-slate-600 dark:text-slate-400 mb-0.5">Harga Satuan (Rp)</label>
-            <div class="relative">
-                <input type="text" 
-                       inputmode="numeric" 
-                       placeholder="0" 
-                       value="${formattedPrice}"
-                       oninput="handleItemPriceInput(this)" 
-                       class="w-full neo-input text-xs h-9 bg-white dark:bg-[#0c1222] dark:text-white font-bold item-price-display">
-                <input type="hidden" 
-                       name="items[${idx}][price]" 
-                       value="${price}" 
-                       class="item-price-raw">
+        <div class="grid grid-cols-12 sm:flex sm:items-center gap-2 sm:gap-3 w-full sm:w-auto items-end">
+            <div class="col-span-3 sm:w-20 shrink-0">
+                <label class="block text-[10px] font-black uppercase text-slate-600 dark:text-slate-400 mb-0.5">Qty</label>
+                <input type="number" 
+                       name="items[${idx}][qty]" 
+                       value="${qty}" 
+                       min="1" 
+                       oninput="handleRowChange(this)" 
+                       class="w-full neo-input text-xs h-9 bg-white dark:bg-[#0c1222] dark:text-white text-center font-bold">
             </div>
-        </div>
-        <div class="w-full sm:w-28 shrink-0 text-left sm:text-right">
-            <label class="block text-[10px] font-black uppercase text-slate-600 dark:text-slate-400 mb-0.5">Subtotal</label>
-            <div class="h-9 flex items-center sm:justify-end font-black text-slate-900 dark:text-white text-xs item-subtotal-text">
-                ${initialSubtotal}
+            <div class="col-span-5 sm:w-36 shrink-0">
+                <label class="block text-[10px] font-black uppercase text-slate-600 dark:text-slate-400 mb-0.5">Harga Satuan</label>
+                <div class="relative">
+                    <input type="text" 
+                           inputmode="numeric" 
+                           placeholder="0" 
+                           value="${formattedPrice}"
+                           oninput="handleItemPriceInput(this)" 
+                           class="w-full neo-input text-xs h-9 bg-white dark:bg-[#0c1222] dark:text-white font-bold item-price-display">
+                    <input type="hidden" 
+                           name="items[${idx}][price]" 
+                           value="${price}" 
+                           class="item-price-raw">
+                </div>
             </div>
-        </div>
-        <div class="shrink-0 flex sm:items-end justify-end">
-            <button type="button" 
-                    onclick="removeExtraItemRow(this)" 
-                    title="Hapus baris item" 
-                    class="w-9 h-9 rounded-lg border-[1.5px] border-slate-800 dark:border-slate-700 bg-rose-200 hover:bg-rose-300 dark:bg-rose-950/40 dark:hover:bg-rose-900/60 dark:border-rose-800 dark:text-rose-400 font-black text-xs flex items-center justify-center cursor-pointer shadow-[1px_1px_0px_0px_#0f172a] dark:shadow-[1px_1px_0px_0px_#000000] active:translate-x-[0.5px] active:translate-y-[0.5px]">
-                ✕
-            </button>
+            <div class="col-span-3 sm:w-28 shrink-0 text-left sm:text-right">
+                <label class="block text-[10px] font-black uppercase text-slate-600 dark:text-slate-400 mb-0.5">Subtotal</label>
+                <div class="h-9 flex items-center sm:justify-end font-black text-slate-900 dark:text-white text-xs item-subtotal-text truncate">
+                    ${initialSubtotal}
+                </div>
+            </div>
+            <div class="col-span-1 shrink-0 flex items-center justify-end">
+                <button type="button" 
+                        onclick="removeExtraItemRow(this)" 
+                        title="Hapus baris item" 
+                        class="w-9 h-9 rounded-lg border-[1.5px] border-slate-800 dark:border-slate-700 bg-rose-200 hover:bg-rose-300 dark:bg-rose-500/20 dark:hover:bg-rose-500/30 dark:border-rose-500/50 dark:text-rose-300 font-black text-xs flex items-center justify-center cursor-pointer shadow-[1px_1px_0px_0px_#0f172a] dark:shadow-[1px_1px_0px_0px_#000000] active:translate-x-[0.5px] active:translate-y-[0.5px]">
+                    ✕
+                </button>
+            </div>
         </div>
     `;
 

@@ -7,27 +7,21 @@
 
     <!-- Top Breadcrumbs & Actions -->
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b-[1.5px] border-slate-800 dark:border-slate-800">
-        <div class="flex items-center gap-3">
-            <a href="{{ route('orders.index') }}" class="neo-btn bg-white hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700 dark:text-white dark:border-slate-700 text-xs py-1.5 px-3 flex items-center gap-1.5">
-                <x-icon name="arrow-left" class="w-3.5 h-3.5" stroke-width="2.5" />
-                <span>Kembali</span>
-            </a>
-            <div>
-                <div class="flex items-center gap-2 flex-wrap">
-                    <span class="font-mono text-xl font-black text-slate-900 dark:text-white">{{ $order->order_number }}</span>
-                    <span class="px-2 py-0.5 rounded-lg border-[1.5px] border-slate-800 dark:border-slate-700 bg-slate-200 dark:bg-slate-800 text-slate-900 dark:text-slate-100 text-xs font-bold shadow-[1px_1px_0px_0px_#0f172a] dark:shadow-[1px_1px_0px_0px_#000000]">
-                        {{ $order->branch->code }}
-                    </span>
-                    <span class="px-2.5 py-0.5 rounded-full border-[1.5px] border-slate-800 text-xs font-black shadow-[1px_1px_0px_0px_#0f172a] dark:shadow-[1px_1px_0px_0px_#000000] {{ $order->status_color_class }}">
-                        {{ $order->status_label }}
-                    </span>
-                    <span class="px-2 py-0.5 rounded-full border-[1.5px] border-slate-800 text-xs font-black shadow-[1px_1px_0px_0px_#0f172a] dark:shadow-[1px_1px_0px_0px_#000000] {{ $order->payment_status_badge_class }}">
-                        {{ $order->payment_status_label }}
-                    </span>
-                </div>
-                <div class="text-xs text-slate-500 dark:text-slate-400 font-semibold mt-1">
-                    Dibuat pada {{ $order->created_at->format('d F Y, H:i') }} oleh {{ $order->creator->name }}
-                </div>
+        <div>
+            <div class="flex items-center gap-2 flex-wrap">
+                <span class="font-mono text-xl font-black text-slate-900 dark:text-white">{{ $order->order_number }}</span>
+                <span class="px-2 py-0.5 rounded-lg border-[1.5px] border-slate-800 dark:border-slate-700 bg-slate-200 dark:bg-slate-800 text-slate-900 dark:text-slate-100 text-xs font-bold shadow-[1px_1px_0px_0px_#0f172a] dark:shadow-[1px_1px_0px_0px_#000000]">
+                    {{ $order->branch->code }}
+                </span>
+                <span class="px-2.5 py-0.5 rounded-full border-[1.5px] border-slate-800 text-xs font-black shadow-[1px_1px_0px_0px_#0f172a] dark:shadow-[1px_1px_0px_0px_#000000] {{ $order->status_color_class }}">
+                    {{ $order->status_label }}
+                </span>
+                <span class="px-2 py-0.5 rounded-full border-[1.5px] border-slate-800 text-xs font-black shadow-[1px_1px_0px_0px_#0f172a] dark:shadow-[1px_1px_0px_0px_#000000] {{ $order->payment_status_badge_class }}">
+                    {{ $order->payment_status_label }}
+                </span>
+            </div>
+            <div class="text-xs text-slate-500 dark:text-slate-400 font-semibold mt-1">
+                Dibuat pada {{ $order->created_at->format('d F Y, H:i') }} oleh {{ $order->creator->name }}
             </div>
         </div>
 
