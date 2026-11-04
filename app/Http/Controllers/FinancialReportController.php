@@ -15,20 +15,21 @@ class FinancialReportController extends Controller
     public function index(Request $request)
     {
         $user = Auth::user();
+
+        // Laporan Keuangan & Laba Rugi khusus diakses oleh Owner
+        if (!$user->isOwner()) {
+            abort(403, 'Akses Laporan Keuangan & Laba Rugi hanya diizinkan untuk Owner.');
+        }
+
         $branches = Branch::all();
 
         // 1. Branch Authorization & Selection
-        if (!$user->isOwner()) {
-            $branchId = $user->branch_id;
-            $selectedBranch = $user->branch;
+        if ($request->filled('branch_id')) {
+            $branchId = (int) $request->branch_id;
+            $selectedBranch = Branch::find($branchId);
         } else {
-            if ($request->filled('branch_id')) {
-                $branchId = (int) $request->branch_id;
-                $selectedBranch = Branch::find($branchId);
-            } else {
-                $branchId = null; // All branches consolidated
-                $selectedBranch = null;
-            }
+            $branchId = null; // All branches consolidated
+            $selectedBranch = null;
         }
 
         // 2. Period Filter Determination

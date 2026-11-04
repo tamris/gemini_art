@@ -151,24 +151,10 @@ class FinancialReportTest extends TestCase
         $response->assertDontSee('400.000');
     }
 
-    public function test_cashier_can_access_own_branch_report(): void
+    public function test_cashier_forbidden_from_financial_reports(): void
     {
-        CashMovement::create([
-            'branch_id' => $this->branchA->id,
-            'user_id' => $this->cashierA->id,
-            'type' => 'in',
-            'amount' => 300000,
-            'payment_method' => 'cash',
-            'category' => 'retail_pos',
-            'notes' => 'Kasir A transaction',
-        ]);
-
         $response = $this->actingAs($this->cashierA)->get(route('reports.finance'));
-
-        $response->assertOk();
-        $response->assertSee('300.000');
-        // Cashier shouldn't see multi-branch dropdown
-        $response->assertDontSee('Semua Cabang (Konsolidasian)');
+        $response->assertForbidden();
     }
 
     public function test_period_filter_custom_date(): void

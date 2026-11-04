@@ -8,9 +8,19 @@
     <!-- Header Section -->
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b-[1.5px] border-slate-800 dark:border-slate-800">
         <div>
-            <h1 class="text-2xl font-black text-slate-900 dark:text-white tracking-tight">Pusat Arsip Desain Terpusat</h1>
+            <h1 class="text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+                @if(Auth::user()->isOwner())
+                    Pusat Arsip Desain Terpusat
+                @else
+                    Arsip Desain &bull; {{ Auth::user()->branch?->clean_name }}
+                @endif
+            </h1>
             <p class="text-xs font-semibold text-slate-500 dark:text-slate-400 mt-1">
-                Katalog berkas cetak siap produksi dan riwayat proofing lintas cabang.
+                @if(Auth::user()->isOwner())
+                    Katalog berkas cetak siap produksi dan riwayat proofing lintas cabang.
+                @else
+                    Katalog berkas cetak siap produksi dan riwayat proofing Cabang {{ Auth::user()->branch?->clean_name }}.
+                @endif
             </p>
         </div>
 
@@ -137,10 +147,12 @@
                         <span class="text-slate-500 dark:text-slate-400 font-medium">Customer:</span>
                         <span class="font-bold text-slate-900 dark:text-white truncate max-w-[160px]">{{ $asset->designJob->order->customer_name ?? '-' }}</span>
                     </div>
+                    @if(Auth::user()->isOwner())
                     <div class="flex items-center justify-between">
                         <span class="text-slate-500 dark:text-slate-400 font-medium">Cabang:</span>
                         <span class="font-semibold text-slate-700 dark:text-slate-300 truncate max-w-[160px]">{{ $asset->designJob->order->branch->name ?? '-' }}</span>
                     </div>
+                    @endif
                     <div class="flex items-center justify-between text-[11px] pt-1 border-t border-slate-200/70 dark:border-slate-800 text-slate-500 dark:text-slate-400">
                         <span>Diunggah:</span>
                         <span class="font-medium">{{ $asset->uploader->name ?? '-' }} &bull; {{ $asset->created_at->format('d M') }}</span>

@@ -8,10 +8,13 @@
     <!-- Header Section -->
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-            <h1 class="text-2xl font-black text-black dark:text-white">Manajemen Order & Antrean Tiket</h1>
-            <!-- <p class="text-xs font-semibold text-slate-600 mt-0.5">
-                Semua pesanan desain kustom dan transaksi kasir ritel cepat di cabang.
-            </p> -->
+            <h1 class="text-2xl font-black text-black dark:text-white">
+                @if(Auth::user()->isOwner())
+                    Manajemen Order & Antrean Tiket
+                @else
+                    Daftar Order & Antrean &bull; {{ Auth::user()->branch?->clean_name }}
+                @endif
+            </h1>
         </div>
         <div class="flex flex-wrap sm:flex-nowrap items-center gap-2 sm:gap-3">
             <a href="{{ route('orders.create-design') }}" class="neo-btn bg-sky-400 hover:bg-sky-300 dark:text-slate-950 text-xs py-2 px-3.5 text-black font-black flex items-center gap-2 dark:border-slate-800 dark:shadow-[2px_2px_0px_0px_#000000]">
@@ -106,7 +109,9 @@
                     <thead>
                         <tr class="bg-slate-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-200 font-black uppercase tracking-wider">
                         <th class="py-3 px-4">No. Order</th>
+                        @if(Auth::user()->isOwner())
                         <th class="py-3 px-4">Cabang</th>
+                        @endif
                         <th class="py-3 px-4">Customer & Rincian</th>
                         <th class="py-3 px-4">Tipe</th>
                         <th class="py-3 px-4">Status Kerja</th>
@@ -129,12 +134,14 @@
                             </div>
                         </td>
 
-                        <!-- Branch -->
+                        <!-- Branch (Khusus Owner) -->
+                        @if(Auth::user()->isOwner())
                         <td class="py-3.5 px-4 whitespace-nowrap">
                             <span class="px-2 py-0.5 rounded border border-black dark:border-slate-700 bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-slate-200 font-bold text-[10px]">
                                 {{ $order->branch->code }}
                             </span>
                         </td>
+                        @endif
 
                         <!-- Customer & Title -->
                         <td class="py-3.5 px-4">
@@ -214,7 +221,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="8" class="py-12 text-center text-slate-400 dark:text-slate-500 font-semibold">
+                        <td colspan="{{ Auth::user()->isOwner() ? '8' : '7' }}" class="py-12 text-center text-slate-400 dark:text-slate-500 font-semibold">
                             Tidak ditemukan order yang sesuai dengan kriteria filter.
                         </td>
                     </tr>

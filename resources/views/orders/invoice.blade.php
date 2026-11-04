@@ -92,30 +92,23 @@
             <!-- Header: Clean Modern Studio Branding & Document Type -->
             <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between pb-8 border-b border-slate-200 gap-6">
                 <!-- Brand / Logo Area -->
-                <div class="flex items-center gap-3.5">
-                    <div class="w-12 h-12 rounded-xl bg-slate-900 text-white flex items-center justify-center font-bold text-xl tracking-tight shrink-0 shadow-sm">
-                        GA
-                    </div>
-                    <div>
-                        <div class="flex items-center gap-2">
-                            <h1 class="text-xl font-bold tracking-tight text-slate-900">GEMINI ART</h1>
-                            <span class="text-[11px] font-semibold text-slate-500 uppercase tracking-wide">
-                                Studio &bull; Percetakan
-                            </span>
-                        </div>
-                        <p class="text-xs text-slate-500 mt-0.5">Solusi Desain Grafis, Digital Printing & Offset</p>
-                    </div>
+                <div class="flex items-center">
+                    <img src="{{ asset('images/logo.png') }}" 
+                         alt="Gemini Art" 
+                         class="h-16 sm:h-20 w-auto object-contain max-w-[280px] sm:max-w-[340px]">
                 </div>
 
                 <!-- Document Identifier & Status -->
-                <div class="flex flex-col sm:items-end">
-                    <span class="text-xs font-semibold uppercase tracking-widest text-slate-400">FAKTUR TAGIHAN</span>
-                    <span class="text-2xl font-semibold tracking-tight text-slate-900 font-mono">
-                        {{ $invNumber }}
-                    </span>
+                <div class="flex flex-col items-start sm:items-end w-full sm:w-auto">
+                    <div class="flex items-center justify-between sm:justify-end gap-3 w-full sm:w-auto">
+                        <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">FAKTUR TAGIHAN</span>
+                        <span class="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 font-mono">
+                            {{ $invNumber }}
+                        </span>
+                    </div>
                     
                     <!-- Clean Corporate Status Badge -->
-                    <div class="mt-2 inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold
+                    <div class="mt-2.5 inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold
                         @if($order->payment_status === 'paid')
                             bg-emerald-50 text-emerald-700 border border-emerald-200
                         @elseif($order->payment_status === 'partial_dp')

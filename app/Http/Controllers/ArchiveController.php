@@ -46,9 +46,20 @@ class ArchiveController extends Controller
         $assets = $query->paginate(18)->withQueryString();
         $branches = Branch::all();
 
-        // Calculate total storage used
-        $totalBytes = DesignAsset::sum('file_size');
-        $totalCount = DesignAsset::count();
+        // Calculate total storage used for the authorized scope
+        $statsQuery = DesignAsset::query();
+        if (!$user->isOwner()) {
+            $statsQuery->whereHas('designJob.order', function ($q) use ($user) {
+                $q->where('branch_id', $user->branch_id);
+            });
+        } elseif ($request->filled('branch_id')) {
+            $statsQuery->whereHas('designJob.order', function ($q) use ($request) {
+                $q->where('branch_id', $request->branch_id);
+            });
+        }
+
+        $totalBytes = (clone $statsQuery)->sum('file_size');
+        $totalCount = (clone $statsQuery)->count();
 
         return view('archive.index', compact('assets', 'branches', 'totalBytes', 'totalCount'));
     }

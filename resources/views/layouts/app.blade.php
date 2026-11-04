@@ -75,17 +75,17 @@
                     <span>Dashboard</span>
                 </a>
 
-                <!-- Semua Order -->
+                <!-- Semua Order / Order Cabang -->
                 <a href="{{ route('orders.index') }}" 
                    class="group flex items-center justify-between px-3 py-2 rounded-xl text-xs font-black border-[1.5px] transition-all {{ request()->routeIs('orders.index') || request()->routeIs('orders.show') ? 'bg-amber-300 border-slate-800 shadow-[2px_2px_0px_0px_#0f172a] dark:shadow-[2px_2px_0px_0px_#000000] text-slate-900' : 'border-transparent text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800/80 hover:text-slate-900 dark:hover:text-white' }}">
                     <div class="flex items-center gap-3">
                         <div class="w-7 h-7 rounded-lg border-[1.5px] border-slate-800 dark:border-slate-700 flex items-center justify-center text-slate-900 shrink-0 transition-transform group-hover:scale-105 {{ request()->routeIs('orders.index') || request()->routeIs('orders.show') ? 'bg-white keep-white shadow-[1px_1px_0px_0px_#0f172a] dark:shadow-[1px_1px_0px_0px_#000000]' : 'bg-amber-100 dark:bg-slate-800 dark:text-slate-400 group-hover:dark:text-amber-400 group-hover:dark:border-amber-400/50' }}">
                             <x-icon name="clipboard-list" class="w-4 h-4" />
                         </div>
-                        <span>Semua Order</span>
+                        <span>{{ Auth::user()->isOwner() ? 'Semua Order' : 'Order Cabang' }}</span>
                     </div>
                     <span class="text-[10px] font-extrabold bg-white dark:bg-slate-800 border border-slate-400 dark:border-slate-700 px-1.5 py-0.2 rounded shadow-[1px_1px_0px_0px_#e2e8f0] dark:shadow-[1px_1px_0px_0px_#000000] text-slate-900 dark:text-slate-200">
-                        {{ \App\Models\Order::count() }}
+                        {{ Auth::user()->isOwner() ? \App\Models\Order::count() : \App\Models\Order::where('branch_id', Auth::user()->branch_id)->count() }}
                     </span>
                 </a>
             </div>
@@ -139,7 +139,8 @@
                     <span>Buku Kas & Mutasi</span>
                 </a>
 
-                <!-- Laporan Keuangan -->
+                <!-- Laporan Keuangan (Khusus Owner) -->
+                @if(Auth::user()->isOwner())
                 <a href="{{ route('reports.finance') }}" 
                    class="group flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-black border-[1.5px] transition-all {{ request()->routeIs('reports.finance*') ? 'bg-emerald-300 border-slate-800 shadow-[2px_2px_0px_0px_#0f172a] dark:shadow-[2px_2px_0px_0px_#000000] text-slate-900' : 'border-transparent text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800/80 hover:text-slate-900 dark:hover:text-white' }}">
                     <div class="w-7 h-7 rounded-lg border-[1.5px] border-slate-800 dark:border-slate-700 flex items-center justify-center text-slate-900 shrink-0 transition-transform group-hover:scale-105 {{ request()->routeIs('reports.finance*') ? 'bg-white keep-white shadow-[1px_1px_0px_0px_#0f172a] dark:shadow-[1px_1px_0px_0px_#000000]' : 'bg-emerald-200 dark:bg-slate-800 dark:text-slate-400 group-hover:dark:text-emerald-400 group-hover:dark:border-emerald-400/50' }}">
@@ -147,6 +148,7 @@
                     </div>
                     <span>Laporan Keuangan</span>
                 </a>
+                @endif
 
                 <!-- Arsip Cloud (S3/R2) -->
                 <a href="{{ route('archive.index') }}" 

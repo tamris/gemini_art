@@ -22,11 +22,11 @@
         <div class="flex items-center gap-3">
             <a href="{{ route('workdesk.index') }}" class="neo-btn bg-white hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700 dark:text-white dark:border-slate-700 text-xs py-2.5 px-4 text-black flex items-center gap-2 dark:shadow-[2px_2px_0px_0px_#000000]">
                 <x-icon name="layers" class="w-4 h-4" />
-                <span>Workdesk Kanban Lengkap</span>
+                <span>Workdesk</span>
             </a>
             <a href="{{ route('archive.index') }}" class="neo-btn bg-amber-300 hover:bg-amber-400 dark:text-slate-950 text-xs py-2.5 px-4 text-black flex items-center gap-2 dark:border-slate-800 dark:shadow-[2px_2px_0px_0px_#000000]">
                 <x-icon name="archive" class="w-4 h-4" />
-                <span>Arsip File Selesai</span>
+                <span>Arsip File</span>
             </a>
         </div>
     </div>
