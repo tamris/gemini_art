@@ -37,6 +37,15 @@ class Order extends Model
         ];
     }
 
+    protected static function booted(): void
+    {
+        static::deleting(function (Order $order) {
+            if ($order->designJob) {
+                $order->designJob->delete();
+            }
+        });
+    }
+
     public function isCompleted(): bool
     {
         return $this->work_status === 'completed';
@@ -82,20 +91,26 @@ class Order extends Model
         return max(0, (float) $this->total_amount - (float) $this->paid_amount);
     }
 
-    public static function generateOrderNumber(Branch $branch): string
+    public static function generateOrderNumber(Branch $branch, string $orderType = 'custom_design'): string
     {
-        $ym = date('Ym');
-        $prefix = "ORD-{$branch->code}-{$ym}-";
+        $ym = date('ym'); // Format tahun & bulan 2 digit, e.g. 2611
+
+        $prefix = $orderType === 'retail_pos' 
+            ? "POS-{$branch->code}-{$ym}-" 
+            : "{$branch->code}-{$ym}-";
+
+        // Query order terakhir khusus di cabang dan bulan berjalan
         $lastOrder = static::where('order_number', 'like', "{$prefix}%")
             ->orderBy('id', 'desc')
             ->first();
 
+        // Jika bulan berganti / belum ada order di bulan ini, otomatis reset mulai dari 1 (001)
         $sequence = 1;
         if ($lastOrder && preg_match('/-(\d+)$/', $lastOrder->order_number, $matches)) {
             $sequence = ((int) $matches[1]) + 1;
         }
 
-        return $prefix . str_pad((string) $sequence, 4, '0', STR_PAD_LEFT);
+        return $prefix . str_pad((string) $sequence, 3, '0', STR_PAD_LEFT);
     }
 
     public function getStatusLabelAttribute(): string

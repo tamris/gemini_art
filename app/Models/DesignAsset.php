@@ -29,6 +29,16 @@ class DesignAsset extends Model
                 $asset->share_token = \Illuminate\Support\Str::random(32);
             }
         });
+
+        static::deleting(function (DesignAsset $asset) {
+            try {
+                if ($asset->file_path && $asset->disk && Storage::disk($asset->disk)->exists($asset->file_path)) {
+                    Storage::disk($asset->disk)->delete($asset->file_path);
+                }
+            } catch (\Throwable $e) {
+                \Illuminate\Support\Facades\Log::warning("Failed to delete physical file for asset {$asset->id}: " . $e->getMessage());
+            }
+        });
     }
 
     public function ensureShareToken(): string

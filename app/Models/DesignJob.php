@@ -31,6 +31,15 @@ class DesignJob extends Model
         ];
     }
 
+    protected static function booted(): void
+    {
+        static::deleting(function (DesignJob $job) {
+            foreach ($job->assets as $asset) {
+                $asset->delete();
+            }
+        });
+    }
+
     public function order(): BelongsTo
     {
         return $this->belongsTo(Order::class);

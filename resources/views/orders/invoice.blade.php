@@ -239,8 +239,8 @@
                                     </div>
                                     @endif
                                 </td>
-                                <td class="py-3.5 px-4 text-center font-medium">
-                                    {{ $item->qty }} {{ ($idx === 0 && $order->designJob) ? 'Paket' : 'Pcs' }}
+                                <td class="py-3.5 px-4 text-center font-bold text-slate-900">
+                                    {{ $item->qty }}
                                 </td>
                                 <td class="py-3.5 px-4 text-right font-medium">
                                     Rp {{ number_format($item->unit_price, 0, ',', '.') }}

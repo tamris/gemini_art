@@ -15,7 +15,7 @@ class WorkdeskController extends Controller
     public function index(Request $request)
     {
         $user = Auth::user();
-        $query = DesignJob::with(['order.branch', 'order.creator', 'designer', 'assets.uploader']);
+        $query = DesignJob::with(['order.branch', 'order.creator', 'order.items', 'designer', 'assets.uploader']);
 
         if (!$user->isOwner()) {
             $query->whereHas('order', function ($q) use ($user) {

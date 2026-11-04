@@ -30,20 +30,28 @@
 
     <!-- Filter Card (Soft Neo-Brutalism Instant Filter) -->
     <div class="neo-box p-4 bg-white dark:bg-[#0c1222] relative overflow-visible z-20 border-2 border-black dark:border-slate-700 shadow-[3px_3px_0px_0px_#000] dark:shadow-[3px_3px_0px_0px_#000000]">
-        <form method="GET" action="{{ route('orders.index') }}" data-auto-submit class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-3 items-end">
+        <form method="GET" action="{{ route('orders.index') }}" data-auto-submit class="grid grid-cols-1 sm:grid-cols-2 {{ Auth::user()->isOwner() ? 'lg:grid-cols-5' : 'lg:grid-cols-4' }} gap-3 items-end">
             
             <!-- Search -->
-            <div class="lg:col-span-2">
+            <div>
                 <label class="block text-[11px] font-black uppercase text-slate-800 dark:text-slate-300 mb-1 tracking-wider">Cari Order / Customer</label>
-                <div class="flex items-center rounded-xl border-[1.5px] border-slate-300 dark:border-slate-700 shadow-[1.5px_1.5px_0px_0px_#e2e8f0] dark:shadow-[1.5px_1.5px_0px_0px_#000000] focus-within:border-slate-800 dark:focus-within:border-amber-400 focus-within:shadow-[2.5px_2.5px_0px_0px_#0f172a] dark:focus-within:shadow-[2.5px_2.5px_0px_0px_#000000] bg-white dark:bg-slate-900 transition-all overflow-hidden">
-                    <button type="submit" aria-label="Cari" class="pl-3 pr-2 text-slate-400 hover:text-slate-800 dark:hover:text-white flex items-center justify-center shrink-0 cursor-pointer transition-colors">
+                <div class="flex items-center h-10 rounded-xl border-[1.5px] border-slate-300 dark:border-slate-700 shadow-[1.5px_1.5px_0px_0px_#e2e8f0] dark:shadow-[1.5px_1.5px_0px_0px_#000000] focus-within:border-slate-800 dark:focus-within:border-amber-400 focus-within:shadow-[2.5px_2.5px_0px_0px_#0f172a] dark:focus-within:shadow-[2.5px_2.5px_0px_0px_#000000] bg-white dark:bg-slate-900 transition-all overflow-hidden">
+                    <button type="submit" aria-label="Cari" class="h-full pl-3 pr-2 text-slate-400 hover:text-slate-800 dark:hover:text-white flex items-center justify-center shrink-0 cursor-pointer transition-colors">
                         <x-icon name="search" class="w-3.5 h-3.5" />
                     </button>
                     <input type="text" 
                            name="search" 
                            value="{{ request('search') }}" 
-                           placeholder="No. Order (ORD-...), Nama, No. HP... (Tekan Enter)"
-                           class="w-full py-2 pr-3 text-xs font-bold text-slate-800 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 outline-none bg-transparent">
+                           placeholder="No. Order, nama, HP..."
+                           autocomplete="off"
+                           title="Ketik untuk mencari langsung otomatis"
+                           class="w-full h-full pr-2 text-xs font-bold text-slate-800 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 outline-none bg-transparent">
+                    <button type="button" 
+                            data-clear-search
+                            title="Hapus pencarian" 
+                            class="{{ request('search') ? '' : 'hidden' }} h-full pr-3 pl-1 text-slate-400 hover:text-rose-500 dark:hover:text-rose-400 flex items-center justify-center shrink-0 cursor-pointer transition-colors">
+                        <x-icon name="x" class="w-3.5 h-3.5" />
+                    </button>
                 </div>
             </div>
 
@@ -91,7 +99,7 @@
             <div>
                 <a href="{{ route('orders.index') }}" 
                    title="Reset semua filter"
-                   class="w-full neo-btn {{ request()->anyFilled(['search', 'branch_id', 'work_status', 'payment_status']) ? 'bg-amber-200 hover:bg-amber-300 text-slate-900 dark:bg-amber-300 dark:text-slate-950 border-slate-800 font-black' : 'bg-slate-100 hover:bg-slate-200 text-slate-600 dark:bg-slate-800 dark:hover:bg-slate-700 dark:text-slate-300 dark:border-slate-700 font-bold' }} text-xs py-2 px-3 flex items-center justify-center gap-1.5 shadow-[1.5px_1.5px_0px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_0px_#000000] transition-all">
+                   class="w-full h-10 neo-btn {{ request()->anyFilled(['search', 'branch_id', 'work_status', 'payment_status']) ? 'bg-amber-200 hover:bg-amber-300 text-slate-900 dark:bg-amber-300 dark:text-slate-950 border-slate-800 font-black' : 'bg-slate-100 hover:bg-slate-200 text-slate-600 dark:bg-slate-800 dark:hover:bg-slate-700 dark:text-slate-300 dark:border-slate-700 font-bold' }} text-xs px-3 flex items-center justify-center gap-1.5 shadow-[1.5px_1.5px_0px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_0px_#000000] transition-all">
                     <x-icon name="rotate-ccw" class="w-3.5 h-3.5" />
                     <span>Reset Filter</span>
                 </a>

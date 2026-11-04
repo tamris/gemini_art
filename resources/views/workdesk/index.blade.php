@@ -101,14 +101,20 @@
                 </div>
 
                 <!-- Specs Grid -->
-                <div class="grid grid-cols-2 gap-2 mb-3 text-xs">
+                <div class="grid grid-cols-3 gap-2 mb-3 text-xs">
                     <div class="p-2.5 bg-slate-50 dark:bg-slate-900 border-[1.5px] border-slate-200 dark:border-slate-800 rounded-xl">
                         <span class="text-[10px] font-black uppercase text-slate-500 dark:text-slate-400 block mb-0.5">Dimensi</span>
-                        <span class="font-extrabold text-slate-900 dark:text-white font-mono">{{ $job->dimensions ?? '-' }}</span>
+                        <span class="font-extrabold text-slate-900 dark:text-white font-mono truncate block">{{ $job->dimensions ?? '-' }}</span>
                     </div>
                     <div class="p-2.5 bg-slate-50 dark:bg-slate-900 border-[1.5px] border-slate-200 dark:border-slate-800 rounded-xl">
                         <span class="text-[10px] font-black uppercase text-slate-500 dark:text-slate-400 block mb-0.5">Bahan</span>
-                        <span class="font-bold text-slate-900 dark:text-white">{{ $job->material_notes ?? '-' }}</span>
+                        <span class="font-bold text-slate-900 dark:text-white truncate block">{{ $job->material_notes ?? '-' }}</span>
+                    </div>
+                    <div class="p-2.5 bg-slate-50 dark:bg-slate-900 border-[1.5px] border-slate-200 dark:border-slate-800 rounded-xl">
+                        <span class="text-[10px] font-black uppercase text-slate-500 dark:text-slate-400 block mb-0.5">Qty Cetak</span>
+                        <span class="font-black text-amber-900 dark:text-amber-400 font-mono truncate block">
+                            {{ $job->order->items->first()?->qty ?? 1 }} Pcs
+                        </span>
                     </div>
                 </div>
 

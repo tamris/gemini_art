@@ -83,7 +83,7 @@
                             {{ $order->designJob->title }}
                         </div>
 
-                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
                             <div>
                                 <span class="text-[10px] font-black uppercase text-slate-500 dark:text-slate-400 block">Dimensi</span>
                                 <span class="font-extrabold text-slate-900 dark:text-white">{{ $order->designJob->dimensions ?? '-' }}</span>
@@ -91,6 +91,12 @@
                             <div>
                                 <span class="text-[10px] font-black uppercase text-slate-500 dark:text-slate-400 block">Bahan</span>
                                 <span class="font-extrabold text-slate-900 dark:text-white">{{ $order->designJob->material_notes ?? '-' }}</span>
+                            </div>
+                            <div>
+                                <span class="text-[10px] font-black uppercase text-slate-500 dark:text-slate-400 block">Jumlah Cetak</span>
+                                <span class="font-black text-amber-900 dark:text-amber-400 bg-amber-200/80 dark:bg-amber-950/60 px-1.5 py-0.5 rounded border border-amber-300 dark:border-amber-400/30 font-mono inline-block">
+                                    {{ $order->items->first()?->qty ?? 1 }} Pcs
+                                </span>
                             </div>
                             <div>
                                 <span class="text-[10px] font-black uppercase text-slate-500 dark:text-slate-400 block">Deadline</span>

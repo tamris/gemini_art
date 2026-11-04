@@ -14,7 +14,7 @@
 let filterDebounceTimer = null;
 let currentAbortController = null;
 
-export function handleLiveFilter(form) {
+export function handleLiveFilter(form, options = {}) {
     const resultsContainer = document.getElementById('filter-results-container');
     if (!resultsContainer) {
         form.submit();
@@ -61,7 +61,11 @@ export function handleLiveFilter(form) {
 
         if (newResults) {
             resultsContainer.innerHTML = newResults.innerHTML;
-            window.history.pushState(null, '', url);
+            if (options && options.replaceState) {
+                window.history.replaceState(null, '', url);
+            } else {
+                window.history.pushState(null, '', url);
+            }
 
             // Re-render Lucide icons inside newly swapped HTML
             if (window.refreshIcons) {
@@ -372,6 +376,53 @@ document.addEventListener('keydown', (e) => {
     }
 });
 
+let searchInputDebounceTimer = null;
+
+// Live instant search as the user types in text/search inputs inside data-auto-submit forms
+document.addEventListener('input', (e) => {
+    const input = e.target;
+    if (input.matches('input[type="text"], input[type="search"], input:not([type])')) {
+        const form = input.closest('form[data-auto-submit]');
+        if (form && document.getElementById('filter-results-container')) {
+            // Toggle clear button if present in same container
+            const container = input.closest('div');
+            const clearBtn = container ? container.querySelector('[data-clear-search]') : null;
+            if (clearBtn) {
+                if (input.value.trim().length > 0) {
+                    clearBtn.classList.remove('hidden');
+                } else {
+                    clearBtn.classList.add('hidden');
+                }
+            }
+
+            clearTimeout(searchInputDebounceTimer);
+            searchInputDebounceTimer = setTimeout(() => {
+                handleLiveFilter(form, { replaceState: true });
+            }, 250);
+        }
+    }
+});
+
+// Click handler for 1-click clear search button
+document.addEventListener('click', (e) => {
+    const clearBtn = e.target.closest('[data-clear-search]');
+    if (clearBtn) {
+        e.preventDefault();
+        const container = clearBtn.closest('div');
+        const input = container?.querySelector('input[type="text"], input[type="search"], input:not([type])');
+        if (input) {
+            input.value = '';
+            clearBtn.classList.add('hidden');
+            input.focus();
+            const form = input.closest('form[data-auto-submit]');
+            if (form && document.getElementById('filter-results-container')) {
+                clearTimeout(searchInputDebounceTimer);
+                handleLiveFilter(form, { replaceState: true });
+            }
+        }
+    }
+});
+
 // Auto-delegate change events for checkboxes, dates, etc. inside data-auto-submit forms
 document.addEventListener('change', (e) => {
     const input = e.target;
@@ -380,15 +431,17 @@ document.addEventListener('change', (e) => {
     }
     const form = input.closest('form[data-auto-submit]');
     if (form && document.getElementById('filter-results-container')) {
+        clearTimeout(searchInputDebounceTimer);
         handleLiveFilter(form);
     }
 });
 
-// Intercept form submissions for live-filter forms (e.g. search input on Enter)
+// Intercept form submissions for live-filter forms (e.g. search input on Enter or clicking search button)
 document.addEventListener('submit', (e) => {
     const form = e.target.closest('form[data-auto-submit]');
     if (form && document.getElementById('filter-results-container')) {
         e.preventDefault();
+        clearTimeout(searchInputDebounceTimer);
         handleLiveFilter(form);
     }
 });

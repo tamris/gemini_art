@@ -63,17 +63,7 @@ class PosController extends Controller
             }
 
             // Generate POS Order Number
-            $ym = date('Ym');
-            $prefix = "POS-{$branch->code}-{$ym}-";
-            $lastOrder = Order::where('order_number', 'like', "{$prefix}%")
-                ->orderBy('id', 'desc')
-                ->first();
-
-            $sequence = 1;
-            if ($lastOrder && preg_match('/-(\d+)$/', $lastOrder->order_number, $matches)) {
-                $sequence = ((int) $matches[1]) + 1;
-            }
-            $orderNumber = $prefix . str_pad((string) $sequence, 4, '0', STR_PAD_LEFT);
+            $orderNumber = Order::generateOrderNumber($branch, 'retail_pos');
 
             $order = Order::create([
                 'branch_id' => $branch->id,

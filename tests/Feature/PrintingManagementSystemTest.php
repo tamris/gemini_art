@@ -127,7 +127,7 @@ class PrintingManagementSystemTest extends TestCase
         $this->assertEquals(400000, (float) $order->paid_amount);
         $this->assertEquals('partial_dp', $order->payment_status);
         $this->assertEquals('in_progress', $order->work_status);
-        $this->assertStringStartsWith("ORD-{$branch->code}-", $order->order_number);
+        $this->assertStringStartsWith("{$branch->code}-", $order->order_number);
 
         // Verify Cash Movement was automatically recorded
         $movement = CashMovement::where('order_id', $order->id)->first();

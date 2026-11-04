@@ -154,6 +154,22 @@
                         </div>
 
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <!-- Jumlah (Qty) -->
+                            <div>
+                                <label for="main_qty" class="block text-xs font-black uppercase text-slate-800 dark:text-slate-300 mb-1 tracking-wider">
+                                    Jumlah Cetak (Qty) <span class="text-rose-500">*</span>
+                                </label>
+                                <input type="number" 
+                                       id="main_qty" 
+                                       name="main_qty" 
+                                       value="{{ old('main_qty', 1) }}" 
+                                       min="1" 
+                                       required
+                                       placeholder="1"
+                                       oninput="handleMainQtyChange()"
+                                       class="w-full h-10 neo-input text-xs font-black bg-white dark:bg-slate-900">
+                            </div>
+
                             <div class="relative" data-neo-datepicker-container>
                                 <label class="block text-xs font-black uppercase text-slate-800 dark:text-slate-300 mb-1 tracking-wider">
                                     Tenggat Waktu Selesai (Deadline) <span class="text-rose-500">*</span>
@@ -263,7 +279,7 @@
                                 </div>
                             </div>
 
-                            <div>
+                            <div class="sm:col-span-2">
                                 <div class="flex items-center justify-between mb-1">
                                     <label for="brief_file" class="block text-xs font-black uppercase text-slate-800 dark:text-slate-300 tracking-wider cursor-pointer">
                                         File Acuan / Sketsa
@@ -395,29 +411,56 @@
                     </div>
 
                     <div class="space-y-4">
-                        <!-- Biaya Jasa Desain & Cetak Utama -->
-                        <div>
-                            <label for="main_price_display" class="block text-xs font-black uppercase text-slate-800 dark:text-slate-300 mb-1 tracking-wider">
-                                Biaya Desain & Cetak Utama <span class="text-rose-500">*</span>
-                            </label>
-                            <div class="flex rounded-xl overflow-hidden border-2 border-black dark:border-slate-700 bg-white dark:bg-slate-900 shadow-[2px_2px_0px_0px_#000] dark:shadow-[2px_2px_0px_0px_#000000] focus-within:border-black dark:focus-within:border-amber-400 transition-all">
-                                <span class="inline-flex items-center px-3.5 bg-sky-200 dark:bg-sky-400 text-slate-950 border-r-2 border-black dark:border-slate-700 text-xs font-black select-none">
-                                    Rp
-                                </span>
-                                <input type="text" 
-                                       id="main_price_display" 
-                                       inputmode="numeric"
-                                       value="{{ old('main_price', old('total_amount')) ? number_format((float) old('main_price', old('total_amount')), 0, ',', '.') : '' }}" 
-                                       placeholder="0"
-                                       required 
-                                       autocomplete="off"
-                                       class="w-full px-3 py-2 text-base font-black text-black dark:text-white bg-transparent focus:outline-none placeholder:text-slate-300 dark:placeholder:text-slate-500 tracking-wide">
+                        <!-- Biaya Jasa Desain & Cetak Utama (Qty & Satuan Support) -->
+                        <div class="space-y-3 p-3.5 bg-slate-50 dark:bg-slate-900/60 border-[1.5px] border-slate-300 dark:border-slate-700 rounded-xl">
+                            <!-- Harga Satuan -->
+                            <div>
+                                <label for="main_unit_price_display" class="block text-xs font-black uppercase text-slate-800 dark:text-slate-300 mb-1 tracking-wider">
+                                    Harga Satuan <span class="text-rose-500">*</span>
+                                </label>
+                                <div class="flex rounded-xl overflow-hidden border-[1.5px] border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-[1.5px_1.5px_0px_0px_#e2e8f0] dark:shadow-[1.5px_1.5px_0px_0px_#000000] focus-within:border-slate-800 dark:focus-within:border-amber-400 transition-all">
+                                    <span class="inline-flex items-center px-3 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-r-[1.5px] border-slate-300 dark:border-slate-700 text-xs font-black select-none">
+                                        Rp
+                                    </span>
+                                    <input type="text" 
+                                           id="main_unit_price_display" 
+                                           inputmode="numeric"
+                                           value="{{ old('main_unit_price') ? number_format((float) old('main_unit_price'), 0, ',', '.') : '' }}" 
+                                           placeholder="0"
+                                           oninput="handleMainUnitPriceInput()"
+                                           autocomplete="off"
+                                           class="w-full px-3 py-2 text-sm font-bold text-slate-900 dark:text-white bg-transparent focus:outline-none placeholder:text-slate-300 dark:placeholder:text-slate-500 tracking-wide">
+                                </div>
+                                <input type="hidden" 
+                                       id="main_unit_price" 
+                                       name="main_unit_price" 
+                                       value="{{ old('main_unit_price', '') }}">
                             </div>
-                            <input type="hidden" 
-                                   id="main_price" 
-                                   name="main_price" 
-                                   value="{{ old('main_price', old('total_amount', '')) }}">
-                            <span class="text-[10px] text-slate-400 dark:text-slate-500 font-semibold mt-1 block">Harga dasar jasa desain dan cetak.</span>
+
+                            <!-- Subtotal Desain & Cetak (Readonly / Hasil Kalkulasi Otomatis) -->
+                            <div>
+                                <label for="main_price_display" class="block text-xs font-black uppercase text-slate-800 dark:text-slate-300 mb-1 tracking-wider">
+                                    Subtotal Desain & Cetak
+                                </label>
+                                <div class="flex rounded-xl overflow-hidden border-[1.5px] border-slate-300 dark:border-slate-700 bg-slate-100/90 dark:bg-slate-800/90 shadow-[1.5px_1.5px_0px_0px_#e2e8f0] dark:shadow-[1.5px_1.5px_0px_0px_#000000] transition-all">
+                                    <span class="inline-flex items-center px-3.5 bg-slate-200/90 dark:bg-slate-700/80 text-slate-700 dark:text-slate-300 border-r-[1.5px] border-slate-300 dark:border-slate-700 text-xs font-black select-none">
+                                        Rp
+                                    </span>
+                                    <input type="text" 
+                                           id="main_price_display" 
+                                           inputmode="numeric"
+                                           value="{{ old('main_price', old('total_amount')) ? number_format((float) old('main_price', old('total_amount')), 0, ',', '.') : '0' }}" 
+                                           placeholder="0"
+                                           readonly 
+                                           tabindex="-1"
+                                           class="w-full px-3 py-2 text-base font-black text-slate-900 dark:text-white bg-transparent focus:outline-none tracking-wide cursor-default select-none">
+                                </div>
+                                <input type="hidden" 
+                                       id="main_price" 
+                                       name="main_price" 
+                                       value="{{ old('main_price', old('total_amount', '0')) }}">
+                                <span class="text-[10px] text-slate-500 dark:text-slate-400 font-semibold mt-1 block">Hasil kalkulasi otomatis: Qty &times; Harga Satuan.</span>
+                            </div>
                         </div>
 
                         <!-- Subtotal Alat & Item Tambahan (Appears if items exist) -->
@@ -722,6 +765,50 @@ function recalculateAllTotals() {
     calculateRemaining();
 }
 
+function handleMainQtyChange() {
+    const qtyInput = document.getElementById('main_qty');
+    let qty = parseInt(qtyInput ? qtyInput.value : 1, 10);
+    if (!qty || qty < 1) qty = 1;
+
+    const unitPriceHidden = document.getElementById('main_unit_price');
+    const mainPriceHidden = document.getElementById('main_price');
+    const mainPriceDisplay = document.getElementById('main_price_display');
+
+    const unitPrice = parseFloat(unitPriceHidden ? unitPriceHidden.value : 0) || 0;
+    const newSubtotal = qty * unitPrice;
+
+    if (mainPriceHidden) mainPriceHidden.value = newSubtotal;
+    if (mainPriceDisplay) mainPriceDisplay.value = newSubtotal > 0 ? newSubtotal.toLocaleString('id-ID') : '0';
+
+    recalculateAllTotals();
+}
+
+function handleMainUnitPriceInput() {
+    const displayEl = document.getElementById('main_unit_price_display');
+    const hiddenEl = document.getElementById('main_unit_price');
+    const qtyInput = document.getElementById('main_qty');
+    const qty = parseInt(qtyInput ? qtyInput.value : 1, 10) || 1;
+
+    let rawDigits = displayEl.value.replace(/\D/g, '');
+    let unitPrice = 0;
+    if (!rawDigits) {
+        displayEl.value = '';
+        hiddenEl.value = '0';
+    } else {
+        unitPrice = parseInt(rawDigits, 10);
+        displayEl.value = unitPrice.toLocaleString('id-ID');
+        hiddenEl.value = unitPrice;
+    }
+
+    const subtotal = qty * unitPrice;
+    const mainPriceHidden = document.getElementById('main_price');
+    const mainPriceDisplay = document.getElementById('main_price_display');
+    if (mainPriceHidden) mainPriceHidden.value = subtotal;
+    if (mainPriceDisplay) mainPriceDisplay.value = subtotal > 0 ? subtotal.toLocaleString('id-ID') : '0';
+
+    recalculateAllTotals();
+}
+
 function setupRupiahMask(displayId, hiddenId) {
     const displayEl = document.getElementById(displayId);
     const hiddenEl = document.getElementById(hiddenId);
@@ -865,9 +952,29 @@ function clearBriefFile(event) {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-    setupRupiahMask('main_price_display', 'main_price');
     setupRupiahMask('paid_amount_display', 'paid_amount');
     
+    // Init main price & unit price sync
+    const qtyInput = document.getElementById('main_qty');
+    const qty = parseInt(qtyInput ? qtyInput.value : 1, 10) || 1;
+    const mainPriceHidden = document.getElementById('main_price');
+    const mainUnitPriceHidden = document.getElementById('main_unit_price');
+    const mainUnitPriceDisplay = document.getElementById('main_unit_price_display');
+    const mainPriceDisplay = document.getElementById('main_price_display');
+
+    if (mainPriceHidden && mainUnitPriceHidden) {
+        const subtotal = parseFloat(mainPriceHidden.value) || 0;
+        const unitPrice = parseFloat(mainUnitPriceHidden.value) || 0;
+        if (unitPrice > 0 && subtotal === 0) {
+            mainPriceHidden.value = unitPrice * qty;
+            if (mainPriceDisplay) mainPriceDisplay.value = (unitPrice * qty).toLocaleString('id-ID');
+        } else if (subtotal > 0 && unitPrice === 0) {
+            const calcUnit = Math.round(subtotal / qty);
+            mainUnitPriceHidden.value = calcUnit;
+            if (mainUnitPriceDisplay) mainUnitPriceDisplay.value = calcUnit.toLocaleString('id-ID');
+        }
+    }
+
     @if(old('items'))
         @foreach(old('items') as $oldIt)
             addExtraItemRow("{{ addslashes($oldIt['name'] ?? '') }}", {{ (int)($oldIt['qty'] ?? 1) }}, {{ (float)($oldIt['price'] ?? 0) }});

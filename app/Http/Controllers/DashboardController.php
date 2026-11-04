@@ -124,13 +124,13 @@ class DashboardController extends Controller
 
         $inProgressJobs = DesignJob::whereHas('order', function ($q) use ($branch) {
             $q->where('branch_id', $branch->id)->whereIn('work_status', ['draft', 'in_progress', 'revision']);
-        })->with(['order.creator', 'assets'])
+        })->with(['order.creator', 'order.items', 'assets'])
             ->orderBy('deadline_at', 'asc')
             ->get();
 
         $readyJobs = DesignJob::whereHas('order', function ($q) use ($branch) {
             $q->where('branch_id', $branch->id)->where('work_status', 'ready_to_print');
-        })->with(['order', 'assets'])
+        })->with(['order.items', 'assets'])
             ->latest()
             ->take(6)
             ->get();

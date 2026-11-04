@@ -85,6 +85,11 @@ class OrderController extends Controller
                 'main_price' => preg_replace('/[^\d]/', '', (string) $request->input('main_price')),
             ]);
         }
+        if ($request->has('main_unit_price')) {
+            $request->merge([
+                'main_unit_price' => preg_replace('/[^\d]/', '', (string) $request->input('main_unit_price')),
+            ]);
+        }
         if ($request->has('total_amount')) {
             $request->merge([
                 'total_amount' => preg_replace('/[^\d]/', '', (string) $request->input('total_amount')),
@@ -120,6 +125,9 @@ class OrderController extends Controller
             'brief_notes' => 'nullable|string',
             'deadline_at' => 'nullable|date',
             'designer_id' => 'nullable|exists:users,id',
+            'main_qty' => 'nullable|integer|min:1',
+            'main_unit' => 'nullable|string|max:30',
+            'main_unit_price' => 'nullable|numeric|min:0',
             'main_price' => 'nullable|numeric|min:0',
             'total_amount' => 'required|numeric|min:1',
             'paid_amount' => 'required|numeric|min:0',
@@ -186,13 +194,21 @@ class OrderController extends Controller
                 'deadline_at' => !empty($data['deadline_at']) ? Carbon::parse($data['deadline_at']) : null,
             ]);
 
+            $mainQty = max(1, (int) ($request->input('main_qty', 1)));
+            $mainUnit = trim((string) $request->input('main_unit', '')) ?: 'Pcs';
+            $mainSubtotal = (float) $mainPrice;
+            $mainUnitPrice = $request->filled('main_unit_price') && (float) $request->input('main_unit_price') > 0
+                ? (float) $request->input('main_unit_price')
+                : ($mainQty > 0 ? round($mainSubtotal / $mainQty, 2) : $mainSubtotal);
+
             // Save Line Item #1: Main Design & Print service
             OrderItem::create([
                 'order_id' => $order->id,
                 'item_name' => $data['title'],
-                'qty' => 1,
-                'unit_price' => $mainPrice,
-                'subtotal' => $mainPrice,
+                'qty' => $mainQty,
+                'unit' => $mainUnit,
+                'unit_price' => $mainUnitPrice,
+                'subtotal' => $mainSubtotal,
             ]);
 
             // Save Line Items #2..N: Add-on tools / items

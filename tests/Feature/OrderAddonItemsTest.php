@@ -194,4 +194,42 @@ class OrderAddonItemsTest extends TestCase
         $invResponse->assertSee('Brosur A5 1 Rim');
         $invResponse->assertSee('85.000');
     }
+
+    public function test_can_create_design_order_with_custom_print_qty_and_unit(): void
+    {
+        $payload = [
+            'branch_id' => $this->branch->id,
+            'customer_name' => 'Kedai Kopi Melati',
+            'customer_phone' => '085642501934',
+            'title' => 'Spanduk Warung Outdoor 3x1',
+            'dimensions' => '3 x 1 meter',
+            'material_notes' => 'Flexi Korea 380gr',
+            'main_qty' => 3,
+            'main_unit' => 'Lembar',
+            'main_unit_price' => '75000',
+            'main_price' => '225000',
+            'total_amount' => '225000',
+            'paid_amount' => '225000',
+            'payment_method' => 'cash',
+        ];
+
+        $response = $this->actingAs($this->owner)->post(route('orders.store-design'), $payload);
+        $order = Order::latest()->first();
+        $this->assertNotNull($order);
+        $response->assertRedirect(route('orders.show', $order->id));
+
+        $mainItem = $order->items->first();
+        $this->assertEquals('Spanduk Warung Outdoor 3x1', $mainItem->item_name);
+        $this->assertEquals(3, $mainItem->qty);
+        $this->assertEquals('Lembar', $mainItem->unit);
+        $this->assertEquals(75000, (float) $mainItem->unit_price);
+        $this->assertEquals(225000, (float) $mainItem->subtotal);
+
+        // Verify invoice renders quantity and prices
+        $invResponse = $this->actingAs($this->owner)->get(route('orders.invoice', $order->id));
+        $invResponse->assertStatus(200);
+        $invResponse->assertSee('Spanduk Warung Outdoor 3x1');
+        $invResponse->assertSee('75.000');
+        $invResponse->assertSee('225.000');
+    }
 }

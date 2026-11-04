@@ -67,15 +67,19 @@
                         Customer: <span class="text-black dark:text-white">{{ $job->order->customer_name }}</span>
                     </div>
 
-                    <!-- Specs: Dimensions & Material -->
-                    <div class="grid grid-cols-2 gap-2 mb-3 text-xs">
+                    <!-- Specs: Dimensions & Material & Qty -->
+                    <div class="grid grid-cols-3 gap-2 mb-3 text-xs">
                         <div class="p-2 bg-slate-50 dark:bg-slate-900 border-2 border-black dark:border-slate-700 rounded-lg">
-                            <span class="text-[10px] font-black uppercase text-slate-500 dark:text-slate-400 block">Dimensi / Ukuran</span>
-                            <span class="font-bold text-black dark:text-white">{{ $job->dimensions ?? '-' }}</span>
+                            <span class="text-[10px] font-black uppercase text-slate-500 dark:text-slate-400 block truncate">Ukuran</span>
+                            <span class="font-bold text-black dark:text-white truncate block">{{ $job->dimensions ?? '-' }}</span>
                         </div>
                         <div class="p-2 bg-slate-50 dark:bg-slate-900 border-2 border-black dark:border-slate-700 rounded-lg">
-                            <span class="text-[10px] font-black uppercase text-slate-500 dark:text-slate-400 block">Bahan & Finishing</span>
-                            <span class="font-bold text-black dark:text-white">{{ $job->material_notes ?? '-' }}</span>
+                            <span class="text-[10px] font-black uppercase text-slate-500 dark:text-slate-400 block truncate">Bahan</span>
+                            <span class="font-bold text-black dark:text-white truncate block">{{ $job->material_notes ?? '-' }}</span>
+                        </div>
+                        <div class="p-2 bg-slate-50 dark:bg-slate-900 border-2 border-black dark:border-slate-700 rounded-lg">
+                            <span class="text-[10px] font-black uppercase text-slate-500 dark:text-slate-400 block truncate">Qty Cetak</span>
+                            <span class="font-black text-amber-950 dark:text-amber-400 font-mono truncate block">{{ $job->order->items->first()?->qty ?? 1 }} Pcs</span>
                         </div>
                     </div>
 
