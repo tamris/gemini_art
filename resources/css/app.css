@@ -37,22 +37,81 @@
     border-radius: 1.25rem;
 }
 
+/* Dark Mode Neo-Brutalism: Refined Slate-500 Borders & Calibrated 3D Slate-700 Shadows */
 .dark .neo-box {
     background-color: #0c1222;
-    border-color: #334155;
-    box-shadow: 3px 3px 0px 0px #000000;
+    border-color: #64748b;
+    box-shadow: 3.5px 3.5px 0px 0px #334155;
 }
 
 .dark .neo-box-sm {
     background-color: #0c1222;
-    border-color: #334155;
-    box-shadow: 2px 2px 0px 0px #000000;
+    border-color: #64748b;
+    box-shadow: 2.5px 2.5px 0px 0px #334155;
 }
 
 .dark .neo-box-lg {
     background-color: #0c1222;
-    border-color: #334155;
-    box-shadow: 4px 4px 0px 0px #000000;
+    border-color: #64748b;
+    box-shadow: 4.5px 4.5px 0px 0px #334155;
+}
+
+/* Global Dark Mode Hard Shadows Override: Crisp 3D Slate-700 Block (#334155) */
+.dark [class*="dark:shadow-[3.5px_3.5px_0px_0px_#334155]"],
+.dark [class*="dark:shadow-[3.5px_3.5px_0px_0px_#475569]"],
+.dark [class*="dark:shadow-[3px_3px_0px_0px_#000000]"],
+.dark [class*="dark:shadow-[3px_3px_0px_0px_#000]"],
+.dark [class*="shadow-[3px_3px_0px_0px_#000]"]:not([class*="dark:shadow-"]),
+.dark [class*="shadow-[3px_3px_0px_0px_#000000]"]:not([class*="dark:shadow-"]) {
+    box-shadow: 3.5px 3.5px 0px 0px #334155 !important;
+}
+
+.dark [class*="dark:shadow-[2.5px_2.5px_0px_0px_#334155]"],
+.dark [class*="dark:shadow-[2.5px_2.5px_0px_0px_#475569]"],
+.dark [class*="dark:shadow-[2px_2px_0px_0px_#000000]"],
+.dark [class*="dark:shadow-[2px_2px_0px_0px_#000]"],
+.dark [class*="shadow-[2px_2px_0px_0px_#000]"]:not([class*="dark:shadow-"]),
+.dark [class*="shadow-[2px_2px_0px_0px_#000000]"]:not([class*="dark:shadow-"]),
+.dark [class*="shadow-[2px_2px_0px_0px_#0f172a]"]:not([class*="dark:shadow-"]) {
+    box-shadow: 2.5px 2.5px 0px 0px #334155 !important;
+}
+
+.dark [class*="dark:shadow-[1.5px_1.5px_0px_0px_#334155]"],
+.dark [class*="dark:shadow-[1.5px_1.5px_0px_0px_#475569]"],
+.dark [class*="dark:shadow-[1.5px_1.5px_0px_0px_#000000]"],
+.dark [class*="dark:shadow-[1px_1px_0px_0px_#000000]"],
+.dark [class*="dark:shadow-[1px_1px_0px_0px_#000]"],
+.dark [class*="shadow-[1.5px_1.5px_0px_0px_#000]"]:not([class*="dark:shadow-"]),
+.dark [class*="shadow-[1.5px_1.5px_0px_0px_#0f172a]"]:not([class*="dark:shadow-"]),
+.dark [class*="shadow-[1px_1px_0px_0px_#000]"]:not([class*="dark:shadow-"]),
+.dark [class*="shadow-[1px_1px_0px_0px_#0f172a]"]:not([class*="dark:shadow-"]) {
+    box-shadow: 1.5px 1.5px 0px 0px #334155 !important;
+}
+
+.dark [class*="dark:shadow-[4.5px_4.5px_0px_0px_#334155]"],
+.dark [class*="dark:shadow-[4.5px_4.5px_0px_0px_#475569]"],
+.dark [class*="dark:shadow-[4px_4px_0px_0px_#000000]"],
+.dark [class*="dark:shadow-[4px_4px_0px_0px_#000]"],
+.dark [class*="shadow-[4px_4px_0px_0px_#000]"]:not([class*="dark:shadow-"]) {
+    box-shadow: 4.5px 4.5px 0px 0px #334155 !important;
+}
+
+.dark [class*="dark:shadow-[5.5px_5.5px_0px_0px_#334155]"],
+.dark [class*="dark:shadow-[5.5px_5.5px_0px_0px_#475569]"],
+.dark [class*="dark:shadow-[6px_6px_0px_0px_#000000]"],
+.dark [class*="dark:shadow-[6px_6px_0px_0px_#000]"],
+.dark [class*="shadow-[6px_6px_0px_0px_#000]"]:not([class*="dark:shadow-"]) {
+    box-shadow: 5.5px 5.5px 0px 0px #334155 !important;
+}
+
+/* Global Dark Mode Card Border Clarity: Soft Calm Slate-500 (#64748b) */
+.dark [class*="dark:border-white"],
+.dark [class*="dark:border-slate-500"] {
+    border-color: #64748b !important;
+}
+
+.dark .border-2[class*="dark:border-slate-700"] {
+    border-color: #64748b !important;
 }
 
 .neo-btn {
@@ -79,6 +138,22 @@
     box-shadow: 0px 0px 0px 0px #0f172a;
 }
 
+.dark .neo-btn {
+    border-color: #64748b;
+    box-shadow: 2.5px 2.5px 0px 0px #334155;
+}
+
+.dark .neo-btn:hover {
+    transform: translate(-1px, -1px);
+    border-color: #94a3b8;
+    box-shadow: 3.5px 3.5px 0px 0px #475569;
+}
+
+.dark .neo-btn:active {
+    transform: translate(1.5px, 1.5px);
+    box-shadow: 0px 0px 0px 0px #334155;
+}
+
 .neo-input {
     height: 2.5rem;
     border: 1.5px solid #cbd5e1;
@@ -103,9 +178,9 @@ textarea.neo-input {
 
 .dark .neo-input {
     background-color: #0c1222;
-    border-color: #334155;
+    border-color: #64748b;
     color: #f8fafc;
-    box-shadow: 1.5px 1.5px 0px 0px #000000;
+    box-shadow: 2px 2px 0px 0px #334155;
 }
 
 .dark .neo-input::placeholder {
@@ -113,8 +188,8 @@ textarea.neo-input {
 }
 
 .dark .neo-input:focus {
-    border-color: #fde047;
-    box-shadow: 2.5px 2.5px 0px 0px #000000;
+    border-color: #94a3b8;
+    box-shadow: 2.5px 2.5px 0px 0px #475569;
 }
 
 .neo-badge {
@@ -132,8 +207,8 @@ textarea.neo-input {
 }
 
 .dark .neo-badge {
-    border-color: #334155;
-    box-shadow: 1.5px 1.5px 0px 0px #000000;
+    border-color: #64748b;
+    box-shadow: 1.5px 1.5px 0px 0px #334155;
 }
 
 /* Custom Scrollbar for Soft Neo-Brutalism */
@@ -197,9 +272,9 @@ select.neo-input {
 .dark select.neo-select,
 .dark select.neo-input {
     background-color: #0c1222;
-    border-color: #334155;
+    border-color: #64748b;
     color: #ffffff;
-    box-shadow: 1.5px 1.5px 0px 0px #000000;
+    box-shadow: 2px 2px 0px 0px #334155;
 }
 
 select[data-neo-select-initialized="true"] {
@@ -222,14 +297,15 @@ select[data-neo-select-initialized="true"] {
 
 .dark .neo-select-trigger {
     background-color: #0c1222;
-    border-color: #334155;
+    border-color: #64748b;
     color: #f8fafc;
-    box-shadow: 1.5px 1.5px 0px 0px #000000;
+    box-shadow: 2px 2px 0px 0px #334155;
 }
 
 .dark .neo-select-trigger:hover,
 .dark .neo-select-trigger:focus {
-    border-color: #fde047;
+    border-color: #94a3b8;
+    box-shadow: 2.5px 2.5px 0px 0px #475569;
 }
 
 .neo-select-menu {
@@ -246,8 +322,8 @@ select[data-neo-select-initialized="true"] {
 
 .dark .neo-select-menu {
     background-color: #0c1222;
-    border-color: #334155;
-    box-shadow: 3.5px 3.5px 0px 0px #000000;
+    border-color: #64748b;
+    box-shadow: 4px 4px 0px 0px #334155;
 }
 
 .neo-select-menu.is-open {

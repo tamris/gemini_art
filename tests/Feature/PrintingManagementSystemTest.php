@@ -42,7 +42,7 @@ class PrintingManagementSystemTest extends TestCase
             ]
         );
 
-        User::firstOrCreate(
+        $cashier = User::firstOrCreate(
             ['email' => 'kasir.solo@geminiart.test'],
             [
                 'branch_id' => $branchA->id,
@@ -53,7 +53,7 @@ class PrintingManagementSystemTest extends TestCase
             ]
         );
 
-        User::firstOrCreate(
+        $designer = User::firstOrCreate(
             ['email' => 'desain.solo@geminiart.test'],
             [
                 'branch_id' => $branchA->id,
@@ -63,6 +63,41 @@ class PrintingManagementSystemTest extends TestCase
                 'is_active' => true,
             ]
         );
+
+        $testOrder = Order::create([
+            'branch_id' => $branchA->id,
+            'user_id' => $cashier->id,
+            'cashier_id' => $cashier->id,
+            'order_number' => 'CBA-2611-001',
+            'customer_name' => 'Test Customer',
+            'customer_phone' => '08123456789',
+            'order_type' => 'design_printing',
+            'payment_status' => 'partial_dp',
+            'work_status' => 'in_progress',
+            'total_amount' => 350000,
+            'paid_amount' => 150000,
+            'remaining_amount' => 200000,
+        ]);
+
+        $testJob = DesignJob::create([
+            'order_id' => $testOrder->id,
+            'designer_id' => $designer->id,
+            'title' => 'Spanduk Kopi Nusantara',
+            'dimensions' => '3x1 m',
+            'brief_notes' => 'Warna dominan cokelat',
+        ]);
+
+        DesignAsset::create([
+            'design_job_id' => $testJob->id,
+            'uploaded_by' => $designer->id,
+            'file_type' => 'final_print',
+            'file_path' => 'designs/test_sample.pdf',
+            'file_name' => 'print_test_sample.pdf',
+            'disk' => 'public',
+            'file_size' => 1024,
+        ]);
+
+        Storage::disk('public')->put('designs/test_sample.pdf', 'fake content');
     }
 
     public function test_login_page_renders_production_ready(): void
@@ -185,6 +220,7 @@ class PrintingManagementSystemTest extends TestCase
 
         $asset = DesignAsset::where('design_job_id', $job->id)
             ->where('file_type', 'final_print')
+            ->latest('id')
             ->first();
         $this->assertNotNull($asset);
         $this->assertStringContainsString('print_', $asset->file_name);

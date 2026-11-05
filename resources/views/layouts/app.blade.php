@@ -36,7 +36,7 @@
         <!-- Top: Brand Header -->
         <div class="h-20 px-5 border-b-[1.5px] border-slate-800 dark:border-slate-800 bg-white dark:bg-[#0c1222] flex items-center justify-between">
             <a href="{{ route('dashboard') }}" class="flex items-center gap-3 group text-decoration-none">
-                <div class="w-11 h-11 bg-amber-200 border-[1.5px] border-slate-800 rounded-xl shadow-[2px_2px_0px_0px_#0f172a] dark:shadow-[2px_2px_0px_0px_#000000] flex items-center justify-center font-black text-xl group-hover:translate-x-[1px] group-hover:translate-y-[1px] transition-transform text-slate-900">
+                <div class="w-11 h-11 bg-amber-200 border-[1.5px] border-slate-800 dark:border-slate-500 rounded-xl shadow-[2px_2px_0px_0px_#0f172a] dark:shadow-[2px_2px_0px_0px_#334155] flex items-center justify-center font-black text-xl group-hover:translate-x-[1px] group-hover:translate-y-[1px] transition-transform text-slate-900">
                     GA
                 </div>
                 <div>
@@ -68,8 +68,8 @@
 
                 <!-- Dashboard -->
                 <a href="{{ route('dashboard') }}" 
-                   class="group flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-black border-[1.5px] transition-all {{ request()->routeIs('dashboard') ? 'bg-amber-300 border-slate-800 shadow-[2px_2px_0px_0px_#0f172a] dark:shadow-[2px_2px_0px_0px_#000000] text-slate-900' : 'border-transparent text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800/80 hover:text-slate-900 dark:hover:text-white' }}">
-                    <div class="w-7 h-7 rounded-lg border-[1.5px] border-slate-800 dark:border-slate-700 flex items-center justify-center text-slate-900 shrink-0 transition-transform group-hover:scale-105 {{ request()->routeIs('dashboard') ? 'bg-white keep-white shadow-[1px_1px_0px_0px_#0f172a] dark:shadow-[1px_1px_0px_0px_#000000]' : 'bg-amber-100 dark:bg-slate-800 dark:text-slate-400 group-hover:dark:text-amber-400 group-hover:dark:border-amber-400/50' }}">
+                   class="group flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-black border-[1.5px] transition-all {{ request()->routeIs('dashboard') ? 'bg-amber-300 border-slate-800 dark:border-slate-500 shadow-[2px_2px_0px_0px_#0f172a] dark:shadow-[2px_2px_0px_0px_#334155] text-slate-900' : 'border-transparent text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800/80 hover:text-slate-900 dark:hover:text-white' }}">
+                    <div class="w-7 h-7 rounded-lg border-[1.5px] border-slate-800 dark:border-slate-700 flex items-center justify-center text-slate-900 shrink-0 transition-transform group-hover:scale-105 {{ request()->routeIs('dashboard') ? 'bg-white keep-white dark:border-slate-500 shadow-[1px_1px_0px_0px_#0f172a] dark:shadow-[1px_1px_0px_0px_#334155]' : 'bg-amber-100 dark:bg-slate-800 dark:text-slate-400 group-hover:dark:text-amber-400 group-hover:dark:border-amber-400/50' }}">
                         <x-icon name="layout-dashboard" class="w-4 h-4" />
                     </div>
                     <span>Dashboard</span>
@@ -77,14 +77,14 @@
 
                 <!-- Semua Order / Order Cabang -->
                 <a href="{{ route('orders.index') }}" 
-                   class="group flex items-center justify-between px-3 py-2 rounded-xl text-xs font-black border-[1.5px] transition-all {{ request()->routeIs('orders.index') || request()->routeIs('orders.show') ? 'bg-amber-300 border-slate-800 shadow-[2px_2px_0px_0px_#0f172a] dark:shadow-[2px_2px_0px_0px_#000000] text-slate-900' : 'border-transparent text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800/80 hover:text-slate-900 dark:hover:text-white' }}">
+                   class="group flex items-center justify-between px-3 py-2 rounded-xl text-xs font-black border-[1.5px] transition-all {{ request()->routeIs('orders.index') || request()->routeIs('orders.show') ? 'bg-amber-300 border-slate-800 dark:border-slate-500 shadow-[2px_2px_0px_0px_#0f172a] dark:shadow-[2px_2px_0px_0px_#334155] text-slate-900' : 'border-transparent text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800/80 hover:text-slate-900 dark:hover:text-white' }}">
                     <div class="flex items-center gap-3">
-                        <div class="w-7 h-7 rounded-lg border-[1.5px] border-slate-800 dark:border-slate-700 flex items-center justify-center text-slate-900 shrink-0 transition-transform group-hover:scale-105 {{ request()->routeIs('orders.index') || request()->routeIs('orders.show') ? 'bg-white keep-white shadow-[1px_1px_0px_0px_#0f172a] dark:shadow-[1px_1px_0px_0px_#000000]' : 'bg-amber-100 dark:bg-slate-800 dark:text-slate-400 group-hover:dark:text-amber-400 group-hover:dark:border-amber-400/50' }}">
+                        <div class="w-7 h-7 rounded-lg border-[1.5px] border-slate-800 dark:border-slate-700 flex items-center justify-center text-slate-900 shrink-0 transition-transform group-hover:scale-105 {{ request()->routeIs('orders.index') || request()->routeIs('orders.show') ? 'bg-white keep-white dark:border-slate-500 shadow-[1px_1px_0px_0px_#0f172a] dark:shadow-[1px_1px_0px_0px_#334155]' : 'bg-amber-100 dark:bg-slate-800 dark:text-slate-400 group-hover:dark:text-amber-400 group-hover:dark:border-amber-400/50' }}">
                             <x-icon name="clipboard-list" class="w-4 h-4" />
                         </div>
                         <span>{{ Auth::user()->isOwner() ? 'Semua Order' : 'Order Cabang' }}</span>
                     </div>
-                    <span class="text-[10px] font-extrabold bg-white dark:bg-slate-800 border border-slate-400 dark:border-slate-700 px-1.5 py-0.2 rounded shadow-[1px_1px_0px_0px_#e2e8f0] dark:shadow-[1px_1px_0px_0px_#000000] text-slate-900 dark:text-slate-200">
+                    <span class="text-[10px] font-extrabold bg-white dark:bg-slate-800 border border-slate-400 dark:border-slate-500 px-1.5 py-0.2 rounded shadow-[1px_1px_0px_0px_#e2e8f0] dark:shadow-[1px_1px_0px_0px_#334155] text-slate-900 dark:text-slate-200">
                         {{ Auth::user()->isOwner() ? \App\Models\Order::count() : \App\Models\Order::where('branch_id', Auth::user()->branch_id)->count() }}
                     </span>
                 </a>
@@ -98,8 +98,8 @@
 
                 <!-- Order Desain Baru -->
                 <a href="{{ route('orders.create-design') }}" 
-                   class="group flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-black border-[1.5px] transition-all {{ request()->routeIs('orders.create-design') ? 'bg-sky-300 border-slate-800 shadow-[2px_2px_0px_0px_#0f172a] dark:shadow-[2px_2px_0px_0px_#000000] text-slate-900' : 'border-transparent text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800/80 hover:text-slate-900 dark:hover:text-white' }}">
-                    <div class="w-7 h-7 rounded-lg border-[1.5px] border-slate-800 dark:border-slate-700 flex items-center justify-center text-slate-900 shrink-0 transition-transform group-hover:scale-105 {{ request()->routeIs('orders.create-design') ? 'bg-white keep-white shadow-[1px_1px_0px_0px_#0f172a] dark:shadow-[1px_1px_0px_0px_#000000]' : 'bg-sky-200 dark:bg-slate-800 dark:text-slate-400 group-hover:dark:text-sky-400 group-hover:dark:border-sky-400/50' }}">
+                   class="group flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-black border-[1.5px] transition-all {{ request()->routeIs('orders.create-design') ? 'bg-sky-300 border-slate-800 dark:border-slate-500 shadow-[2px_2px_0px_0px_#0f172a] dark:shadow-[2px_2px_0px_0px_#334155] text-slate-900' : 'border-transparent text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800/80 hover:text-slate-900 dark:hover:text-white' }}">
+                    <div class="w-7 h-7 rounded-lg border-[1.5px] border-slate-800 dark:border-slate-700 flex items-center justify-center text-slate-900 shrink-0 transition-transform group-hover:scale-105 {{ request()->routeIs('orders.create-design') ? 'bg-white keep-white dark:border-slate-500 shadow-[1px_1px_0px_0px_#0f172a] dark:shadow-[1px_1px_0px_0px_#334155]' : 'bg-sky-200 dark:bg-slate-800 dark:text-slate-400 group-hover:dark:text-sky-400 group-hover:dark:border-sky-400/50' }}">
                         <x-icon name="palette" class="w-4 h-4" />
                     </div>
                     <span>Order Desain Baru</span>
@@ -107,8 +107,8 @@
 
                 <!-- Kasir POS Ritel -->
                 <a href="{{ route('pos.index') }}" 
-                   class="group flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-black border-[1.5px] transition-all {{ request()->routeIs('pos.*') ? 'bg-emerald-300 border-slate-800 shadow-[2px_2px_0px_0px_#0f172a] dark:shadow-[2px_2px_0px_0px_#000000] text-slate-900' : 'border-transparent text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800/80 hover:text-slate-900 dark:hover:text-white' }}">
-                    <div class="w-7 h-7 rounded-lg border-[1.5px] border-slate-800 dark:border-slate-700 flex items-center justify-center text-slate-900 shrink-0 transition-transform group-hover:scale-105 {{ request()->routeIs('pos.*') ? 'bg-white keep-white shadow-[1px_1px_0px_0px_#0f172a] dark:shadow-[1px_1px_0px_0px_#000000]' : 'bg-emerald-200 dark:bg-slate-800 dark:text-slate-400 group-hover:dark:text-emerald-400 group-hover:dark:border-emerald-400/50' }}">
+                   class="group flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-black border-[1.5px] transition-all {{ request()->routeIs('pos.*') ? 'bg-emerald-300 border-slate-800 dark:border-slate-500 shadow-[2px_2px_0px_0px_#0f172a] dark:shadow-[2px_2px_0px_0px_#334155] text-slate-900' : 'border-transparent text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800/80 hover:text-slate-900 dark:hover:text-white' }}">
+                    <div class="w-7 h-7 rounded-lg border-[1.5px] border-slate-800 dark:border-slate-700 flex items-center justify-center text-slate-900 shrink-0 transition-transform group-hover:scale-105 {{ request()->routeIs('pos.*') ? 'bg-white keep-white dark:border-slate-500 shadow-[1px_1px_0px_0px_#0f172a] dark:shadow-[1px_1px_0px_0px_#334155]' : 'bg-emerald-200 dark:bg-slate-800 dark:text-slate-400 group-hover:dark:text-emerald-400 group-hover:dark:border-emerald-400/50' }}">
                         <x-icon name="shopping-cart" class="w-4 h-4" />
                     </div>
                     <span>Kasir POS</span>
@@ -116,8 +116,8 @@
 
                 <!-- Workdesk Desainer -->
                 <a href="{{ route('workdesk.index') }}" 
-                   class="group flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-black border-[1.5px] transition-all {{ request()->routeIs('workdesk.*') ? 'bg-blue-300 border-slate-800 shadow-[2px_2px_0px_0px_#0f172a] dark:shadow-[2px_2px_0px_0px_#000000] text-slate-900' : 'border-transparent text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800/80 hover:text-slate-900 dark:hover:text-white' }}">
-                    <div class="w-7 h-7 rounded-lg border-[1.5px] border-slate-800 dark:border-slate-700 flex items-center justify-center text-slate-900 shrink-0 transition-transform group-hover:scale-105 {{ request()->routeIs('workdesk.*') ? 'bg-white keep-white shadow-[1px_1px_0px_0px_#0f172a] dark:shadow-[1px_1px_0px_0px_#000000]' : 'bg-blue-200 dark:bg-slate-800 dark:text-slate-400 group-hover:dark:text-blue-400 group-hover:dark:border-blue-400/50' }}">
+                   class="group flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-black border-[1.5px] transition-all {{ request()->routeIs('workdesk.*') ? 'bg-blue-300 border-slate-800 dark:border-slate-500 shadow-[2px_2px_0px_0px_#0f172a] dark:shadow-[2px_2px_0px_0px_#334155] text-slate-900' : 'border-transparent text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800/80 hover:text-slate-900 dark:hover:text-white' }}">
+                    <div class="w-7 h-7 rounded-lg border-[1.5px] border-slate-800 dark:border-slate-700 flex items-center justify-center text-slate-900 shrink-0 transition-transform group-hover:scale-105 {{ request()->routeIs('workdesk.*') ? 'bg-white keep-white dark:border-slate-500 shadow-[1px_1px_0px_0px_#0f172a] dark:shadow-[1px_1px_0px_0px_#334155]' : 'bg-blue-200 dark:bg-slate-800 dark:text-slate-400 group-hover:dark:text-blue-400 group-hover:dark:border-blue-400/50' }}">
                         <x-icon name="layers" class="w-4 h-4" />
                     </div>
                     <span>Workdesk Desainer</span>
@@ -132,8 +132,8 @@
 
                 <!-- Buku Kas & Mutasi -->
                 <a href="{{ route('cash.index') }}" 
-                   class="group flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-black border-[1.5px] transition-all {{ request()->routeIs('cash.*') ? 'bg-purple-300 border-slate-800 shadow-[2px_2px_0px_0px_#0f172a] dark:shadow-[2px_2px_0px_0px_#000000] text-slate-900' : 'border-transparent text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800/80 hover:text-slate-900 dark:hover:text-white' }}">
-                    <div class="w-7 h-7 rounded-lg border-[1.5px] border-slate-800 dark:border-slate-700 flex items-center justify-center text-slate-900 shrink-0 transition-transform group-hover:scale-105 {{ request()->routeIs('cash.*') ? 'bg-white keep-white shadow-[1px_1px_0px_0px_#0f172a] dark:shadow-[1px_1px_0px_0px_#000000]' : 'bg-purple-200 dark:bg-slate-800 dark:text-slate-400 group-hover:dark:text-purple-400 group-hover:dark:border-purple-400/50' }}">
+                   class="group flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-black border-[1.5px] transition-all {{ request()->routeIs('cash.*') ? 'bg-purple-300 border-slate-800 dark:border-slate-500 shadow-[2px_2px_0px_0px_#0f172a] dark:shadow-[2px_2px_0px_0px_#334155] text-slate-900' : 'border-transparent text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800/80 hover:text-slate-900 dark:hover:text-white' }}">
+                    <div class="w-7 h-7 rounded-lg border-[1.5px] border-slate-800 dark:border-slate-700 flex items-center justify-center text-slate-900 shrink-0 transition-transform group-hover:scale-105 {{ request()->routeIs('cash.*') ? 'bg-white keep-white dark:border-slate-500 shadow-[1px_1px_0px_0px_#0f172a] dark:shadow-[1px_1px_0px_0px_#334155]' : 'bg-purple-200 dark:bg-slate-800 dark:text-slate-400 group-hover:dark:text-purple-400 group-hover:dark:border-purple-400/50' }}">
                         <x-icon name="wallet" class="w-4 h-4" />
                     </div>
                     <span>Buku Kas & Mutasi</span>
@@ -142,8 +142,8 @@
                 <!-- Laporan Keuangan (Khusus Owner) -->
                 @if(Auth::user()->isOwner())
                 <a href="{{ route('reports.finance') }}" 
-                   class="group flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-black border-[1.5px] transition-all {{ request()->routeIs('reports.finance*') ? 'bg-emerald-300 border-slate-800 shadow-[2px_2px_0px_0px_#0f172a] dark:shadow-[2px_2px_0px_0px_#000000] text-slate-900' : 'border-transparent text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800/80 hover:text-slate-900 dark:hover:text-white' }}">
-                    <div class="w-7 h-7 rounded-lg border-[1.5px] border-slate-800 dark:border-slate-700 flex items-center justify-center text-slate-900 shrink-0 transition-transform group-hover:scale-105 {{ request()->routeIs('reports.finance*') ? 'bg-white keep-white shadow-[1px_1px_0px_0px_#0f172a] dark:shadow-[1px_1px_0px_0px_#000000]' : 'bg-emerald-200 dark:bg-slate-800 dark:text-slate-400 group-hover:dark:text-emerald-400 group-hover:dark:border-emerald-400/50' }}">
+                   class="group flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-black border-[1.5px] transition-all {{ request()->routeIs('reports.finance*') ? 'bg-emerald-300 border-slate-800 dark:border-slate-500 shadow-[2px_2px_0px_0px_#0f172a] dark:shadow-[2px_2px_0px_0px_#334155] text-slate-900' : 'border-transparent text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800/80 hover:text-slate-900 dark:hover:text-white' }}">
+                    <div class="w-7 h-7 rounded-lg border-[1.5px] border-slate-800 dark:border-slate-700 flex items-center justify-center text-slate-900 shrink-0 transition-transform group-hover:scale-105 {{ request()->routeIs('reports.finance*') ? 'bg-white keep-white dark:border-slate-500 shadow-[1px_1px_0px_0px_#0f172a] dark:shadow-[1px_1px_0px_0px_#334155]' : 'bg-emerald-200 dark:bg-slate-800 dark:text-slate-400 group-hover:dark:text-emerald-400 group-hover:dark:border-emerald-400/50' }}">
                         <x-icon name="bar-chart-3" class="w-4 h-4" />
                     </div>
                     <span>Laporan Keuangan</span>
@@ -152,8 +152,8 @@
 
                 <!-- Arsip Cloud (S3/R2) -->
                 <a href="{{ route('archive.index') }}" 
-                   class="group flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-black border-[1.5px] transition-all {{ request()->routeIs('archive.*') ? 'bg-yellow-200 border-slate-800 shadow-[2px_2px_0px_0px_#0f172a] dark:shadow-[2px_2px_0px_0px_#000000] text-slate-900' : 'border-transparent text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800/80 hover:text-slate-900 dark:hover:text-white' }}">
-                    <div class="w-7 h-7 rounded-lg border-[1.5px] border-slate-800 dark:border-slate-700 flex items-center justify-center text-slate-900 shrink-0 transition-transform group-hover:scale-105 {{ request()->routeIs('archive.*') ? 'bg-white keep-white shadow-[1px_1px_0px_0px_#0f172a] dark:shadow-[1px_1px_0px_0px_#000000]' : 'bg-amber-200 dark:bg-slate-800 dark:text-slate-400 group-hover:dark:text-amber-400 group-hover:dark:border-amber-400/50' }}">
+                   class="group flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-black border-[1.5px] transition-all {{ request()->routeIs('archive.*') ? 'bg-yellow-200 border-slate-800 dark:border-slate-500 shadow-[2px_2px_0px_0px_#0f172a] dark:shadow-[2px_2px_0px_0px_#334155] text-slate-900' : 'border-transparent text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800/80 hover:text-slate-900 dark:hover:text-white' }}">
+                    <div class="w-7 h-7 rounded-lg border-[1.5px] border-slate-800 dark:border-slate-700 flex items-center justify-center text-slate-900 shrink-0 transition-transform group-hover:scale-105 {{ request()->routeIs('archive.*') ? 'bg-white keep-white dark:border-slate-500 shadow-[1px_1px_0px_0px_#0f172a] dark:shadow-[1px_1px_0px_0px_#334155]' : 'bg-amber-200 dark:bg-slate-800 dark:text-slate-400 group-hover:dark:text-amber-400 group-hover:dark:border-amber-400/50' }}">
                         <x-icon name="archive" class="w-4 h-4" />
                     </div>
                     <span>Arsip Cloud</span>
@@ -169,8 +169,8 @@
 
                 <!-- Kelola Cabang -->
                 <a href="{{ route('branches.index') }}" 
-                   class="group flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-black border-[1.5px] transition-all {{ request()->routeIs('branches.*') ? 'bg-rose-300 border-slate-800 shadow-[2px_2px_0px_0px_#0f172a] dark:shadow-[2px_2px_0px_0px_#000000] text-slate-900' : 'border-transparent text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800/80 hover:text-slate-900 dark:hover:text-white' }}">
-                    <div class="w-7 h-7 rounded-lg border-[1.5px] border-slate-800 dark:border-slate-700 flex items-center justify-center text-slate-900 shrink-0 transition-transform group-hover:scale-105 {{ request()->routeIs('branches.*') ? 'bg-white keep-white shadow-[1px_1px_0px_0px_#0f172a] dark:shadow-[1px_1px_0px_0px_#000000]' : 'bg-rose-200 dark:bg-slate-800 dark:text-slate-400 group-hover:dark:text-rose-400 group-hover:dark:border-rose-400/50' }}">
+                   class="group flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-black border-[1.5px] transition-all {{ request()->routeIs('branches.*') ? 'bg-rose-300 border-slate-800 dark:border-slate-500 shadow-[2px_2px_0px_0px_#0f172a] dark:shadow-[2px_2px_0px_0px_#334155] text-slate-900' : 'border-transparent text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800/80 hover:text-slate-900 dark:hover:text-white' }}">
+                    <div class="w-7 h-7 rounded-lg border-[1.5px] border-slate-800 dark:border-slate-700 flex items-center justify-center text-slate-900 shrink-0 transition-transform group-hover:scale-105 {{ request()->routeIs('branches.*') ? 'bg-white keep-white dark:border-slate-500 shadow-[1px_1px_0px_0px_#0f172a] dark:shadow-[1px_1px_0px_0px_#334155]' : 'bg-rose-200 dark:bg-slate-800 dark:text-slate-400 group-hover:dark:text-rose-400 group-hover:dark:border-rose-400/50' }}">
                         <x-icon name="building-2" class="w-4 h-4" />
                     </div>
                     <span>Kelola Cabang</span>
@@ -178,8 +178,8 @@
 
                 <!-- Kelola Staf / Karyawan -->
                 <a href="{{ route('users.index') }}" 
-                   class="group flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-black border-[1.5px] transition-all {{ request()->routeIs('users.*') ? 'bg-indigo-300 border-slate-800 shadow-[2px_2px_0px_0px_#0f172a] dark:shadow-[2px_2px_0px_0px_#000000] text-slate-900' : 'border-transparent text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800/80 hover:text-slate-900 dark:hover:text-white' }}">
-                    <div class="w-7 h-7 rounded-lg border-[1.5px] border-slate-800 dark:border-slate-700 flex items-center justify-center text-slate-900 shrink-0 transition-transform group-hover:scale-105 {{ request()->routeIs('users.*') ? 'bg-white keep-white shadow-[1px_1px_0px_0px_#0f172a] dark:shadow-[1px_1px_0px_0px_#000000]' : 'bg-indigo-200 dark:bg-slate-800 dark:text-slate-400 group-hover:dark:text-indigo-400 group-hover:dark:border-indigo-400/50' }}">
+                   class="group flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-black border-[1.5px] transition-all {{ request()->routeIs('users.*') ? 'bg-indigo-300 border-slate-800 dark:border-slate-500 shadow-[2px_2px_0px_0px_#0f172a] dark:shadow-[2px_2px_0px_0px_#334155] text-slate-900' : 'border-transparent text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800/80 hover:text-slate-900 dark:hover:text-white' }}">
+                    <div class="w-7 h-7 rounded-lg border-[1.5px] border-slate-800 dark:border-slate-700 flex items-center justify-center text-slate-900 shrink-0 transition-transform group-hover:scale-105 {{ request()->routeIs('users.*') ? 'bg-white keep-white dark:border-slate-500 shadow-[1px_1px_0px_0px_#0f172a] dark:shadow-[1px_1px_0px_0px_#334155]' : 'bg-indigo-200 dark:bg-slate-800 dark:text-slate-400 group-hover:dark:text-indigo-400 group-hover:dark:border-indigo-400/50' }}">
                         <x-icon name="users" class="w-4 h-4" />
                     </div>
                     <span>Kelola Staf</span>
@@ -206,7 +206,7 @@
                     $branchLabel = $user->branch ? ($user->branch->code . ' - ' . $user->branch->name) : 'CABANG';
                 }
             @endphp
-            <div class="p-3 bg-white dark:bg-slate-900 border-[1.5px] border-slate-800 dark:border-slate-700 rounded-xl shadow-[2px_2px_0px_0px_#0f172a] dark:shadow-[2px_2px_0px_0px_#000000] text-xs">
+            <div class="p-3 bg-white dark:bg-[#0c1222] border-[1.5px] border-slate-800 dark:border-slate-500 rounded-xl shadow-[2px_2px_0px_0px_#0f172a] dark:shadow-[2px_2px_0px_0px_#334155] text-xs">
                 <div class="flex items-center justify-between mb-1">
                     <span class="text-[9px] font-black uppercase text-slate-500 dark:text-slate-400 truncate max-w-[130px]">
                         {{ $branchLabel }}
@@ -223,9 +223,9 @@
             </div>
 
             <!-- User Info Pill & Quick Switch / Logout -->
-            <div class="p-2.5 bg-white dark:bg-slate-900 border-[1.5px] border-slate-800 dark:border-slate-700 rounded-xl shadow-[2px_2px_0px_0px_#0f172a] dark:shadow-[2px_2px_0px_0px_#000000] flex items-center justify-between gap-2">
+            <div class="p-2.5 bg-white dark:bg-[#0c1222] border-[1.5px] border-slate-800 dark:border-slate-500 rounded-xl shadow-[2px_2px_0px_0px_#0f172a] dark:shadow-[2px_2px_0px_0px_#334155] flex items-center justify-between gap-2">
                 <div class="flex items-center gap-2 min-w-0">
-                    <div class="w-8 h-8 rounded-lg border-[1.5px] border-slate-800 dark:border-slate-700 bg-amber-200 flex items-center justify-center font-black text-xs shrink-0 text-slate-900">
+                    <div class="w-8 h-8 rounded-lg border-[1.5px] border-slate-800 dark:border-slate-500 bg-amber-200 flex items-center justify-center font-black text-xs shrink-0 text-slate-900">
                         {{ substr($user->name, 0, 2) }}
                     </div>
                     <div class="min-w-0">
@@ -239,7 +239,7 @@
                     <button type="button" 
                             onclick="document.getElementById('quick-switch-modal').showModal()"
                             title="Ganti Akun Role"
-                            class="p-1.5 bg-amber-300 hover:bg-amber-400 border border-slate-800 dark:border-slate-700 rounded-lg text-slate-900 shadow-[1px_1px_0px_0px_#0f172a] dark:shadow-[1px_1px_0px_0px_#000000] active:translate-x-[1px] active:translate-y-[1px] cursor-pointer">
+                            class="p-1.5 bg-amber-300 hover:bg-amber-400 border border-slate-800 dark:border-slate-500 rounded-lg text-slate-900 shadow-[1px_1px_0px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_0px_#334155] active:translate-x-[1px] active:translate-y-[1px] cursor-pointer">
                         <x-icon name="refresh-cw" class="w-3.5 h-3.5" />
                     </button>
 
@@ -248,7 +248,7 @@
                         @csrf
                         <button type="submit" 
                                 title="Keluar"
-                                class="p-1.5 bg-rose-200 hover:bg-rose-300 dark:bg-rose-500/20 dark:hover:bg-rose-500/30 dark:border-rose-500/50 dark:text-rose-300 border border-slate-800 rounded-lg text-slate-900 shadow-[1px_1px_0px_0px_#0f172a] dark:shadow-[1px_1px_0px_0px_#000000] active:translate-x-[1px] active:translate-y-[1px] cursor-pointer">
+                                class="p-1.5 bg-rose-200 hover:bg-rose-300 dark:bg-rose-500/20 dark:hover:bg-rose-500/30 dark:border-slate-500 dark:text-rose-300 border border-slate-800 rounded-lg text-slate-900 shadow-[1px_1px_0px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_0px_#334155] active:translate-x-[1px] active:translate-y-[1px] cursor-pointer">
                             <x-icon name="log-out" class="w-3.5 h-3.5" />
                         </button>
                     </form>
@@ -270,7 +270,7 @@
                 <button type="button" 
                         onclick="toggleSidebar()" 
                         aria-label="Buka Menu"
-                        class="lg:hidden p-2 rounded-xl border-[1.5px] border-slate-800 dark:border-slate-700 bg-amber-300 hover:bg-amber-400 dark:text-slate-950 active:translate-x-[1px] active:translate-y-[1px] shadow-[1.5px_1.5px_0px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_0px_#000000] cursor-pointer shrink-0">
+                        class="lg:hidden p-2 rounded-xl border-[1.5px] border-slate-800 dark:border-slate-500 bg-amber-300 hover:bg-amber-400 dark:text-slate-950 active:translate-x-[1px] active:translate-y-[1px] shadow-[1.5px_1.5px_0px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_0px_#334155] cursor-pointer shrink-0">
                     <x-icon name="menu" class="w-4 h-4 sm:w-5 sm:h-5 text-slate-900" stroke-width="2.5" />
                 </button>
 
@@ -288,7 +288,7 @@
                         id="theme-toggle-btn"
                         onclick="toggleTheme()"
                         aria-label="Toggle Dark/Light Mode"
-                        class="inline-flex items-center gap-1.5 text-xs font-black px-2.5 sm:px-3 py-1.5 rounded-xl border-[1.5px] border-slate-800 bg-amber-200 hover:bg-amber-300 text-slate-900 dark:bg-slate-800 dark:border-slate-700 dark:text-amber-400 dark:hover:bg-slate-700 shadow-[1.5px_1.5px_0px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_0px_#000000] cursor-pointer transition-all active:translate-x-[1px] active:translate-y-[1px]">
+                        class="inline-flex items-center gap-1.5 text-xs font-black px-2.5 sm:px-3 py-1.5 rounded-xl border-[1.5px] border-slate-800 bg-amber-200 hover:bg-amber-300 text-slate-900 dark:bg-slate-800 dark:border-slate-500 dark:text-amber-400 dark:hover:bg-slate-700 shadow-[1.5px_1.5px_0px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_0px_#334155] cursor-pointer transition-all active:translate-x-[1px] active:translate-y-[1px]">
                     <span class="dark:hidden flex items-center gap-1.5">
                         <x-icon name="moon" class="w-3.5 h-3.5 text-slate-800" stroke-width="2.5" />
                         <!-- <span class="hidden sm:inline">GELAP</span> -->
@@ -300,7 +300,7 @@
                 </button>
 
                 <!-- Date Capsule (Hidden on small mobile screens to prevent overflow) -->
-                <span class="hidden md:inline-flex items-center gap-1.5 text-xs font-bold text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800/80 border-[1.5px] border-slate-700 dark:border-slate-700 px-3 py-1.5 rounded-xl shadow-[1.5px_1.5px_0px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_0px_#000000]">
+                <span class="hidden md:inline-flex items-center gap-1.5 text-xs font-bold text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800/80 border-[1.5px] border-slate-700 dark:border-slate-500 px-3 py-1.5 rounded-xl shadow-[1.5px_1.5px_0px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_0px_#334155]">
                     <x-icon name="calendar" class="w-3.5 h-3.5 text-slate-500 dark:text-slate-400" />
                     <span>{{ \Carbon\Carbon::now('Asia/Jakarta')->locale('id')->isoFormat('dddd, D MMMM Y') }}</span>
                 </span>
