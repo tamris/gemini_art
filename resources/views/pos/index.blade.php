@@ -138,11 +138,13 @@
                     @if(Auth::user()->isOwner())
                     <div>
                         <label class="block text-[11px] font-black uppercase text-black dark:text-slate-300 mb-1">Cabang Transaksi</label>
-                        <select name="branch_id" class="neo-select">
-                            @foreach($branches as $b)
-                                <option value="{{ $b->id }}">{{ $b->code }} - {{ $b->name }}</option>
-                            @endforeach
-                        </select>
+                        @php
+                            $posBranchOpts = [];
+                            foreach($branches as $b) {
+                                $posBranchOpts[$b->id] = $b->code . ' - ' . $b->name;
+                            }
+                        @endphp
+                        <x-neo-select name="branch_id" :options="$posBranchOpts" :value="Auth::user()->branch_id" />
                     </div>
                     @endif
 
@@ -161,11 +163,17 @@
                     <div class="grid grid-cols-2 gap-3 items-end">
                         <div>
                             <label class="block text-[11px] font-black uppercase text-slate-800 dark:text-slate-300 mb-1 tracking-wider">Metode Bayar</label>
-                            <select name="payment_method" id="payment-method" required class="neo-select h-10">
-                                <option value="cash">Tunai (Cash Laci)</option>
-                                <option value="qris">QRIS</option>
-                                <option value="transfer">Transfer Bank</option>
-                            </select>
+                            <x-neo-select 
+                                name="payment_method" 
+                                id="payment-method" 
+                                required 
+                                value="cash"
+                                :options="[
+                                    'cash' => 'Tunai (Cash Laci)',
+                                    'qris' => 'QRIS',
+                                    'transfer' => 'Transfer Bank',
+                                ]" 
+                            />
                         </div>
                         <div>
                             <label class="block text-[11px] font-black uppercase text-slate-800 dark:text-slate-300 mb-1 tracking-wider">Uang Diterima</label>

@@ -59,40 +59,47 @@
             @if(Auth::user()->isOwner())
             <div>
                 <label class="block text-[11px] font-black uppercase text-slate-800 dark:text-slate-300 mb-1 tracking-wider">Cabang</label>
-                <select name="branch_id" class="neo-select">
-                    <option value="">Semua Cabang</option>
-                    @foreach($branches as $b)
-                        <option value="{{ $b->id }}" {{ request('branch_id') == $b->id ? 'selected' : '' }}>
-                            {{ $b->code }} - {{ $b->name }}
-                        </option>
-                    @endforeach
-                </select>
+                @php
+                    $branchOptions = ['' => 'Semua Cabang'];
+                    foreach($branches as $b) {
+                        $branchOptions[$b->id] = $b->code . ' - ' . $b->name;
+                    }
+                @endphp
+                <x-neo-select name="branch_id" :options="$branchOptions" :value="request('branch_id')" />
             </div>
             @endif
 
             <!-- Work Status Filter -->
             <div>
                 <label class="block text-[11px] font-black uppercase text-slate-800 dark:text-slate-300 mb-1 tracking-wider">Status Kerja</label>
-                <select name="work_status" class="neo-select">
-                    <option value="">Semua Status</option>
-                    <option value="draft" {{ request('work_status') == 'draft' ? 'selected' : '' }}>Draft / Antrean</option>
-                    <option value="in_progress" {{ request('work_status') == 'in_progress' ? 'selected' : '' }}>Proses Pengerjaan</option>
-                    <option value="revision" {{ request('work_status') == 'revision' ? 'selected' : '' }}>Revisi</option>
-                    <option value="ready_to_print" {{ request('work_status') == 'ready_to_print' ? 'selected' : '' }}>Siap Cetak</option>
-                    <option value="completed" {{ request('work_status') == 'completed' ? 'selected' : '' }}>Selesai / Diambil</option>
-                    <option value="canceled" {{ request('work_status') == 'canceled' ? 'selected' : '' }}>Dibatalkan</option>
-                </select>
+                <x-neo-select 
+                    name="work_status" 
+                    :value="request('work_status')"
+                    :options="[
+                        '' => 'Semua Status',
+                        'draft' => 'Draft / Antrean',
+                        'in_progress' => 'Proses Pengerjaan',
+                        'revision' => 'Revisi',
+                        'ready_to_print' => 'Siap Cetak',
+                        'completed' => 'Selesai / Diambil',
+                        'canceled' => 'Dibatalkan',
+                    ]" 
+                />
             </div>
 
             <!-- Payment Status Filter -->
             <div>
                 <label class="block text-[11px] font-black uppercase text-slate-800 dark:text-slate-300 mb-1 tracking-wider">Status Bayar</label>
-                <select name="payment_status" class="neo-select">
-                    <option value="">Semua</option>
-                    <option value="paid" {{ request('payment_status') == 'paid' ? 'selected' : '' }}>Lunas</option>
-                    <option value="partial_dp" {{ request('payment_status') == 'partial_dp' ? 'selected' : '' }}>DP (Sebagian)</option>
-                    <option value="unpaid" {{ request('payment_status') == 'unpaid' ? 'selected' : '' }}>Belum Bayar</option>
-                </select>
+                <x-neo-select 
+                    name="payment_status" 
+                    :value="request('payment_status')"
+                    :options="[
+                        '' => 'Semua',
+                        'paid' => 'Lunas',
+                        'partial_dp' => 'DP (Sebagian)',
+                        'unpaid' => 'Belum Bayar',
+                    ]" 
+                />
             </div>
 
             <!-- Reset Action -->

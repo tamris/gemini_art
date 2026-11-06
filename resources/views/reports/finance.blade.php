@@ -66,28 +66,33 @@
             @if(Auth::user()->isOwner())
             <div class="w-full sm:w-60">
                 <label class="block text-[11px] font-black uppercase text-slate-800 dark:text-slate-300 mb-1 tracking-wider">Cabang</label>
-                <select name="branch_id" class="neo-select w-full">
-                    <option value="">Semua Cabang</option>
-                    @foreach($branches as $b)
-                        <option value="{{ $b->id }}" {{ $branchId == $b->id ? 'selected' : '' }}>
-                            {{ $b->code }} - {{ $b->name }}
-                        </option>
-                    @endforeach
-                </select>
+                @php
+                    $finBranchOpts = ['' => 'Semua Cabang'];
+                    foreach($branches as $b) {
+                        $finBranchOpts[$b->id] = $b->code . ' - ' . $b->name;
+                    }
+                @endphp
+                <x-neo-select name="branch_id" :options="$finBranchOpts" :value="$branchId" />
             </div>
             @endif
 
             <!-- Filter Periode Cepat -->
             <div class="w-full sm:w-56">
                 <label class="block text-[11px] font-black uppercase text-slate-800 dark:text-slate-300 mb-1 tracking-wider">Rentang Waktu</label>
-                <select name="period" id="period-selector" onchange="toggleCustomDates(this.value);" class="neo-select w-full">
-                    <option value="this_month" {{ $period === 'this_month' ? 'selected' : '' }}>Bulan Ini</option>
-                    <option value="last_month" {{ $period === 'last_month' ? 'selected' : '' }}>Bulan Lalu</option>
-                    <option value="today" {{ $period === 'today' ? 'selected' : '' }}>Hari Ini</option>
-                    <option value="this_week" {{ $period === 'this_week' ? 'selected' : '' }}>Minggu Ini</option>
-                    <option value="this_year" {{ $period === 'this_year' ? 'selected' : '' }}>Tahun Ini</option>
-                    <option value="custom" {{ $period === 'custom' ? 'selected' : '' }}>Pilih Rentang Tanggal Bebas...</option>
-                </select>
+                <x-neo-select 
+                    name="period" 
+                    id="period-selector"
+                    onchange="toggleCustomDates(this.value);"
+                    :value="$period"
+                    :options="[
+                        'this_month' => 'Bulan Ini',
+                        'last_month' => 'Bulan Lalu',
+                        'today' => 'Hari Ini',
+                        'this_week' => 'Minggu Ini',
+                        'this_year' => 'Tahun Ini',
+                        'custom' => 'Pilih Rentang Tanggal Bebas...',
+                    ]" 
+                />
             </div>
 
             <!-- Custom Date Range Pickers (Bespoke Soft Neo-Datepicker) -->

@@ -48,6 +48,14 @@
                                     <td width="70%" style="color: #0f172a; font-weight: 800;">{{ $job->title ?? $order->customer_name }}</td>
                                 </tr>
                                 <tr>
+                                    <td style="color: #64748b; font-weight: 600;">Jumlah Cetak (Qty):</td>
+                                    <td style="color: #0f172a; font-weight: 900;">
+                                        <span style="display: inline-block; background-color: #fef08a; border: 1.5px solid #0f172a; border-radius: 6px; padding: 2px 10px; font-family: monospace; font-size: 14px; font-weight: 900; color: #854d0e;">
+                                            {{ $order->items->first()?->qty ?? 1 }} Pcs / Lembar
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
                                     <td style="color: #64748b; font-weight: 600;">Ukuran / Dimensi:</td>
                                     <td style="color: #0f172a; font-weight: 800; font-family: monospace;">{{ $job->dimensions ?: 'Sesuai file asli' }}</td>
                                 </tr>
@@ -55,10 +63,33 @@
                                     <td style="color: #64748b; font-weight: 600;">Bahan & Finishing:</td>
                                     <td style="color: #0f172a; font-weight: 800;">{{ $job->material_notes ?: 'Standar Percetakan' }}</td>
                                 </tr>
+                                @if($job->deadline_at)
+                                <tr>
+                                    <td style="color: #64748b; font-weight: 600;">Deadline Produksi:</td>
+                                    <td style="color: #b91c1c; font-weight: 800;">
+                                        {{ $job->deadline_at->translatedFormat('d F Y, H:i') }} WIB
+                                    </td>
+                                </tr>
+                                @endif
                                 @if(!empty($job->brief_notes))
                                 <tr>
                                     <td style="color: #64748b; font-weight: 600;">Catatan Tambahan:</td>
                                     <td style="color: #0f172a; font-weight: 700;">{{ $job->brief_notes }}</td>
+                                </tr>
+                                @endif
+                                @php
+                                    $extraItems = $order->items ? $order->items->slice(1) : collect();
+                                @endphp
+                                @if($extraItems->isNotEmpty())
+                                <tr>
+                                    <td style="color: #64748b; font-weight: 600;">Perlengkapan Terkait:</td>
+                                    <td style="color: #0f172a; font-weight: 700;">
+                                        @foreach($extraItems as $extra)
+                                            <span style="display: inline-block; background-color: #f3e8ff; border: 1px solid #d8b4fe; color: #6b21a8; font-size: 11px; font-weight: 800; padding: 2px 8px; border-radius: 6px; margin-right: 4px; margin-bottom: 2px;">
+                                                📦 {{ $extra->item_name }} ({{ $extra->qty }} Pcs)
+                                            </span>
+                                        @endforeach
+                                    </td>
                                 </tr>
                                 @endif
                                 @if(!empty($notes))

@@ -6,16 +6,16 @@
 <div class="space-y-8">
     
     <!-- Top Welcome & Global Status Header -->
-    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 p-5 bg-purple-100 dark:bg-[#121124] border-2 border-black dark:border-slate-500 rounded-xl shadow-[3px_3px_0px_0px_#000] dark:shadow-[3.5px_3.5px_0px_0px_#334155]">
+    <!-- <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 p-5 bg-purple-100 dark:bg-[#121124] border-2 border-black dark:border-slate-500 rounded-xl shadow-[3px_3px_0px_0px_#000] dark:shadow-[3.5px_3.5px_0px_0px_#334155]">
         <div>
             <div class="flex items-center gap-2 mb-1">
                 <span class="w-2.5 h-2.5 rounded-full bg-purple-600 dark:bg-purple-400 animate-pulse"></span>
                 <span class="text-[11px] font-black uppercase tracking-wider text-purple-900 dark:text-purple-300">Owner Command Center</span>
             </div>
             <h1 class="text-xl md:text-2xl font-black text-black dark:text-white">Monitor Omset & Operasional Multi-Cabang</h1>
-            <!-- <p class="text-xs font-semibold text-slate-700 mt-0.5">
+            <p class="text-xs font-semibold text-slate-700 mt-0.5">
                 Data real-time gabungan seluruh cabang dan sinkronisasi arsip desain terpusat.
-            </p> -->
+            </p>
         </div>
         <div class="flex items-center gap-2 shrink-0">
             <a href="{{ route('orders.create-design') }}" class="neo-btn bg-amber-300 hover:bg-amber-400 dark:bg-amber-300 dark:text-slate-950 text-xs py-2 px-3.5 text-black flex items-center gap-1.5 dark:border-slate-500 dark:shadow-[2.5px_2.5px_0px_0px_#334155]">
@@ -27,7 +27,7 @@
                 <span>Audit Buku Kas</span>
             </a>
         </div>
-    </div>
+    </div> -->
 
     <!-- 5 Global Metric Stat Cards (Neo-Brutalism Grid) -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3.5">

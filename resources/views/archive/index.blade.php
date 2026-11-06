@@ -77,25 +77,28 @@
             @if(Auth::user()->isOwner())
             <div>
                 <label class="block text-[11px] font-black uppercase text-slate-800 dark:text-slate-300 mb-1 tracking-wider">Cabang</label>
-                <select name="branch_id" class="neo-select">
-                    <option value="">Semua Cabang</option>
-                    @foreach($branches as $b)
-                        <option value="{{ $b->id }}" {{ request('branch_id') == $b->id ? 'selected' : '' }}>
-                            {{ $b->code }} - {{ $b->name }}
-                        </option>
-                    @endforeach
-                </select>
+                @php
+                    $archiveBranchOpts = ['' => 'Semua Cabang'];
+                    foreach($branches as $b) {
+                        $archiveBranchOpts[$b->id] = $b->code . ' - ' . $b->name;
+                    }
+                @endphp
+                <x-neo-select name="branch_id" :options="$archiveBranchOpts" :value="request('branch_id')" />
             </div>
             @endif
 
             <div>
                 <label class="block text-[11px] font-black uppercase text-slate-800 dark:text-slate-300 mb-1 tracking-wider">Tipe File</label>
-                <select name="file_type" class="neo-select">
-                    <option value="">Semua Tipe File</option>
-                    <option value="final_print" {{ request('file_type') == 'final_print' ? 'selected' : '' }}>File Cetak Final (Print Ready)</option>
-                    <option value="preview_proof" {{ request('file_type') == 'preview_proof' ? 'selected' : '' }}>Preview / Proofing</option>
-                    <option value="brief_ref" {{ request('file_type') == 'brief_ref' ? 'selected' : '' }}>Referensi Brief</option>
-                </select>
+                <x-neo-select 
+                    name="file_type" 
+                    :value="request('file_type')"
+                    :options="[
+                        '' => 'Semua Tipe File',
+                        'final_print' => 'File Cetak Final (Print Ready)',
+                        'preview_proof' => 'Preview / Proofing',
+                        'brief_ref' => 'Referensi Brief',
+                    ]" 
+                />
             </div>
 
             <div>

@@ -17,9 +17,14 @@
             }
         })();
     </script>
+    <style>
+        html.dark { background-color: #0b0f19; color: #f1f5f9; color-scheme: dark; }
+        html:not(.dark) { background-color: #F8FAFC; color: #0f172a; color-scheme: light; }
+        .preload, .preload * { transition: none !important; -webkit-transition: none !important; }
+    </style>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="bg-[#F8FAFC] dark:bg-[#0b0f19] text-slate-900 dark:text-slate-100 font-sans min-h-screen flex flex-col justify-between antialiased selection:bg-amber-300 selection:text-black transition-colors">
+<body class="preload bg-[#F8FAFC] dark:bg-[#0b0f19] text-slate-900 dark:text-slate-100 font-sans min-h-screen flex flex-col justify-between antialiased selection:bg-amber-300 selection:text-black">
 
     <!-- Top Simple Bar -->
     <header class="bg-white dark:bg-[#0c1222] border-b-2 border-slate-900 dark:border-slate-800 px-4 py-3 shadow-[0px_2px_0px_0px_#0f172a] dark:shadow-[0px_2px_0px_0px_#000000]">
@@ -80,7 +85,14 @@
                 <span class="text-[11px] font-bold text-slate-500 dark:text-slate-400 hidden sm:inline-block">Format: Print-Ready Original</span>
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5 text-xs">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 text-xs">
+                <div class="p-3.5 bg-amber-100/90 dark:bg-amber-950/40 border-[1.5px] border-slate-900 dark:border-slate-700 rounded-xl space-y-1 shadow-[1.5px_1.5px_0px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_0px_#000000]">
+                    <span class="text-[10px] font-black text-amber-950 dark:text-amber-400 uppercase tracking-wider block">Jumlah Cetak (Qty)</span>
+                    <span class="text-base font-black text-amber-950 dark:text-amber-300 font-mono">
+                        {{ $order->items->first()?->qty ?? 1 }} Pcs
+                    </span>
+                </div>
+
                 <div class="p-3.5 bg-slate-50 dark:bg-slate-900 border-[1.5px] border-slate-900 dark:border-slate-700 rounded-xl space-y-1 shadow-[1.5px_1.5px_0px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_0px_#000000]">
                     <span class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider block">Ukuran / Dimensi</span>
                     <span class="text-sm font-black text-slate-900 dark:text-white font-mono">
@@ -95,8 +107,15 @@
                     </span>
                 </div>
 
-                <div class="p-3.5 bg-amber-50/80 dark:bg-amber-950/20 border-[1.5px] border-slate-900 dark:border-slate-700 rounded-xl space-y-1 shadow-[1.5px_1.5px_0px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_0px_#000000] sm:col-span-2 lg:col-span-1">
-                    <span class="text-[10px] font-bold text-amber-900 dark:text-amber-400 uppercase tracking-wider block">Catatan Finishing / Brief</span>
+                <div class="p-3.5 {{ $job->deadline_at ? 'bg-rose-50/80 dark:bg-rose-950/30' : 'bg-slate-50 dark:bg-slate-900' }} border-[1.5px] border-slate-900 dark:border-slate-700 rounded-xl space-y-1 shadow-[1.5px_1.5px_0px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_0px_#000000]">
+                    <span class="text-[10px] font-bold {{ $job->deadline_at ? 'text-rose-900 dark:text-rose-400' : 'text-slate-500 dark:text-slate-400' }} uppercase tracking-wider block">Deadline Produksi</span>
+                    <span class="text-sm font-black {{ $job->deadline_at ? 'text-rose-950 dark:text-rose-300' : 'text-slate-600 dark:text-slate-400' }}">
+                        {{ $job->deadline_at ? $job->deadline_at->translatedFormat('d M Y, H:i') : 'Fleksibel' }}
+                    </span>
+                </div>
+
+                <div class="p-3.5 bg-slate-50 dark:bg-slate-900 border-[1.5px] border-slate-900 dark:border-slate-700 rounded-xl space-y-1 shadow-[1.5px_1.5px_0px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_0px_#000000] sm:col-span-2 lg:col-span-4">
+                    <span class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider block">Catatan Finishing / Brief</span>
                     <p class="text-xs font-semibold text-slate-900 dark:text-slate-200 leading-relaxed whitespace-pre-line">
                         {{ $job->brief_notes ?: 'Tidak ada catatan khusus.' }}
                     </p>
@@ -211,8 +230,12 @@
     function copySpecsToClipboard() {
         let text = `ORDER CETAK: {{ $order->order_number }}\n`;
         text += `Pekerjaan: {{ $job->title ?: $order->customer_name }}\n`;
+        text += `Jumlah Cetak: {{ $order->items->first()?->qty ?? 1 }} Pcs\n`;
         text += `Ukuran: {{ $job->dimensions ?: 'Sesuai file asli' }}\n`;
         text += `Bahan: {{ $job->material_notes ?: 'Standar' }}\n`;
+        @if($job->deadline_at)
+        text += `Deadline: {{ $job->deadline_at->translatedFormat('d M Y, H:i') }} WIB\n`;
+        @endif
         @if(!empty($job->brief_notes))
         text += `Catatan: {{ $job->brief_notes }}\n`;
         @endif
@@ -230,6 +253,12 @@
             }, 2000);
         });
     }
+
+    requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+            document.body.classList.remove('preload');
+        });
+    });
     </script>
 </body>
 </html>

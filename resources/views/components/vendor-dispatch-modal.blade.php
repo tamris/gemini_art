@@ -151,39 +151,27 @@
         <!-- TAB 3: Share Direct Public Link -->
         <div id="dispatch-tab-link" class="hidden space-y-4">
             <div>
-                <label class="block text-xs font-black uppercase text-slate-900 dark:text-slate-300 mb-1">
+                <label class="block text-xs font-black uppercase text-slate-900 dark:text-slate-300 mb-1.5">
                     Link Portal Berkas Siap Cetak (Publik & Tanpa Login)
                 </label>
 
-                <div id="dispatch-single-link-container">
-                    <div class="flex items-center gap-2">
-                        <input type="text" 
-                               id="dispatch-public-url" 
-                               readonly 
-                               class="neo-input text-xs font-mono font-bold w-full py-2 px-3 bg-slate-50 dark:bg-slate-900 select-all">
-                        <button type="button" 
-                                onclick="copyPublicUrlToClipboard()" 
-                                id="btn-copy-public-url"
-                                class="neo-btn bg-amber-300 hover:bg-amber-400 dark:bg-amber-400 dark:hover:bg-amber-300 text-xs py-2 px-4 font-black text-slate-950 shrink-0 shadow-[1.5px_1.5px_0px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_0px_#000000]">
-                            Salin
-                        </button>
-                    </div>
+                <div class="flex items-center gap-2">
+                    <input type="text" 
+                           id="dispatch-public-url" 
+                           readonly 
+                           class="neo-input text-xs font-mono font-bold w-full py-2.5 px-3 bg-slate-50 dark:bg-slate-900 select-all"
+                           placeholder="https://...">
+                    <button type="button" 
+                            onclick="copyPublicUrlToClipboard()" 
+                            id="btn-copy-public-url"
+                            class="neo-btn bg-amber-300 hover:bg-amber-400 dark:bg-amber-400 dark:hover:bg-amber-300 text-xs py-2.5 px-5 font-black text-slate-950 shrink-0 shadow-[1.5px_1.5px_0px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_0px_#000000] cursor-pointer flex items-center gap-1.5">
+                        <x-icon name="copy" class="w-3.5 h-3.5" />
+                        <span id="btn-copy-public-url-text">Salin Link</span>
+                    </button>
                 </div>
 
-                <div id="dispatch-all-links-container" class="hidden space-y-2">
-                    <textarea id="dispatch-all-links-text" rows="5" readonly class="neo-input text-xs font-mono font-bold w-full p-2.5 bg-slate-50 dark:bg-slate-900 select-all"></textarea>
-                    <div class="flex justify-end">
-                        <button type="button" 
-                                onclick="copyAllLinksToClipboard()" 
-                                id="btn-copy-all-links"
-                                class="neo-btn bg-amber-300 hover:bg-amber-400 dark:bg-amber-400 dark:hover:bg-amber-300 text-xs py-1.5 px-3 font-black text-slate-950 shadow-[1.5px_1.5px_0px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_0px_#000000] cursor-pointer">
-                            Salin Semua Link
-                        </button>
-                    </div>
-                </div>
-
-                <p class="text-[11px] text-slate-500 dark:text-slate-400 font-medium mt-1 leading-relaxed">
-                    Link ini aman dan dapat dibuka oleh siapa saja (rekanan percetakan) untuk mengunduh berkas resolusi penuh dan melihat spesifikasi cetak tanpa harus login.
+                <p class="text-[11px] text-slate-500 dark:text-slate-400 font-medium mt-2 leading-relaxed">
+                    Cukup salin dan kirimkan link ini ke rekanan percetakan. Satu link ini sudah langsung memuat seluruh berkas cetak, ukuran, bahan, dan jumlah cetak tanpa harus login.
                 </p>
             </div>
 
@@ -210,10 +198,15 @@ function openVendorDispatchModal(data) {
     document.getElementById('dispatch-file-specs').innerText = (data.dimensions ? data.dimensions + ' • ' : '') + (data.materialNotes || 'Standar');
 
     const filesListBox = document.getElementById('dispatch-files-list-box');
-    const singleLinkContainer = document.getElementById('dispatch-single-link-container');
-    const allLinksContainer = document.getElementById('dispatch-all-links-container');
     const form = document.getElementById('dispatch-email-form');
     const previewLink = document.getElementById('dispatch-email-preview-link');
+
+    // Always set the single public portal URL:
+    const portalUrl = data.shareUrl || (data.files && data.files.length > 0 ? data.files[0].shareUrl : '');
+    const publicUrlInput = document.getElementById('dispatch-public-url');
+    if (publicUrlInput) {
+        publicUrlInput.value = portalUrl;
+    }
 
     if (data.isAll && data.files && data.files.length > 0) {
         document.getElementById('dispatch-file-name').innerText = `Semua Berkas (${data.files.length} File)`;
@@ -222,24 +215,14 @@ function openVendorDispatchModal(data) {
             let listHtml = '';
             data.files.forEach((f, i) => {
                 listHtml += `
-                    <div class="flex items-center justify-between text-[11px] font-mono py-1 border-b border-slate-200 last:border-0">
-                        <span class="truncate max-w-[240px] text-slate-800 font-bold" title="${f.name}">${i + 1}. ${f.name}</span>
+                    <div class="flex items-center justify-between text-[11px] font-mono py-1 border-b border-slate-200 dark:border-slate-800 last:border-0">
+                        <span class="truncate max-w-[240px] text-slate-800 dark:text-slate-200 font-bold" title="${f.name}">${i + 1}. ${f.name}</span>
                         <span class="text-slate-500 shrink-0 text-[10px] ml-2">${f.size}</span>
                     </div>
                 `;
             });
             filesListBox.innerHTML = listHtml;
             filesListBox.classList.remove('hidden');
-        }
-
-        if (singleLinkContainer) singleLinkContainer.classList.add('hidden');
-        if (allLinksContainer) {
-            let linksText = `Berkas Cetak Order #${data.orderNumber}:\n`;
-            data.files.forEach((f, i) => {
-                linksText += `${i + 1}. ${f.name} (${f.size})\n${f.shareUrl}\n\n`;
-            });
-            document.getElementById('dispatch-all-links-text').value = linksText.trim();
-            allLinksContainer.classList.remove('hidden');
         }
 
         if (form && data.jobId) {
@@ -255,15 +238,11 @@ function openVendorDispatchModal(data) {
         }
     } else {
         document.getElementById('dispatch-file-name').innerText = data.fileName || '-';
-        document.getElementById('dispatch-public-url').value = data.shareUrl || '';
 
         if (filesListBox) {
             filesListBox.innerHTML = '';
             filesListBox.classList.add('hidden');
         }
-
-        if (singleLinkContainer) singleLinkContainer.classList.remove('hidden');
-        if (allLinksContainer) allLinksContainer.classList.add('hidden');
 
         if (form && data.assetId) {
             form.action = '/vendor/dispatch/' + data.assetId + '/email';
@@ -333,22 +312,25 @@ function generateWaText() {
     let msg = `*ORDER CETAK GEMINI ART*\n`;
     msg += `No. Tiket: ${d.orderNumber || '-'}\n`;
     if (d.jobTitle) msg += `Pekerjaan: ${d.jobTitle}\n`;
+    if (d.qty) msg += `Jumlah Cetak: ${d.qty} Pcs\n`;
     if (d.dimensions) msg += `Ukuran: ${d.dimensions}\n`;
     if (d.materialNotes) msg += `Bahan & Finishing: ${d.materialNotes}\n`;
     if (d.briefNotes) msg += `Catatan: ${d.briefNotes}\n`;
 
+    const portalUrl = d.shareUrl || (d.files && d.files.length > 0 ? d.files[0].shareUrl : '');
+
     if (d.isAll && d.files && d.files.length > 0) {
-        msg += `\n*Daftar Berkas Siap Cetak (${d.files.length} Berkas):*\n`;
+        msg += `\n*Daftar Berkas Siap Cetak (${d.files.length} File):*\n`;
         d.files.forEach((f, i) => {
-            msg += `${i + 1}. [${f.typeBadge}] ${f.name} (${f.size})\n`;
-            msg += `   Link Download: ${f.shareUrl}\n`;
+            msg += `${i + 1}. ${f.name} (${f.size})\n`;
         });
+        msg += `\n*Link Portal Cetak (Download Resolusi Penuh):*\n${portalUrl}\n`;
     } else {
         msg += `\n*Nama Berkas Siap Cetak:*\n${d.fileName || '-'}\n`;
-        msg += `\n*Link Download Berkas (Resolusi Penuh):*\n${d.shareUrl || ''}\n`;
+        msg += `\n*Link Download Berkas (Resolusi Penuh):*\n${portalUrl}\n`;
     }
 
-    msg += `\n_Mohon segera diproses cetak. Terima kasih!_`;
+    msg += `\n_Link portal di atas dapat langsung dibuka tanpa harus login. Terima kasih!_`;
     return msg;
 }
 
@@ -373,21 +355,15 @@ function sendDispatchWhatsApp() {
 }
 
 function copyPublicUrlToClipboard() {
-    const url = document.getElementById('dispatch-public-url').value;
-    navigator.clipboard.writeText(url).then(() => {
-        const btn = document.getElementById('btn-copy-public-url');
-        btn.innerText = 'Tersalin!';
-        setTimeout(() => btn.innerText = 'Salin', 2000);
-    });
-}
-
-function copyAllLinksToClipboard() {
-    const textarea = document.getElementById('dispatch-all-links-text');
-    if (!textarea) return;
-    navigator.clipboard.writeText(textarea.value).then(() => {
-        const btn = document.getElementById('btn-copy-all-links');
-        btn.innerText = 'Tersalin!';
-        setTimeout(() => btn.innerText = 'Salin Semua Link', 2000);
+    const input = document.getElementById('dispatch-public-url');
+    if (!input || !input.value) return;
+    navigator.clipboard.writeText(input.value).then(() => {
+        const textSpan = document.getElementById('btn-copy-public-url-text');
+        const orig = textSpan ? textSpan.innerText : 'Salin Link';
+        if (textSpan) textSpan.innerText = 'Tersalin! ✓';
+        setTimeout(() => {
+            if (textSpan) textSpan.innerText = orig;
+        }, 2000);
     });
 }
 

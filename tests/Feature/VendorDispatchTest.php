@@ -88,6 +88,7 @@ class VendorDispatchTest extends TestCase
         $response->assertSee(route('vendor.share.download', $this->shareToken));
         $response->assertSee('3 x 1.5 Meter');
         $response->assertSee('Flexi Korea 440gr');
+        $response->assertSee('Jumlah Cetak (Qty)');
     }
 
     public function test_public_vendor_can_download_file_without_auth(): void
@@ -132,6 +133,7 @@ class VendorDispatchTest extends TestCase
         $response->assertOk();
         $response->assertSee($this->asset->designJob->order->order_number);
         $response->assertSee('ORDER PRODUKSI PERCETAKAN');
+        $response->assertSee('Jumlah Cetak (Qty)');
         $response->assertSee(route('vendor.share.download', $this->asset->share_token));
         $response->assertSee(route('vendor.share.preview', $this->asset->share_token));
     }

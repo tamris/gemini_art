@@ -27,25 +27,28 @@
             
             @if(Auth::user()->isOwner())
             <div class="min-w-[190px]">
-                <select name="branch_id" class="neo-select">
-                    <option value="">Semua Cabang</option>
-                    @foreach($branches as $b)
-                        <option value="{{ $b->id }}" {{ request('branch_id') == $b->id ? 'selected' : '' }}>
-                            {{ $b->code }} - {{ $b->name }}
-                        </option>
-                    @endforeach
-                </select>
+                @php
+                    $workdeskBranchOpts = ['' => 'Semua Cabang'];
+                    foreach($branches as $b) {
+                        $workdeskBranchOpts[$b->id] = $b->code . ' - ' . $b->name;
+                    }
+                @endphp
+                <x-neo-select name="branch_id" :options="$workdeskBranchOpts" :value="request('branch_id')" />
             </div>
             @endif
 
             <div class="min-w-[190px]">
-                <select name="status" class="neo-select">
-                    <option value="">Semua Status Aktif</option>
-                    <option value="in_progress" {{ request('status') == 'in_progress' ? 'selected' : '' }}>Proses Pengerjaan</option>
-                    <option value="revision" {{ request('status') == 'revision' ? 'selected' : '' }}>Revisi</option>
-                    <option value="draft" {{ request('status') == 'draft' ? 'selected' : '' }}>Draft / Antrean</option>
-                    <option value="ready_to_print" {{ request('status') == 'ready_to_print' ? 'selected' : '' }}>Siap Cetak</option>
-                </select>
+                <x-neo-select 
+                    name="status" 
+                    :value="request('status')"
+                    :options="[
+                        '' => 'Semua Status Aktif',
+                        'in_progress' => 'Proses Pengerjaan',
+                        'revision' => 'Revisi',
+                        'draft' => 'Draft / Antrean',
+                        'ready_to_print' => 'Siap Cetak',
+                    ]" 
+                />
             </div>
 
             <label class="flex items-center gap-2 text-xs font-bold text-slate-800 dark:text-slate-300 cursor-pointer bg-white dark:bg-slate-900 border-[1.5px] border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 shadow-[1.5px_1.5px_0px_0px_#e2e8f0] dark:shadow-[1.5px_1.5px_0px_0px_#000000] hover:border-slate-800 dark:hover:border-amber-400 transition-all select-none">
@@ -231,11 +234,16 @@
             <div class="upload-fields-container space-y-4">
                 <div>
                     <label class="block text-xs font-black uppercase text-slate-900 dark:text-slate-300 mb-1">Tipe File</label>
-                    <select name="file_type" required class="neo-select">
-                        <option value="final_print" selected>File Cetak Siap Produksi (Otomatis Ubah Status ke Siap Cetak)</option>
-                        <option value="preview_proof">Preview Proofing ke Pelanggan</option>
-                        <option value="brief_ref">Referensi Brief Tambahan</option>
-                    </select>
+                    <x-neo-select 
+                        name="file_type" 
+                        required 
+                        value="final_print"
+                        :options="[
+                            'final_print' => 'File Cetak Siap Produksi (Otomatis Ubah Status ke Siap Cetak)',
+                            'preview_proof' => 'Preview Proofing ke Pelanggan',
+                            'brief_ref' => 'Referensi Brief Tambahan',
+                        ]" 
+                    />
                 </div>
 
                 <div>

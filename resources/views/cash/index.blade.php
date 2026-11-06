@@ -89,46 +89,57 @@
             @if(Auth::user()->isOwner())
             <div>
                 <label class="block text-[11px] font-black uppercase text-slate-800 dark:text-slate-300 mb-1 tracking-wider">Cabang</label>
-                <select name="branch_id" class="neo-select">
-                    <option value="">Semua Cabang</option>
-                    @foreach($branches as $b)
-                        <option value="{{ $b->id }}" {{ request('branch_id') == $b->id ? 'selected' : '' }}>
-                            {{ $b->code }} - {{ $b->name }}
-                        </option>
-                    @endforeach
-                </select>
+                @php
+                    $cashBranchOpts = ['' => 'Semua Cabang'];
+                    foreach($branches as $b) {
+                        $cashBranchOpts[$b->id] = $b->code . ' - ' . $b->name;
+                    }
+                @endphp
+                <x-neo-select name="branch_id" :options="$cashBranchOpts" :value="request('branch_id')" />
             </div>
             @endif
 
             <div>
                 <label class="block text-[11px] font-black uppercase text-slate-800 dark:text-slate-300 mb-1 tracking-wider">Arah Kas</label>
-                <select name="type" class="neo-select">
-                    <option value="">Semua (Masuk & Keluar)</option>
-                    <option value="in" {{ request('type') == 'in' ? 'selected' : '' }}>Kas Masuk (+)</option>
-                    <option value="out" {{ request('type') == 'out' ? 'selected' : '' }}>Kas Keluar (-)</option>
-                </select>
+                <x-neo-select 
+                    name="type" 
+                    :value="request('type')"
+                    :options="[
+                        '' => 'Semua (Masuk & Keluar)',
+                        'in' => 'Kas Masuk (+)',
+                        'out' => 'Kas Keluar (-)',
+                    ]" 
+                />
             </div>
 
             <div>
                 <label class="block text-[11px] font-black uppercase text-slate-800 dark:text-slate-300 mb-1 tracking-wider">Kategori</label>
-                <select name="category" class="neo-select">
-                    <option value="">Semua Kategori</option>
-                    <option value="order_dp" {{ request('category') == 'order_dp' ? 'selected' : '' }}>DP Order Desain</option>
-                    <option value="order_settlement" {{ request('category') == 'order_settlement' ? 'selected' : '' }}>Pelunasan Order</option>
-                    <option value="retail_pos" {{ request('category') == 'retail_pos' ? 'selected' : '' }}>Kasir Ritel POS</option>
-                    <option value="petty_cash_expense" {{ request('category') == 'petty_cash_expense' ? 'selected' : '' }}>Pengeluaran Operasional</option>
-                    <option value="initial_balance" {{ request('category') == 'initial_balance' ? 'selected' : '' }}>Modal Kas Awal</option>
-                </select>
+                <x-neo-select 
+                    name="category" 
+                    :value="request('category')"
+                    :options="[
+                        '' => 'Semua Kategori',
+                        'order_dp' => 'DP Order Desain',
+                        'order_settlement' => 'Pelunasan Order',
+                        'retail_pos' => 'Kasir Ritel POS',
+                        'petty_cash_expense' => 'Pengeluaran Operasional',
+                        'initial_balance' => 'Modal Kas Awal',
+                    ]" 
+                />
             </div>
 
             <div>
                 <label class="block text-[11px] font-black uppercase text-slate-800 dark:text-slate-300 mb-1 tracking-wider">Metode Bayar</label>
-                <select name="payment_method" class="neo-select">
-                    <option value="">Semua Metode</option>
-                    <option value="cash" {{ request('payment_method') == 'cash' ? 'selected' : '' }}>Tunai / Cash</option>
-                    <option value="qris" {{ request('payment_method') == 'qris' ? 'selected' : '' }}>QRIS</option>
-                    <option value="transfer" {{ request('payment_method') == 'transfer' ? 'selected' : '' }}>Transfer Bank</option>
-                </select>
+                <x-neo-select 
+                    name="payment_method" 
+                    :value="request('payment_method')"
+                    :options="[
+                        '' => 'Semua Metode',
+                        'cash' => 'Tunai / Cash',
+                        'qris' => 'QRIS',
+                        'transfer' => 'Transfer Bank',
+                    ]" 
+                />
             </div>
 
             <div class="relative" data-neo-datepicker-container data-mode="date">
@@ -300,28 +311,40 @@
             @if(Auth::user()->isOwner())
             <div>
                 <label class="block text-xs font-black uppercase text-black dark:text-slate-300 mb-1">Cabang</label>
-                <select name="branch_id" required class="neo-select">
-                    @foreach($branches as $b)
-                        <option value="{{ $b->id }}">{{ $b->code }} - {{ $b->name }}</option>
-                    @endforeach
-                </select>
+                @php
+                    $modalBranchOpts = [];
+                    foreach($branches as $b) {
+                        $modalBranchOpts[$b->id] = $b->code . ' - ' . $b->name;
+                    }
+                @endphp
+                <x-neo-select name="branch_id" required :options="$modalBranchOpts" :value="Auth::user()->branch_id" />
             </div>
             @endif
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                     <label class="block text-xs font-black uppercase text-black dark:text-slate-300 mb-1">Jenis Mutasi</label>
-                    <select name="type" required class="neo-select">
-                        <option value="out">Kas Keluar (-)</option>
-                        <option value="in">Kas Masuk (+)</option>
-                    </select>
+                    <x-neo-select 
+                        name="type" 
+                        required 
+                        value="out"
+                        :options="[
+                            'out' => 'Kas Keluar (-)',
+                            'in' => 'Kas Masuk (+)',
+                        ]" 
+                    />
                 </div>
                 <div>
                     <label class="block text-xs font-black uppercase text-black dark:text-slate-300 mb-1">Kategori</label>
-                    <select name="category" required class="neo-select">
-                        <option value="petty_cash_expense">Pengeluaran Operasional / Petty Cash</option>
-                        <option value="initial_balance">Modal Kas Awal</option>
-                    </select>
+                    <x-neo-select 
+                        name="category" 
+                        required 
+                        value="petty_cash_expense"
+                        :options="[
+                            'petty_cash_expense' => 'Pengeluaran Operasional / Petty Cash',
+                            'initial_balance' => 'Modal Kas Awal',
+                        ]" 
+                    />
                 </div>
             </div>
 
@@ -345,11 +368,16 @@
 
             <div>
                 <label class="block text-xs font-black uppercase text-black dark:text-slate-300 mb-1">Metode Pembayaran</label>
-                <select name="payment_method" required class="neo-select">
-                    <option value="cash">Tunai (Cash Laci)</option>
-                    <option value="qris">QRIS</option>
-                    <option value="transfer">Transfer Bank</option>
-                </select>
+                <x-neo-select 
+                    name="payment_method" 
+                    required 
+                    value="cash"
+                    :options="[
+                        'cash' => 'Tunai (Cash Laci)',
+                        'qris' => 'QRIS',
+                        'transfer' => 'Transfer Bank',
+                    ]" 
+                />
             </div>
 
             <div>

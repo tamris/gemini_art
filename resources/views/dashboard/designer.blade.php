@@ -6,7 +6,7 @@
 <div class="space-y-8">
 
     <!-- Top Designer Status Header -->
-    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 p-6 bg-blue-200 dark:bg-blue-950/40 border-2 border-black dark:border-slate-700 rounded-2xl shadow-[4px_4px_0px_0px_#000] dark:shadow-[4px_4px_0px_0px_#000000]">
+    <!-- <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 p-6 bg-blue-200 dark:bg-blue-950/40 border-2 border-black dark:border-slate-700 rounded-2xl shadow-[4px_4px_0px_0px_#000] dark:shadow-[4px_4px_0px_0px_#000000]">
         <div>
             <div class="flex items-center gap-2 mb-1">
                 <span class="w-3 h-3 rounded-full bg-blue-600"></span>
@@ -15,9 +15,9 @@
                 </span>
             </div>
             <h1 class="text-2xl md:text-3xl font-black text-black dark:text-white">Antrean Pengerjaan & Upload File Cetak</h1>
-            <!-- <p class="text-xs md:text-sm font-semibold text-slate-700 mt-1">
+            <p class="text-xs md:text-sm font-semibold text-slate-700 mt-1">
                 Kerjakan brief desain, sesuaikan dimensi & bahan, lalu unggah file cetak final (PDF/TIFF/JPG) untuk otomatisasi arsip cloud.
-            </p> -->
+            </p>
         </div>
         <div class="flex items-center gap-3">
             <a href="{{ route('workdesk.index') }}" class="neo-btn bg-white hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700 dark:text-white dark:border-slate-700 text-xs py-2.5 px-4 text-black flex items-center gap-2 dark:shadow-[2px_2px_0px_0px_#000000]">
@@ -29,7 +29,7 @@
                 <span>Arsip File</span>
             </a>
         </div>
-    </div>
+    </div> -->
 
     <!-- Active Design Jobs in Progress (Workdesk Cards) -->
     <div>
@@ -198,11 +198,16 @@
             <div class="upload-fields-container space-y-4">
                 <div>
                     <label class="block text-xs font-black uppercase text-black dark:text-white mb-1">Tipe File Yang Diunggah</label>
-                    <select name="file_type" required class="neo-select">
-                        <option value="final_print" selected>File Cetak Siap Produksi (Otomatis Ubah Status ke Siap Cetak)</option>
-                        <option value="preview_proof">Preview / Proofing ke Customer</option>
-                        <option value="brief_ref">Referensi / Dokumen Brief Tambahan</option>
-                    </select>
+                    <x-neo-select 
+                        name="file_type" 
+                        required 
+                        value="final_print"
+                        :options="[
+                            'final_print' => 'File Cetak Siap Produksi (Otomatis Ubah Status ke Siap Cetak)',
+                            'preview_proof' => 'Preview / Proofing ke Customer',
+                            'brief_ref' => 'Referensi / Dokumen Brief Tambahan',
+                        ]" 
+                    />
                 </div>
 
                 <div>

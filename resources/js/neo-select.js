@@ -100,11 +100,146 @@ export function handleLiveFilter(form, options = {}) {
 }
 
 export function initNeoSelect() {
-    // Select all neo-select, neo-input selects, or standard selects
-    const selects = document.querySelectorAll('select.neo-select, select.neo-input, select:not([data-no-neo-select])');
+    // 1. Initialize Server-Rendered Neo-Selects (Frame 0: Zero DOM Shift, Zero Layout Shift, Zero Flicker)
+    const preRenderedWrappers = document.querySelectorAll('.neo-select-wrapper[data-neo-select-wrapper]');
+    preRenderedWrappers.forEach(wrapper => {
+        if (wrapper.dataset.neoSelectInitialized === 'true') {
+            return;
+        }
+        wrapper.dataset.neoSelectInitialized = 'true';
+
+        const select = wrapper.querySelector('select');
+        const trigger = wrapper.querySelector('.neo-select-trigger');
+        const labelSpan = wrapper.querySelector('.neo-select-label');
+        const chevron = wrapper.querySelector('.neo-select-chevron');
+        const menu = wrapper.querySelector('.neo-select-menu');
+        if (!select || !trigger || !menu) return;
+
+        const optElements = Array.from(menu.querySelectorAll('[role="option"]'));
+
+        function updateStates(activeVal) {
+            trigger.classList.remove('border-rose-500', 'ring-2', 'ring-rose-400');
+            optElements.forEach(el => {
+                const isSelected = String(el.dataset.value) === String(activeVal);
+                el.setAttribute('aria-selected', isSelected ? 'true' : 'false');
+                const check = el.querySelector('.neo-select-check');
+                if (isSelected) {
+                    el.className = 'neo-select-option px-3.5 py-2.5 text-xs font-black cursor-pointer flex items-center justify-between gap-2.5 border-l-4 border-amber-500 bg-amber-100/90 dark:bg-amber-950/40 text-slate-950 dark:text-amber-300';
+                    if (check) check.style.display = 'inline-flex';
+                    const textNode = el.querySelector('.truncate');
+                    if (labelSpan && textNode) {
+                        labelSpan.textContent = textNode.textContent.trim();
+                    }
+                } else {
+                    el.className = 'neo-select-option px-3.5 py-2.5 text-xs font-bold cursor-pointer flex items-center justify-between gap-2.5 border-l-4 border-transparent text-slate-700 dark:text-slate-300 hover:bg-amber-50 dark:hover:bg-slate-800/80 hover:text-slate-950 dark:hover:text-white';
+                    if (check) check.style.display = 'none';
+                }
+            });
+        }
+
+        let closeTimer = null;
+
+        function openMenu() {
+            clearTimeout(closeTimer);
+            document.querySelectorAll('.neo-select-menu.is-open').forEach(m => {
+                if (m !== menu) {
+                    m.classList.remove('is-open');
+                    const otherWrapper = m.closest('.neo-select-wrapper');
+                    const otherTrigger = otherWrapper?.querySelector('.neo-select-trigger');
+                    const otherChevron = otherWrapper?.querySelector('.neo-select-chevron');
+                    if (otherTrigger) {
+                        otherTrigger.classList.remove('border-slate-800', 'dark:border-slate-400', 'shadow-[2.5px_2.5px_0px_0px_#0f172a]', 'dark:shadow-[2.5px_2.5px_0px_0px_#334155]', 'bg-slate-50', 'dark:bg-slate-900');
+                        otherTrigger.setAttribute('aria-expanded', 'false');
+                    }
+                    if (otherChevron) {
+                        otherChevron.classList.remove('rotate-180', 'text-slate-800');
+                    }
+                    if (otherWrapper) otherWrapper.style.zIndex = '';
+                }
+            });
+
+            wrapper.style.zIndex = '40';
+            menu.classList.add('is-open');
+            trigger.classList.add('border-slate-800', 'dark:border-slate-400', 'shadow-[2.5px_2.5px_0px_0px_#0f172a]', 'dark:shadow-[2.5px_2.5px_0px_0px_#334155]', 'bg-slate-50', 'dark:bg-slate-900');
+            trigger.setAttribute('aria-expanded', 'true');
+            if (chevron) chevron.classList.add('rotate-180', 'text-slate-800');
+
+            const activeItem = menu.querySelector('[role="option"][aria-selected="true"]');
+            if (activeItem) {
+                const menuScrollTop = menu.scrollTop;
+                const menuHeight = menu.clientHeight;
+                const itemTop = activeItem.offsetTop;
+                const itemHeight = activeItem.offsetHeight;
+
+                if (itemTop < menuScrollTop) {
+                    menu.scrollTop = itemTop;
+                } else if (itemTop + itemHeight > menuScrollTop + menuHeight) {
+                    menu.scrollTop = itemTop + itemHeight - menuHeight;
+                }
+            }
+        }
+
+        function closeMenu() {
+            menu.classList.remove('is-open');
+            trigger.classList.remove('border-slate-800', 'dark:border-slate-400', 'shadow-[2.5px_2.5px_0px_0px_#0f172a]', 'dark:shadow-[2.5px_2.5px_0px_0px_#334155]', 'bg-slate-50', 'dark:bg-slate-900');
+            trigger.setAttribute('aria-expanded', 'false');
+            if (chevron) chevron.classList.remove('rotate-180', 'text-slate-800');
+
+            clearTimeout(closeTimer);
+            closeTimer = setTimeout(() => {
+                if (!menu.classList.contains('is-open')) {
+                    wrapper.style.zIndex = '';
+                }
+            }, 180);
+        }
+
+        trigger.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (menu.classList.contains('is-open')) {
+                closeMenu();
+            } else {
+                openMenu();
+            }
+        });
+
+        optElements.forEach(optEl => {
+            optEl.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const prevValue = select.value;
+                const newValue = optEl.dataset.value;
+
+                select.value = newValue;
+                updateStates(newValue);
+                closeMenu();
+
+                select.dispatchEvent(new Event('change', { bubbles: true }));
+
+                if (prevValue !== newValue) {
+                    const form = select.closest('form[data-auto-submit]');
+                    if (form) {
+                        handleLiveFilter(form);
+                    }
+                }
+            });
+        });
+
+        select.addEventListener('change', () => {
+            updateStates(select.value);
+        });
+
+        const form = select.closest('form');
+        if (form) {
+            form.addEventListener('reset', () => {
+                setTimeout(() => updateStates(select.value), 10);
+            });
+        }
+    });
+
+    // 2. Initialize Dynamic Client-Rendered Selects (fallback for plain selects marked with class neo-select)
+    const selects = document.querySelectorAll('select.neo-select:not([data-no-neo-select]):not([data-neo-select-initialized="true"])');
 
     selects.forEach(select => {
-        if (select.dataset.neoSelectInitialized === 'true') {
+        if (select.closest('.neo-select-wrapper') || select.dataset.neoSelectInitialized === 'true') {
             return;
         }
         select.dataset.neoSelectInitialized = 'true';
@@ -134,11 +269,11 @@ export function initNeoSelect() {
         let selectedOption = select.options[select.selectedIndex] || select.options[0];
         let selectedText = selectedOption ? selectedOption.textContent.trim() : 'Pilih opsi...';
 
-        // 2. Build Trigger Button
+        // 2. Build Trigger Button (with full dark mode support)
         const trigger = document.createElement('button');
         trigger.type = 'button';
         const heightClass = select.className.match(/\bh-\S+/)?.[0] || 'h-10';
-        trigger.className = `neo-select-trigger w-full ${heightClass} flex items-center justify-between gap-2 bg-white border-[1.5px] border-slate-300 rounded-xl px-3 text-xs font-bold text-slate-800 shadow-[1.5px_1.5px_0px_0px_#e2e8f0] hover:border-slate-800 focus:outline-none cursor-pointer text-left`;
+        trigger.className = `neo-select-trigger w-full ${heightClass} flex items-center justify-between gap-2 bg-white dark:bg-[#0c1222] border-[1.5px] border-slate-300 dark:border-slate-600 rounded-xl px-3 text-xs font-bold text-slate-800 dark:text-slate-100 shadow-[1.5px_1.5px_0px_0px_#e2e8f0] dark:shadow-[2px_2px_0px_0px_#334155] hover:border-slate-800 dark:hover:border-slate-400 focus:outline-none cursor-pointer text-left`;
         trigger.setAttribute('aria-haspopup', 'listbox');
         trigger.setAttribute('aria-expanded', 'false');
 
@@ -147,7 +282,7 @@ export function initNeoSelect() {
         labelSpan.textContent = selectedText;
 
         const chevron = document.createElement('span');
-        chevron.className = 'neo-select-chevron text-slate-400 shrink-0';
+        chevron.className = 'neo-select-chevron text-slate-400 dark:text-slate-500 shrink-0';
         chevron.innerHTML = `<svg class="w-3.5 h-3.5 stroke-[2.5]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>`;
 
         trigger.appendChild(labelSpan);
@@ -156,10 +291,10 @@ export function initNeoSelect() {
 
         // 3. Build Dropdown Menu
         const menu = document.createElement('div');
-        menu.className = 'neo-select-menu absolute top-[calc(100%+6px)] left-0 w-full min-w-full max-h-60 overflow-y-auto bg-white border-[1.5px] border-slate-800 rounded-xl shadow-[3.5px_3.5px_0px_0px_#0f172a] py-1.5 z-50';
+        menu.className = 'neo-select-menu absolute top-[calc(100%+6px)] left-0 w-full min-w-full max-h-60 overflow-y-auto bg-white dark:bg-[#0c1222] border-[1.5px] border-slate-800 dark:border-slate-600 rounded-xl shadow-[3.5px_3.5px_0px_0px_#0f172a] dark:shadow-[4px_4px_0px_0px_#334155] py-1.5 z-50';
         menu.setAttribute('role', 'listbox');
 
-        // Store pre-built option DOM elements for instant, stable updates (no innerHTML clearing)
+        // Store pre-built option DOM elements for instant, stable updates
         const optionElements = [];
 
         Array.from(select.options).forEach((opt, index) => {
@@ -174,7 +309,7 @@ export function initNeoSelect() {
             optEl.appendChild(textSpan);
 
             const checkIcon = document.createElement('span');
-            checkIcon.className = 'neo-select-check shrink-0 text-amber-900';
+            checkIcon.className = 'neo-select-check shrink-0 text-amber-900 dark:text-amber-400';
             checkIcon.innerHTML = `<svg class="w-3.5 h-3.5 stroke-[2.5]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>`;
             optEl.appendChild(checkIcon);
 
@@ -206,20 +341,19 @@ export function initNeoSelect() {
             menu.appendChild(optEl);
         });
 
-        // Updates active states without rebuilding DOM nodes (preserves closing animation)
+        // Updates active states without rebuilding DOM nodes
         function updateOptionStates(activeIndex) {
             trigger.classList.remove('border-rose-500', 'ring-2', 'ring-rose-400');
             optionElements.forEach(({ el, check, opt }, idx) => {
                 const isSelected = idx === activeIndex;
                 el.setAttribute('aria-selected', isSelected ? 'true' : 'false');
 
-                // Constant 4px left border avoids horizontal layout shift
                 if (isSelected) {
-                    el.className = 'neo-select-option px-3.5 py-2.5 text-xs font-black cursor-pointer flex items-center justify-between gap-2.5 border-l-4 border-amber-500 bg-amber-100/90 text-slate-950';
+                    el.className = 'neo-select-option px-3.5 py-2.5 text-xs font-black cursor-pointer flex items-center justify-between gap-2.5 border-l-4 border-amber-500 bg-amber-100/90 dark:bg-amber-950/40 text-slate-950 dark:text-amber-300';
                     check.style.display = 'inline-flex';
                     labelSpan.textContent = opt.textContent.trim();
                 } else {
-                    el.className = 'neo-select-option px-3.5 py-2.5 text-xs font-bold cursor-pointer flex items-center justify-between gap-2.5 border-l-4 border-transparent text-slate-700 hover:bg-amber-50 hover:text-slate-950';
+                    el.className = 'neo-select-option px-3.5 py-2.5 text-xs font-bold cursor-pointer flex items-center justify-between gap-2.5 border-l-4 border-transparent text-slate-700 dark:text-slate-300 hover:bg-amber-50 dark:hover:bg-slate-800/80 hover:text-slate-950 dark:hover:text-white';
                     check.style.display = 'none';
                 }
             });
@@ -241,7 +375,7 @@ export function initNeoSelect() {
                     const otherTrigger = otherWrapper?.querySelector('.neo-select-trigger');
                     const otherChevron = otherWrapper?.querySelector('.neo-select-chevron');
                     if (otherTrigger) {
-                        otherTrigger.classList.remove('border-slate-800', 'shadow-[2.5px_2.5px_0px_0px_#0f172a]', 'bg-slate-50');
+                        otherTrigger.classList.remove('border-slate-800', 'dark:border-slate-400', 'shadow-[2.5px_2.5px_0px_0px_#0f172a]', 'dark:shadow-[2.5px_2.5px_0px_0px_#334155]', 'bg-slate-50', 'dark:bg-slate-900');
                         otherTrigger.setAttribute('aria-expanded', 'false');
                     }
                     if (otherChevron) {
@@ -253,14 +387,12 @@ export function initNeoSelect() {
                 }
             });
 
-            // Elevate wrapper z-index so dropdown stays above neighboring card elements
             wrapper.style.zIndex = '40';
             menu.classList.add('is-open');
-            trigger.classList.add('border-slate-800', 'shadow-[2.5px_2.5px_0px_0px_#0f172a]', 'bg-slate-50');
+            trigger.classList.add('border-slate-800', 'dark:border-slate-400', 'shadow-[2.5px_2.5px_0px_0px_#0f172a]', 'dark:shadow-[2.5px_2.5px_0px_0px_#334155]', 'bg-slate-50', 'dark:bg-slate-900');
             trigger.setAttribute('aria-expanded', 'true');
             chevron.classList.add('rotate-180', 'text-slate-800');
 
-            // Internal menu scroll adjustment (NEVER scrollIntoView, preventing window snap)
             const activeItem = optionElements[select.selectedIndex]?.el;
             if (activeItem) {
                 const menuScrollTop = menu.scrollTop;
@@ -278,11 +410,10 @@ export function initNeoSelect() {
 
         function closeMenu() {
             menu.classList.remove('is-open');
-            trigger.classList.remove('border-slate-800', 'shadow-[2.5px_2.5px_0px_0px_#0f172a]', 'bg-slate-50');
+            trigger.classList.remove('border-slate-800', 'dark:border-slate-400', 'shadow-[2.5px_2.5px_0px_0px_#0f172a]', 'dark:shadow-[2.5px_2.5px_0px_0px_#334155]', 'bg-slate-50', 'dark:bg-slate-900');
             trigger.setAttribute('aria-expanded', 'false');
             chevron.classList.remove('rotate-180', 'text-slate-800');
 
-            // Reset z-index after the 180ms fade-out finishes
             clearTimeout(closeZIndexTimer);
             closeZIndexTimer = setTimeout(() => {
                 if (!menu.classList.contains('is-open')) {
@@ -300,19 +431,16 @@ export function initNeoSelect() {
             }
         });
 
-        // Synchronize when native select changes programmatically
         select.addEventListener('change', () => {
             updateOptionStates(select.selectedIndex);
         });
 
-        // Form validation error support for required select
         select.addEventListener('invalid', (e) => {
             e.preventDefault();
             trigger.classList.add('border-rose-500', 'ring-2', 'ring-rose-400');
             trigger.focus();
         });
 
-        // Synchronize on form reset
         const form = select.closest('form');
         if (form) {
             form.addEventListener('reset', () => {
@@ -423,12 +551,9 @@ document.addEventListener('click', (e) => {
     }
 });
 
-// Auto-delegate change events for checkboxes, dates, etc. inside data-auto-submit forms
+// Auto-delegate change events for selects, checkboxes, dates, etc. inside data-auto-submit forms
 document.addEventListener('change', (e) => {
     const input = e.target;
-    if (input.matches('select.neo-select, select.neo-input')) {
-        return; // Handled by neo-select click handler
-    }
     const form = input.closest('form[data-auto-submit]');
     if (form && document.getElementById('filter-results-container')) {
         clearTimeout(searchInputDebounceTimer);

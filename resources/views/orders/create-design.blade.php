@@ -42,11 +42,13 @@
                             <label class="block text-xs font-black uppercase text-slate-800 dark:text-slate-300 mb-1 tracking-wider">
                                 Cabang Pelaksana <span class="text-rose-500">*</span>
                             </label>
-                            <select name="branch_id" required class="neo-select h-10">
-                                @foreach($branches as $b)
-                                    <option value="{{ $b->id }}">{{ $b->code }} - {{ $b->name }}</option>
-                                @endforeach
-                            </select>
+                            @php
+                                $createBranchOpts = [];
+                                foreach($branches as $b) {
+                                    $createBranchOpts[$b->id] = $b->code . ' - ' . $b->name;
+                                }
+                            @endphp
+                            <x-neo-select name="branch_id" :options="$createBranchOpts" :value="old('branch_id', Auth::user()->branch_id)" required />
                         </div>
                         @else
                         <div>
@@ -88,14 +90,13 @@
                             <label class="block text-xs font-black uppercase text-slate-800 dark:text-slate-300 mb-1 tracking-wider">
                                 Tugaskan ke Desainer
                             </label>
-                            <select name="designer_id" class="neo-select h-10">
-                                <option value="">Antrean Umum Cabang (Draft)</option>
-                                @foreach($designers as $d)
-                                    <option value="{{ $d->id }}" {{ old('designer_id') == $d->id ? 'selected' : '' }}>
-                                        {{ $d->name }} ({{ $d->branch ? $d->branch->code : 'Pusat' }})
-                                    </option>
-                                @endforeach
-                            </select>
+                            @php
+                                $designerOpts = ['' => 'Antrean Umum Cabang (Draft)'];
+                                foreach($designers as $d) {
+                                    $designerOpts[$d->id] = $d->name . ' (' . ($d->branch ? $d->branch->code : 'Pusat') . ')';
+                                }
+                            @endphp
+                            <x-neo-select name="designer_id" :options="$designerOpts" :value="old('designer_id', '')" />
                         </div>
 
                     </div>
@@ -555,11 +556,16 @@
                             <label class="block text-xs font-black uppercase text-slate-800 dark:text-slate-300 mb-1 tracking-wider">
                                 Metode Pembayaran <span class="text-rose-500">*</span>
                             </label>
-                            <select name="payment_method" required class="neo-select h-10">
-                                <option value="cash">Tunai (Cash Laci)</option>
-                                <option value="qris">QRIS Statis/Dinamis</option>
-                                <option value="transfer">Transfer Bank Cabang</option>
-                            </select>
+                            <x-neo-select 
+                                name="payment_method" 
+                                required
+                                :value="old('payment_method', 'cash')"
+                                :options="[
+                                    'cash' => 'Tunai (Cash Laci)',
+                                    'qris' => 'QRIS Statis/Dinamis',
+                                    'transfer' => 'Transfer Bank Cabang',
+                                ]" 
+                            />
                         </div>
                     </div>
 
@@ -571,7 +577,7 @@
                         </div>
                         <div class="flex items-center justify-between pt-1 border-t border-slate-100 dark:border-slate-800 text-xs">
                             <span class="text-slate-500 dark:text-slate-400 font-medium">Status Order:</span>
-                            <span id="status-badge" class="px-2.5 py-0.5 rounded-full border border-rose-300 font-black uppercase text-[10px] bg-rose-100 text-rose-800 shadow-[1px_1px_0px_0px_#0f172a] dark:shadow-[1px_1px_0px_0px_#000000]">
+                            <span id="status-badge" class="px-2.5 py-0.5 rounded-full border border-rose-300 dark:border-rose-500/50 font-black uppercase text-[10px] bg-rose-100 dark:bg-rose-950/40 text-rose-800 dark:text-rose-300 shadow-[1px_1px_0px_0px_#0f172a] dark:shadow-[1px_1px_0px_0px_#000000]">
                                 BELUM BAYAR
                             </span>
                         </div>

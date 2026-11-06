@@ -91,26 +91,31 @@
             <!-- Branch filter -->
             <div>
                 <label class="block text-[11px] font-black uppercase text-slate-800 dark:text-slate-300 mb-1 tracking-wider">Cabang Penempatan</label>
-                <select name="branch_id" class="neo-select">
-                    <option value="">Semua Cabang</option>
-                    <option value="central" {{ request('branch_id') === 'central' ? 'selected' : '' }}>Pusat (Akses Global / Owner)</option>
-                    @foreach($branches as $b)
-                        <option value="{{ $b->id }}" {{ request('branch_id') == $b->id ? 'selected' : '' }}>
-                            {{ $b->code }} - {{ $b->name }}
-                        </option>
-                    @endforeach
-                </select>
+                @php
+                    $userBranchOpts = [
+                        '' => 'Semua Cabang',
+                        'central' => 'Pusat (Akses Global / Owner)',
+                    ];
+                    foreach($branches as $b) {
+                        $userBranchOpts[$b->id] = $b->code . ' - ' . $b->name;
+                    }
+                @endphp
+                <x-neo-select name="branch_id" :options="$userBranchOpts" :value="request('branch_id')" />
             </div>
 
             <!-- Role filter -->
             <div>
                 <label class="block text-[11px] font-black uppercase text-slate-800 dark:text-slate-300 mb-1 tracking-wider">Peran / Role</label>
-                <select name="role" class="neo-select">
-                    <option value="">Semua Role</option>
-                    <option value="cashier" {{ request('role') === 'cashier' ? 'selected' : '' }}>Kasir (POS & Kas)</option>
-                    <option value="designer" {{ request('role') === 'designer' ? 'selected' : '' }}>Desainer (Workdesk)</option>
-                    <option value="owner" {{ request('role') === 'owner' ? 'selected' : '' }}>Owner (Super Admin)</option>
-                </select>
+                <x-neo-select 
+                    name="role" 
+                    :value="request('role')"
+                    :options="[
+                        '' => 'Semua Role',
+                        'cashier' => 'Kasir (POS & Kas)',
+                        'designer' => 'Desainer (Workdesk)',
+                        'owner' => 'Owner (Super Admin)',
+                    ]" 
+                />
             </div>
 
             <!-- Reset Filter Action -->
@@ -311,19 +316,27 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                 <div>
                     <label class="block text-xs font-black uppercase text-slate-800 dark:text-slate-300 mb-1">Peran / Role *</label>
-                    <select name="role" required class="neo-select" onchange="toggleBranchRequirement(this, 'add-branch-wrapper')">
-                        <option value="cashier" selected>Kasir</option>
-                        <option value="designer">Desainer</option>
-                        <option value="owner">Owner</option>
-                    </select>
+                    <x-neo-select 
+                        name="role" 
+                        required 
+                        value="cashier"
+                        onchange="toggleBranchRequirement(this, 'add-branch-wrapper')"
+                        :options="[
+                            'cashier' => 'Kasir',
+                            'designer' => 'Desainer',
+                            'owner' => 'Owner',
+                        ]" 
+                    />
                 </div>
                 <div id="add-branch-wrapper">
                     <label class="block text-xs font-black uppercase text-slate-800 dark:text-slate-300 mb-1">Cabang Penempatan *</label>
-                    <select name="branch_id" class="neo-select">
-                        @foreach($branches as $b)
-                            <option value="{{ $b->id }}">{{ $b->code }} - {{ $b->name }}</option>
-                        @endforeach
-                    </select>
+                    @php
+                        $userAddBranchOpts = [];
+                        foreach($branches as $b) {
+                            $userAddBranchOpts[$b->id] = $b->code . ' - ' . $b->name;
+                        }
+                    @endphp
+                    <x-neo-select name="branch_id" :options="$userAddBranchOpts" :value="Auth::user()->branch_id" />
                 </div>
             </div>
 
@@ -385,23 +398,32 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                 <div>
                     <label class="block text-xs font-black uppercase text-slate-800 dark:text-slate-300 mb-1">Peran / Role *</label>
-                    <select name="role" required class="neo-select" onchange="toggleBranchRequirement(this, 'edit-branch-wrapper-{{ $u->id }}')">
-                        <option value="cashier" {{ $u->role === 'cashier' ? 'selected' : '' }}>Kasir</option>
-                        <option value="designer" {{ $u->role === 'designer' ? 'selected' : '' }}>Desainer</option>
-                        @if($u->role === 'owner' || Auth::user()->isOwner())
-                            <option value="owner" {{ $u->role === 'owner' ? 'selected' : '' }}>Owner</option>
-                        @endif
-                    </select>
+                    @php
+                        $editRoleOpts = [
+                            'cashier' => 'Kasir',
+                            'designer' => 'Desainer',
+                        ];
+                        if ($u->role === 'owner' || Auth::user()->isOwner()) {
+                            $editRoleOpts['owner'] = 'Owner';
+                        }
+                    @endphp
+                    <x-neo-select 
+                        name="role" 
+                        required 
+                        :value="$u->role"
+                        onchange="toggleBranchRequirement(this, 'edit-branch-wrapper-{{ $u->id }}')"
+                        :options="$editRoleOpts" 
+                    />
                 </div>
                 <div id="edit-branch-wrapper-{{ $u->id }}" class="{{ $u->role === 'owner' ? 'opacity-40 pointer-events-none' : '' }}">
                     <label class="block text-xs font-black uppercase text-slate-800 dark:text-slate-300 mb-1">Mutasi Cabang *</label>
-                    <select name="branch_id" class="neo-select">
-                        @foreach($branches as $b)
-                            <option value="{{ $b->id }}" {{ $u->branch_id == $b->id ? 'selected' : '' }}>
-                                {{ $b->code }} - {{ $b->name }}
-                            </option>
-                        @endforeach
-                    </select>
+                    @php
+                        $userEditBranchOpts = [];
+                        foreach($branches as $b) {
+                            $userEditBranchOpts[$b->id] = $b->code . ' - ' . $b->name;
+                        }
+                    @endphp
+                    <x-neo-select name="branch_id" :options="$userEditBranchOpts" :value="$u->branch_id" />
                 </div>
             </div>
 

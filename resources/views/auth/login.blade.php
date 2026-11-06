@@ -17,9 +17,15 @@
             }
         })();
     </script>
+    <style>
+        html.dark, html.dark body { background-color: #0b0f19 !important; color: #f1f5f9 !important; color-scheme: dark; }
+        html:not(.dark), html:not(.dark) body { background-color: #F8FAFC !important; color: #0f172a !important; color-scheme: light; }
+        html.dark .neo-box { background-color: #0c1222 !important; border-color: #64748b !important; }
+        .preload, .preload * { transition: none !important; -webkit-transition: none !important; }
+    </style>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="bg-[#F8FAFC] dark:bg-[#0b0f19] text-slate-900 dark:text-slate-100 font-sans min-h-screen flex flex-col justify-center items-center p-4 sm:p-6 relative selection:bg-amber-300 selection:text-slate-950 transition-colors">
+<body class="preload bg-[#F8FAFC] dark:bg-[#0b0f19] text-slate-900 dark:text-slate-100 font-sans min-h-screen flex flex-col justify-center items-center p-4 sm:p-6 relative selection:bg-amber-300 selection:text-slate-950">
 
     <!-- Subtle Ambient Accents -->
     <div class="absolute -top-24 -left-24 w-80 h-80 bg-amber-200/25 dark:bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
@@ -165,6 +171,12 @@
             eyeIcon.innerHTML = `<svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0" /><circle cx="12" cy="12" r="3" /></svg>`;
         }
     }
+
+    requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+            document.body.classList.remove('preload');
+        });
+    });
     </script>
 
 </body>

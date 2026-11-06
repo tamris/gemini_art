@@ -274,6 +274,7 @@
                                         dimensions: '{{ addslashes($order->designJob->dimensions ?? '') }}',
                                         materialNotes: '{{ addslashes($order->designJob->material_notes ?? '') }}',
                                         briefNotes: '{{ addslashes($order->designJob->brief_notes ?? '') }}',
+                                        qty: {{ $order->items->first()?->qty ?? 1 }},
                                         shareUrl: '{{ $asset->share_url }}'
                                     })"
                                     title="Kirim Berkas ke Percetakan Rekanan (WA / Email / Link)"
@@ -389,11 +390,16 @@
                         @csrf
                         <div>
                             <label class="block text-[11px] font-black uppercase text-slate-900 dark:text-white mb-1">Metode Pelunasan</label>
-                            <select name="payment_method" required class="neo-select">
-                                <option value="cash">Tunai (Cash Laci)</option>
-                                <option value="qris">QRIS Statis/Dinamis</option>
-                                <option value="transfer">Transfer Bank</option>
-                            </select>
+                            <x-neo-select 
+                                name="payment_method" 
+                                required 
+                                value="cash"
+                                :options="[
+                                    'cash' => 'Tunai (Cash Laci)',
+                                    'qris' => 'QRIS Statis/Dinamis',
+                                    'transfer' => 'Transfer Bank',
+                                ]" 
+                            />
                         </div>
                         <div>
                             <label class="block text-[11px] font-black uppercase text-slate-900 dark:text-white mb-1">Catatan Tambahan (Opsional)</label>
@@ -491,14 +497,20 @@
                     @csrf
                     <div>
                         <label class="block text-[11px] font-black uppercase text-slate-900 dark:text-white mb-1">Pilih Status Baru</label>
-                        <select name="work_status" id="work_status_select" class="neo-select" onchange="handleWorkStatusChange(this.value)">
-                            <option value="draft" {{ $order->work_status === 'draft' ? 'selected' : '' }}>Draft / Antrean</option>
-                            <option value="in_progress" {{ $order->work_status === 'in_progress' ? 'selected' : '' }}>Proses Pengerjaan</option>
-                            <option value="revision" {{ $order->work_status === 'revision' ? 'selected' : '' }}>Revisi (Perlu Perbaikan Desain)</option>
-                            <option value="ready_to_print" {{ $order->work_status === 'ready_to_print' ? 'selected' : '' }}>Siap Cetak (Produksi)</option>
-                            <option value="completed">Selesai / Diambil Customer</option>
-                            <option value="canceled">Batalkan Pesanan</option>
-                        </select>
+                        <x-neo-select 
+                            name="work_status" 
+                            id="work_status_select" 
+                            onchange="handleWorkStatusChange(this.value)"
+                            :value="$order->work_status"
+                            :options="[
+                                'draft' => 'Draft / Antrean',
+                                'in_progress' => 'Proses Pengerjaan',
+                                'revision' => 'Revisi (Perlu Perbaikan Desain)',
+                                'ready_to_print' => 'Siap Cetak (Produksi)',
+                                'completed' => 'Selesai / Diambil Customer',
+                                'canceled' => 'Batalkan Pesanan',
+                            ]" 
+                        />
                     </div>
 
                     <!-- Contextual Field: Revision Notes -->
@@ -541,10 +553,14 @@
                             </div>
                             <div id="refund-method-select" class="pt-2 border-t border-slate-200 dark:border-slate-800">
                                 <label class="block text-[10px] font-black uppercase text-slate-700 dark:text-slate-300 mb-1">Metode Pengembalian Uang</label>
-                                <select name="refund_method" class="neo-select text-xs py-1">
-                                    <option value="cash" selected>Kas Tunai Laci (Cash)</option>
-                                    <option value="transfer">Transfer Bank</option>
-                                </select>
+                                <x-neo-select 
+                                    name="refund_method" 
+                                    value="cash"
+                                    :options="[
+                                        'cash' => 'Kas Tunai Laci (Cash)',
+                                        'transfer' => 'Transfer Bank',
+                                    ]" 
+                                />
                             </div>
                         </div>
                         @endif
@@ -598,11 +614,16 @@
             <div class="upload-fields-container space-y-4">
                 <div>
                     <label class="block text-xs font-black uppercase text-slate-900 dark:text-white mb-1">Tipe File</label>
-                    <select name="file_type" required class="neo-select">
-                        <option value="final_print" selected>File Cetak Siap Produksi (Status → Siap Cetak)</option>
-                        <option value="preview_proof">Preview Proofing ke Pelanggan</option>
-                        <option value="brief_ref">Referensi Brief / Lampiran</option>
-                    </select>
+                    <x-neo-select 
+                        name="file_type" 
+                        required 
+                        value="final_print"
+                        :options="[
+                            'final_print' => 'File Cetak Siap Produksi (Status → Siap Cetak)',
+                            'preview_proof' => 'Preview Proofing ke Pelanggan',
+                            'brief_ref' => 'Referensi Brief / Lampiran',
+                        ]" 
+                    />
                 </div>
 
                 <div>
@@ -652,10 +673,15 @@
             
             <div>
                 <label class="block text-xs font-black uppercase text-slate-900 dark:text-white mb-1">Target Status Pembukaan</label>
-                <select name="target_status" required class="neo-select text-xs">
-                    <option value="in_progress">Proses Pengerjaan (Aktif Kembali)</option>
-                    <option value="revision">Revisi (Masuk Antrean Perbaikan Desain)</option>
-                </select>
+                <x-neo-select 
+                    name="target_status" 
+                    required 
+                    value="in_progress"
+                    :options="[
+                        'in_progress' => 'Proses Pengerjaan (Aktif Kembali)',
+                        'revision' => 'Revisi (Masuk Antrean Perbaikan Desain)',
+                    ]" 
+                />
             </div>
 
             <div>
@@ -726,6 +752,8 @@ function dispatchAllAssets() {
         dimensions: '{{ addslashes($order->designJob->dimensions ?? '') }}',
         materialNotes: '{{ addslashes($order->designJob->material_notes ?? '') }}',
         briefNotes: '{{ addslashes($order->designJob->brief_notes ?? '') }}',
+        qty: {{ $order->items->first()?->qty ?? 1 }},
+        shareUrl: '{{ $order->designJob && $order->designJob->assets->where('file_type', 'final_print')->isNotEmpty() ? $order->designJob->assets->where('file_type', 'final_print')->first()->share_url : '' }}',
         files: [
             @if($order->designJob)
             @foreach($order->designJob->assets->where('file_type', 'final_print') as $ast)
