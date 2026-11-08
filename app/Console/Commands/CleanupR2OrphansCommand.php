@@ -13,21 +13,21 @@ class CleanupR2OrphansCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'r2:cleanup-orphans {--force : Perform the actual deletion without confirmation} {--dry-run : Only list orphan files without deleting}';
+    protected $signature = 'storage:cleanup-orphans {--force : Perform the actual deletion without confirmation} {--dry-run : Only list orphan files without deleting}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Scan Cloudflare R2 bucket and clean up orphan files that no longer exist in the database';
+    protected $description = 'Scan storage disk and clean up orphan files that no longer exist in the database';
 
     /**
      * Execute the console command.
      */
     public function handle(): int
     {
-        $disk = config('filesystems.archive_disk', 'r2');
+        $disk = config('filesystems.archive_disk', 'public');
         $this->info("Scanning storage disk [{$disk}] for orphan design files...");
 
         try {
@@ -60,7 +60,7 @@ class CleanupR2OrphansCommand extends Command
         }
 
         if (empty($orphanFiles)) {
-            $this->info("✓ No orphan files found. Cloudflare R2 storage is 100% in sync with database!");
+            $this->info("✓ No orphan files found. Storage disk [{$disk}] is 100% in sync with database!");
             return Command::SUCCESS;
         }
 
@@ -95,7 +95,7 @@ class CleanupR2OrphansCommand extends Command
             }
         }
 
-        $this->info("✓ Successfully deleted {$deletedCount} orphan file(s). Freed " . round($totalOrphanBytes / (1024 * 1024), 2) . " MB from Cloudflare R2.");
+        $this->info("✓ Successfully deleted {$deletedCount} orphan file(s). Freed " . round($totalOrphanBytes / (1024 * 1024), 2) . " MB from disk [{$disk}].");
         return Command::SUCCESS;
     }
 }
