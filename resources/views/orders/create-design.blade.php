@@ -130,23 +130,94 @@
                                    class="w-full h-10 neo-input text-xs">
                         </div>
 
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <div>
+                        <!-- Mode Hitung Produk (Kalkulator Meteran vs Satuan) -->
+                        <div class="p-3.5 bg-amber-50/70 dark:bg-slate-900/70 border-[1.5px] border-amber-300 dark:border-slate-700 rounded-xl space-y-3 shadow-[1.5px_1.5px_0px_0px_#e2e8f0] dark:shadow-[1.5px_1.5px_0px_0px_#000000]">
+                            <input type="hidden" id="calc_mode" name="calc_mode" value="{{ old('calc_mode', 'meter') }}">
+                            <input type="hidden" id="main_unit" name="main_unit" value="{{ old('main_unit', 'Meter') }}">
+
+                            <label class="block text-xs font-black uppercase text-slate-800 dark:text-slate-200 tracking-wider flex items-center gap-1.5">
+                                <x-icon name="calculator" class="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
+                                <span>Mode Hitung Otomatis:</span>
+                            </label>
+
+                            <div class="grid grid-cols-2 gap-2">
+                                <button type="button" 
+                                        id="btn-mode-meter"
+                                        onclick="setCalcMode('meter')"
+                                        class="py-2 px-3 rounded-lg border-2 border-slate-900 dark:border-slate-700 font-black text-xs flex items-center justify-center gap-1.5 cursor-pointer transition-all bg-amber-300 text-slate-950 shadow-[1.5px_1.5px_0px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_0px_#000000]">
+                                    <x-icon name="maximize" class="w-3.5 h-3.5" />
+                                    <span>Cetak Meteran</span>
+                                </button>
+                                <button type="button" 
+                                        id="btn-mode-pcs"
+                                        onclick="setCalcMode('pcs')"
+                                        class="py-2 px-3 rounded-lg border-[1.5px] border-slate-300 dark:border-slate-700 font-bold text-xs flex items-center justify-center gap-1.5 cursor-pointer transition-all bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:border-slate-800">
+                                    <x-icon name="box" class="w-3.5 h-3.5" />
+                                    <span>Cetak Satuan</span>
+                                </button>
+                            </div>
+
+                            <!-- Panel Mode Meteran: Input Panjang & Lebar Otomatis -->
+                            <div id="panel-mode-meter" class="space-y-3 pt-2.5 border-t border-amber-200 dark:border-slate-800">
+                                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 items-end">
+                                    <div>
+                                        <label class="block text-xs font-black uppercase text-slate-800 dark:text-slate-300 mb-1 tracking-wider truncate">
+                                            Panjang (Meter)
+                                        </label>
+                                        <input type="number" 
+                                               id="calc_length" 
+                                               step="0.05" 
+                                               min="0" 
+                                               value="{{ old('calc_length', '') }}" 
+                                               placeholder="0" 
+                                               oninput="handleMeterDimensionChange()"
+                                               class="w-full h-10 neo-input text-xs font-black bg-white dark:bg-slate-950 text-center">
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-black uppercase text-slate-800 dark:text-slate-300 mb-1 tracking-wider truncate">
+                                            Lebar / Tinggi (Meter)
+                                        </label>
+                                        <input type="number" 
+                                               id="calc_width" 
+                                               step="0.05" 
+                                               min="0" 
+                                               value="{{ old('calc_width', '') }}" 
+                                               placeholder="0" 
+                                               oninput="handleMeterDimensionChange()"
+                                               class="w-full h-10 neo-input text-xs font-black bg-white dark:bg-slate-950 text-center">
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-black uppercase text-slate-800 dark:text-slate-300 mb-1 tracking-wider truncate">
+                                            Total Luas Hitung
+                                        </label>
+                                        <div class="w-full h-10 px-3.5 rounded-xl border-[1.5px] border-slate-300 dark:border-slate-700 bg-amber-50/90 dark:bg-amber-950/40 flex items-center justify-between shadow-[1.5px_1.5px_0px_0px_#e2e8f0] dark:shadow-[1.5px_1.5px_0px_0px_#000000]">
+                                            <span id="display-area-single" class="text-xs font-black text-slate-900 dark:text-amber-200">0.00 m²</span>
+                                            <span id="display-area-total" class="text-[10px] font-bold text-amber-700 dark:text-amber-400"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="grid-dimensions-material" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div id="wrapper-dimensions" class="hidden">
                                 <label class="block text-xs font-black uppercase text-slate-800 dark:text-slate-300 mb-1 tracking-wider">
-                                    Dimensi / Ukuran Jadi
+                                    Dimensi / Catatan Ukuran
                                 </label>
                                 <input type="text" 
+                                       id="dimensions_input"
                                        name="dimensions" 
-                                       value="{{ old('dimensions') }}" 
-                                       placeholder="Misal: 3 x 1 meter, A4, 9x5.5 cm"
+                                       value="{{ old('dimensions', '') }}" 
+                                       placeholder="Misal: A4, 9x5.5 cm, Brosur Folio"
                                        class="w-full h-10 neo-input text-xs">
                             </div>
 
-                            <div>
+                            <div id="wrapper-material" class="sm:col-span-2">
                                 <label class="block text-xs font-black uppercase text-slate-800 dark:text-slate-300 mb-1 tracking-wider">
                                     Bahan & Finishing
                                 </label>
                                 <input type="text" 
+                                       id="material_notes_input"
                                        name="material_notes" 
                                        value="{{ old('material_notes') }}" 
                                        placeholder="Misal: Flexi Korea 380gr, Art Carton 260gr"
@@ -357,37 +428,11 @@
                         </button>
                     </div>
 
-                    <!-- Quick Preset Section (3 Pilihan Utama Saja) -->
-                    <div class="space-y-1.5">
-                        <span class="text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
-                            <x-icon name="sparkles" class="w-3 h-3 text-amber-500 dark:text-amber-400" />
-                            <span>Pilihan Cepat Populer:</span>
-                        </span>
-
-                        <div class="grid grid-cols-3 gap-2">
-                            <button type="button" 
-                                    onclick="addExtraItemRow('Rangka X-Banner Fiber 60x160', 1, 35000)" 
-                                    class="py-1.5 px-2 rounded-lg bg-slate-100 hover:bg-purple-200 dark:bg-slate-800/90 dark:hover:bg-purple-400 dark:hover:text-slate-950 border-[1.5px] border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 text-xs font-bold cursor-pointer transition-all text-center truncate shadow-[1px_1px_0px_0px_#e2e8f0] dark:shadow-[1px_1px_0px_0px_#000000] active:translate-x-[0.5px] active:translate-y-[0.5px]">
-                                + X-Banner
-                            </button>
-                            <button type="button" 
-                                    onclick="addExtraItemRow('Rangka Roll-Up Aluminium 80x200', 1, 95000)" 
-                                    class="py-1.5 px-2 rounded-lg bg-slate-100 hover:bg-purple-200 dark:bg-slate-800/90 dark:hover:bg-purple-400 dark:hover:text-slate-950 border-[1.5px] border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 text-xs font-bold cursor-pointer transition-all text-center truncate shadow-[1px_1px_0px_0px_#e2e8f0] dark:shadow-[1px_1px_0px_0px_#000000] active:translate-x-[0.5px] active:translate-y-[0.5px]">
-                                + Roll-Up
-                            </button>
-                            <button type="button" 
-                                    onclick="addExtraItemRow('Jasa Pasang & Instalasi Lokasi', 1, 30000)" 
-                                    class="py-1.5 px-2 rounded-lg bg-slate-100 hover:bg-purple-200 dark:bg-slate-800/90 dark:hover:bg-purple-400 dark:hover:text-slate-950 border-[1.5px] border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 text-xs font-bold cursor-pointer transition-all text-center truncate shadow-[1px_1px_0px_0px_#e2e8f0] dark:shadow-[1px_1px_0px_0px_#000000] active:translate-x-[0.5px] active:translate-y-[0.5px]">
-                                + Jasa Pasang
-                            </button>
-                        </div>
-                    </div>
-
                     <!-- Items List Container -->
                     <div id="extra-items-container" class="space-y-2.5">
                         <div id="no-extra-items-msg" class="p-3.5 border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-xl text-center text-xs text-slate-400 dark:text-slate-500 font-semibold bg-slate-50/50 dark:bg-slate-900/40">
                             <span class="text-slate-600 dark:text-slate-400 font-bold block mb-0.5">Belum ada alat atau item tambahan.</span>
-                            <span>Pilih preset cepat di atas atau klik tombol <strong>+ Tambah Item</strong> jika customer membeli alat/layanan ekstra.</span>
+                            <span>Klik tombol <strong>+ Tambah Item</strong> di atas jika customer membeli display, finishing, atau layanan ekstra.</span>
                         </div>
                     </div>
                 </div>
@@ -412,12 +457,78 @@
                     </div>
 
                     <div class="space-y-4">
-                        <!-- Biaya Jasa Desain & Cetak Utama (Qty & Satuan Support) -->
+                        <!-- 1. BIAYA JASA DESAIN (BAGIAN ATAS SESUAI REQUEST) -->
+                        <div class="space-y-2 p-3.5 bg-sky-50/70 dark:bg-sky-950/30 border-[1.5px] border-sky-300 dark:border-sky-800/60 rounded-xl">
+                            <div class="flex items-center justify-between">
+                                <label for="design_fee_display" class="block text-xs font-black uppercase text-sky-950 dark:text-sky-300 tracking-wider flex items-center gap-1.5">
+                                    <x-icon name="palette" class="w-3.5 h-3.5 text-sky-600 dark:text-sky-400" />
+                                    <span>Biaya Jasa Desain</span>
+                                </label>
+                                <span class="text-[9px] font-black text-sky-800 dark:text-sky-300 bg-sky-200/70 dark:bg-sky-900/60 border border-sky-300 dark:border-sky-700 px-2 py-0.5 rounded">
+                                    Murni Jasa (Tanpa Modal Bahan)
+                                </span>
+                            </div>
+
+                            <div class="flex rounded-xl overflow-hidden border-[1.5px] border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-[1.5px_1.5px_0px_0px_#e2e8f0] dark:shadow-[1.5px_1.5px_0px_0px_#000000] focus-within:border-sky-600 dark:focus-within:border-sky-400 transition-all">
+                                <span class="inline-flex items-center px-3 bg-sky-100 dark:bg-sky-900/60 text-sky-900 dark:text-sky-300 border-r-[1.5px] border-slate-300 dark:border-slate-700 text-xs font-black select-none">
+                                    Rp
+                                </span>
+                                <input type="text" 
+                                       id="design_fee_display" 
+                                       inputmode="numeric"
+                                       value="{{ old('design_fee') !== null ? (old('design_fee') == 0 ? '0' : number_format((float) old('design_fee'), 0, ',', '.')) : '0' }}" 
+                                       placeholder="0"
+                                       oninput="handleDesignFeeInput(this)"
+                                       autocomplete="off"
+                                       class="w-full px-3 py-2 text-sm font-black text-slate-900 dark:text-white bg-transparent focus:outline-none placeholder:text-slate-300 dark:placeholder:text-slate-500 tracking-wide">
+                            </div>
+                            <input type="hidden" id="design_fee" name="design_fee" value="{{ old('design_fee', '0') }}">
+
+                            <!-- Presets Cepat Biaya Desain -->
+                            <div class="grid grid-cols-4 gap-1.5 pt-1">
+                                <button type="button" 
+                                        data-amount="0"
+                                        onclick="setDesignFeePreset(0)" 
+                                        class="btn-design-preset py-1 px-1 rounded-lg border border-sky-400 bg-sky-100 dark:bg-sky-950/80 text-[10px] font-black text-sky-950 dark:text-sky-200 hover:bg-sky-200 text-center transition-all cursor-pointer shadow-[0.5px_0.5px_0px_0px_#0369a1] truncate">
+                                    Bawa File (Rp 0)
+                                </button>
+                                <button type="button" 
+                                        data-amount="15000"
+                                        onclick="setDesignFeePreset(15000)" 
+                                        class="btn-design-preset py-1 px-1 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-[10px] font-bold text-slate-700 dark:text-slate-300 hover:bg-sky-100 dark:hover:bg-sky-950/60 text-center transition-all cursor-pointer truncate">
+                                    Ringan (15k)
+                                </button>
+                                <button type="button" 
+                                        data-amount="25000"
+                                        onclick="setDesignFeePreset(25000)" 
+                                        class="btn-design-preset py-1 px-1 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-[10px] font-bold text-slate-700 dark:text-slate-300 hover:bg-sky-100 dark:hover:bg-sky-950/60 text-center transition-all cursor-pointer truncate">
+                                    Baru (25k)
+                                </button>
+                                <button type="button" 
+                                        data-amount="50000"
+                                        onclick="setDesignFeePreset(50000)" 
+                                        class="btn-design-preset py-1 px-1 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-[10px] font-bold text-slate-700 dark:text-slate-300 hover:bg-sky-100 dark:hover:bg-sky-950/60 text-center transition-all cursor-pointer truncate">
+                                    Custom (50k)
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- 2. BIAYA CETAK & PRODUKSI (DARI KALKULATOR) -->
                         <div class="space-y-3 p-3.5 bg-slate-50 dark:bg-slate-900/60 border-[1.5px] border-slate-300 dark:border-slate-700 rounded-xl">
-                            <!-- Harga Satuan -->
+                            <div class="flex items-center justify-between pb-1 border-b border-slate-200 dark:border-slate-800">
+                                <span class="text-[11px] font-black uppercase text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
+                                    <x-icon name="printer" class="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
+                                    <span>Biaya Cetak & Modal Bahan</span>
+                                </span>
+                                <span id="print-calc-summary-badge" class="text-[10px] font-bold text-slate-500 dark:text-slate-400">
+                                    0.00 m²
+                                </span>
+                            </div>
+
+                            <!-- Tarif Cetak per Meter / per Pcs -->
                             <div>
-                                <label for="main_unit_price_display" class="block text-xs font-black uppercase text-slate-800 dark:text-slate-300 mb-1 tracking-wider">
-                                    Harga Satuan <span class="text-rose-500">*</span>
+                                <label for="main_unit_price_display" id="label-unit-price" class="block text-xs font-black uppercase text-slate-800 dark:text-slate-300 mb-1 tracking-wider">
+                                    Tarif Cetak per Meter (m²) <span class="text-rose-500">*</span>
                                 </label>
                                 <div class="flex rounded-xl overflow-hidden border-[1.5px] border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-[1.5px_1.5px_0px_0px_#e2e8f0] dark:shadow-[1.5px_1.5px_0px_0px_#000000] focus-within:border-slate-800 dark:focus-within:border-amber-400 transition-all">
                                     <span class="inline-flex items-center px-3 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-r-[1.5px] border-slate-300 dark:border-slate-700 text-xs font-black select-none">
@@ -435,34 +546,78 @@
                                 <input type="hidden" 
                                        id="main_unit_price" 
                                        name="main_unit_price" 
-                                       value="{{ old('main_unit_price', '') }}">
+                                       value="{{ old('main_unit_price', '0') }}">
                             </div>
 
-                            <!-- Subtotal Desain & Cetak (Readonly / Hasil Kalkulasi Otomatis) -->
+                            <!-- Subtotal Cetak (Bisa Di-adjust jika nego cetak) -->
                             <div>
-                                <label for="main_price_display" class="block text-xs font-black uppercase text-slate-800 dark:text-slate-300 mb-1 tracking-wider">
-                                    Subtotal Desain & Cetak
-                                </label>
-                                <div class="flex rounded-xl overflow-hidden border-[1.5px] border-slate-300 dark:border-slate-700 bg-slate-100/90 dark:bg-slate-800/90 shadow-[1.5px_1.5px_0px_0px_#e2e8f0] dark:shadow-[1.5px_1.5px_0px_0px_#000000] transition-all">
+                                <div class="flex items-center justify-between mb-1">
+                                    <label for="print_subtotal_display" class="block text-xs font-black uppercase text-slate-800 dark:text-slate-300 tracking-wider">
+                                        Subtotal Biaya Cetak
+                                    </label>
+                                    <!-- <span class="text-[9px] font-bold text-slate-500 dark:text-slate-400">
+                                        Bisa di-adjust jika nego
+                                    </span> -->
+                                </div>
+                                <div class="flex rounded-xl overflow-hidden border-[1.5px] border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-[1.5px_1.5px_0px_0px_#e2e8f0] dark:shadow-[1.5px_1.5px_0px_0px_#000000] focus-within:border-slate-800 dark:focus-within:border-amber-400 transition-all">
                                     <span class="inline-flex items-center px-3.5 bg-slate-200/90 dark:bg-slate-700/80 text-slate-700 dark:text-slate-300 border-r-[1.5px] border-slate-300 dark:border-slate-700 text-xs font-black select-none">
                                         Rp
                                     </span>
                                     <input type="text" 
-                                           id="main_price_display" 
+                                           id="print_subtotal_display" 
                                            inputmode="numeric"
-                                           value="{{ old('main_price', old('total_amount')) ? number_format((float) old('main_price', old('total_amount')), 0, ',', '.') : '0' }}" 
+                                           value="{{ old('print_subtotal') ? number_format((float) old('print_subtotal'), 0, ',', '.') : '0' }}" 
                                            placeholder="0"
-                                           readonly 
-                                           tabindex="-1"
-                                           class="w-full px-3 py-2 text-base font-black text-slate-900 dark:text-white bg-transparent focus:outline-none tracking-wide cursor-default select-none">
+                                           oninput="handlePrintSubtotalManualInput(this)"
+                                           class="w-full px-3 py-2 text-base font-black text-slate-900 dark:text-white bg-transparent focus:outline-none tracking-wide">
                                 </div>
                                 <input type="hidden" 
-                                       id="main_price" 
-                                       name="main_price" 
-                                       value="{{ old('main_price', old('total_amount', '0')) }}">
-                                <span class="text-[10px] text-slate-500 dark:text-slate-400 font-semibold mt-1 block">Hasil kalkulasi otomatis: Qty &times; Harga Satuan.</span>
+                                       id="print_subtotal" 
+                                       name="print_subtotal" 
+                                       value="{{ old('print_subtotal', '0') }}">
+                                <span id="subtotal-calc-hint" class="text-[10px] text-slate-500 dark:text-slate-400 font-semibold mt-1 block">
+                                    Silakan masukkan ukuran panjang & lebar atau pilih bahan banner di sebelah kiri.
+                                </span>
+                            </div>
+
+                            <!-- Modal Cetak / HPP Cetak (Auto-Hitung & Bisa Di-Adjust) -->
+                            <div class="pt-3 border-t border-slate-200 dark:border-slate-800 space-y-2">
+                                <div class="flex items-center justify-between mb-0.5">
+                                    <label for="main_cost_price_display" id="label-cost-price" class="block text-xs font-black uppercase text-slate-800 dark:text-slate-300 tracking-wider">
+                                        Tarif Modal Cetak / HPP per Meter (m²)
+                                    </label>
+                                    <span class="text-[10px] font-black text-amber-700 dark:text-amber-400 bg-amber-100 dark:bg-amber-950/60 border border-amber-300 dark:border-amber-800/80 px-1.5 py-0.5 rounded">
+                                        Opsional
+                                    </span>
+                                </div>
+                                <div class="flex rounded-xl overflow-hidden border-[1.5px] border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-[1.5px_1.5px_0px_0px_#e2e8f0] dark:shadow-[1.5px_1.5px_0px_0px_#000000] focus-within:border-slate-800 dark:focus-within:border-amber-400 transition-all">
+                                    <span class="inline-flex items-center px-3 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-r-[1.5px] border-slate-300 dark:border-slate-700 text-xs font-black select-none">
+                                        Rp
+                                    </span>
+                                    <input type="text" 
+                                           id="main_cost_price_display" 
+                                           inputmode="numeric"
+                                           value="{{ old('main_cost_price', '14500') ? number_format((float) old('main_cost_price', 14500), 0, ',', '.') : '14.500' }}" 
+                                           placeholder="14.500 (Boleh kosong)"
+                                           oninput="handleCostPriceInput(this)"
+                                           autocomplete="off"
+                                           class="w-full px-3 py-2 text-sm font-bold text-slate-900 dark:text-white bg-transparent focus:outline-none placeholder:text-slate-300 dark:placeholder:text-slate-500 tracking-wide">
+                                </div>
+                                <input type="hidden" 
+                                       id="main_cost_price" 
+                                       name="main_cost_price" 
+                                       value="{{ old('main_cost_price', '0') }}">
+                                <p id="cost-calc-hint" class="text-[10px] text-slate-400 dark:text-slate-500">
+                                    Tarif acuan modal: Rp 14.500 / m². Terhitung otomatis setelah ukuran diisi. Boleh dikosongkan.
+                                </p>
                             </div>
                         </div>
+
+                        <!-- Hidden input main_price disubmit ke server -->
+                        <input type="hidden" 
+                               id="main_price" 
+                               name="main_price" 
+                               value="{{ old('main_price', old('total_amount', '0')) }}">
 
                         <!-- Subtotal Alat & Item Tambahan (Appears if items exist) -->
                         <div id="extra-summary-box" class="hidden p-3 bg-purple-50/80 dark:bg-purple-950/30 border-[1.5px] border-purple-300 dark:border-purple-800/60 rounded-xl space-y-1">
@@ -498,7 +653,7 @@
                                    id="total_amount" 
                                    name="total_amount" 
                                    value="{{ old('total_amount', '') }}">
-                            <span class="text-[10px] text-slate-500 dark:text-slate-400 font-semibold mt-1 block">Akumulasi Jasa Desain + Alat/Item Tambahan.</span>
+                            <span class="text-[10px] text-slate-500 dark:text-slate-400 font-semibold mt-1 block">Akumulasi Desain + Cetak + Alat/Item Tambahan.</span>
                         </div>
 
                         <!-- Nominal Dibayar di Awal -->
@@ -771,48 +926,375 @@ function recalculateAllTotals() {
     calculateRemaining();
 }
 
-function handleMainQtyChange() {
+function setDesignFeePreset(amount) {
+    const feeDisplay = document.getElementById('design_fee_display');
+    const feeHidden = document.getElementById('design_fee');
+    if (feeDisplay) feeDisplay.value = amount > 0 ? amount.toLocaleString('id-ID') : '0';
+    if (feeHidden) feeHidden.value = amount;
+
+    document.querySelectorAll('.btn-design-preset').forEach(btn => {
+        const val = parseInt(btn.getAttribute('data-amount'), 10);
+        if (val === amount) {
+            btn.className = 'btn-design-preset py-1 px-1 rounded-lg border border-sky-400 bg-sky-100 dark:bg-sky-950/80 text-[10px] font-black text-sky-950 dark:text-sky-200 hover:bg-sky-200 text-center transition-all cursor-pointer shadow-[0.5px_0.5px_0px_0px_#0369a1] truncate';
+        } else {
+            btn.className = 'btn-design-preset py-1 px-1 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-[10px] font-bold text-slate-700 dark:text-slate-300 hover:bg-sky-100 dark:hover:bg-sky-950/60 text-center transition-all cursor-pointer truncate';
+        }
+    });
+
+    updateAllMainCalculations();
+}
+
+function handleDesignFeeInput(displayEl) {
+    let rawDigits = displayEl.value.replace(/\D/g, '');
+    const feeHidden = document.getElementById('design_fee');
+    let amount = 0;
+    if (!rawDigits) {
+        displayEl.value = '';
+        if (feeHidden) feeHidden.value = '0';
+    } else {
+        amount = parseInt(rawDigits, 10);
+        displayEl.value = amount.toLocaleString('id-ID');
+        if (feeHidden) feeHidden.value = amount;
+    }
+
+    updateAllMainCalculations();
+}
+
+function handlePrintSubtotalManualInput(displayEl) {
+    let rawDigits = displayEl.value.replace(/\D/g, '');
+    const printSubtotalHidden = document.getElementById('print_subtotal');
+    const subtotalHint = document.getElementById('subtotal-calc-hint');
+
+    let amount = 0;
+    if (!rawDigits) {
+        displayEl.value = '';
+        if (printSubtotalHidden) printSubtotalHidden.value = '0';
+    } else {
+        amount = parseInt(rawDigits, 10);
+        displayEl.value = amount.toLocaleString('id-ID');
+        if (printSubtotalHidden) printSubtotalHidden.value = amount;
+    }
+
+    if (subtotalHint) {
+        subtotalHint.innerHTML = '<span class="text-amber-600 dark:text-amber-400 font-bold">★ Subtotal cetak disesuaikan manual (Nego deal).</span>';
+    }
+
+    updateAllMainCalculations();
+}
+
+function updateAllMainCalculations() {
+    const feeHidden = document.getElementById('design_fee');
+    const printSubtotalHidden = document.getElementById('print_subtotal');
+    const mainPriceHidden = document.getElementById('main_price');
+    const costPriceHidden = document.getElementById('main_cost_price');
     const qtyInput = document.getElementById('main_qty');
-    let qty = parseInt(qtyInput ? qtyInput.value : 1, 10);
-    if (!qty || qty < 1) qty = 1;
+
+    const designFee = parseFloat(feeHidden ? feeHidden.value : 0) || 0;
+    const printSubtotal = parseFloat(printSubtotalHidden ? printSubtotalHidden.value : 0) || 0;
+    const mainSubtotal = designFee + printSubtotal;
+    const qty = parseInt(qtyInput ? qtyInput.value : 1, 10) || 1;
+
+    if (mainPriceHidden) mainPriceHidden.value = mainSubtotal;
+
+    // Update summary texts
+    const summaryTotalEl = document.getElementById('main-subtotal-summary-text');
+    const summaryDesignEl = document.getElementById('summary-design-fee');
+    const summaryPrintEl = document.getElementById('summary-print-subtotal');
+
+    if (summaryTotalEl) summaryTotalEl.innerText = 'Rp ' + mainSubtotal.toLocaleString('id-ID');
+    if (summaryDesignEl) summaryDesignEl.innerText = 'Rp ' + designFee.toLocaleString('id-ID');
+    if (summaryPrintEl) summaryPrintEl.innerText = 'Rp ' + printSubtotal.toLocaleString('id-ID');
+
+    // Cost calculation (from Cetak)
+    let costPerItem = costPriceHidden && costPriceHidden.value !== '' ? parseFloat(costPriceHidden.value) : null;
+    let totalCost = (costPerItem !== null && !isNaN(costPerItem) && costPerItem > 0) ? (costPerItem * qty) : null;
+
+    updateLiveProfit(mainSubtotal, totalCost);
+    recalculateAllTotals();
+}
+
+function setCalcMode(mode) {
+    const calcModeHidden = document.getElementById('calc_mode');
+    const mainUnitHidden = document.getElementById('main_unit');
+    const btnMeter = document.getElementById('btn-mode-meter');
+    const btnPcs = document.getElementById('btn-mode-pcs');
+    const panelMeter = document.getElementById('panel-mode-meter');
+    const labelUnitPrice = document.getElementById('label-unit-price');
+    const labelCostPrice = document.getElementById('label-cost-price');
+    const wrapperDimensions = document.getElementById('wrapper-dimensions');
+    const wrapperMaterial = document.getElementById('wrapper-material');
+
+    if (calcModeHidden) calcModeHidden.value = mode;
+
+    if (mode === 'meter') {
+        if (mainUnitHidden) mainUnitHidden.value = 'Meter';
+        if (panelMeter) panelMeter.classList.remove('hidden');
+        if (wrapperDimensions) wrapperDimensions.classList.add('hidden');
+        if (wrapperMaterial) {
+            wrapperMaterial.classList.remove('sm:col-span-1');
+            wrapperMaterial.classList.add('sm:col-span-2');
+        }
+
+        if (btnMeter) {
+            btnMeter.className = 'py-2 px-3 rounded-lg border-2 border-slate-900 dark:border-slate-700 font-black text-xs flex items-center justify-center gap-1.5 cursor-pointer transition-all bg-amber-300 text-slate-950 shadow-[1.5px_1.5px_0px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_0px_#000000]';
+        }
+        if (btnPcs) {
+            btnPcs.className = 'py-2 px-3 rounded-lg border-[1.5px] border-slate-300 dark:border-slate-700 font-bold text-xs flex items-center justify-center gap-1.5 cursor-pointer transition-all bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:border-slate-800';
+        }
+        if (labelUnitPrice) {
+            labelUnitPrice.innerHTML = 'Tarif Cetak per Meter (m²) <span class="text-rose-500">*</span>';
+        }
+        if (labelCostPrice) {
+            labelCostPrice.innerText = 'Tarif Modal Cetak / HPP per Meter (m²)';
+        }
+        handleMeterDimensionChange();
+    } else {
+        if (mainUnitHidden) mainUnitHidden.value = 'Pcs';
+        if (panelMeter) panelMeter.classList.add('hidden');
+        if (wrapperDimensions) wrapperDimensions.classList.remove('hidden');
+        if (wrapperMaterial) {
+            wrapperMaterial.classList.remove('sm:col-span-2');
+            wrapperMaterial.classList.add('sm:col-span-1');
+        }
+
+        if (btnPcs) {
+            btnPcs.className = 'py-2 px-3 rounded-lg border-2 border-slate-900 dark:border-slate-700 font-black text-xs flex items-center justify-center gap-1.5 cursor-pointer transition-all bg-amber-300 text-slate-950 shadow-[1.5px_1.5px_0px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_0px_#000000]';
+        }
+        if (btnMeter) {
+            btnMeter.className = 'py-2 px-3 rounded-lg border-[1.5px] border-slate-300 dark:border-slate-700 font-bold text-xs flex items-center justify-center gap-1.5 cursor-pointer transition-all bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:border-slate-800';
+        }
+        if (labelUnitPrice) {
+            labelUnitPrice.innerHTML = 'Harga Cetak Satuan (Pcs) <span class="text-rose-500">*</span>';
+        }
+        if (labelCostPrice) {
+            labelCostPrice.innerText = 'Modal Cetak Satuan / HPP (Pcs)';
+        }
+        handlePcsChange();
+    }
+}
+
+function handleMeterDimensionChange() {
+    const lenInput = document.getElementById('calc_length');
+    const widthInput = document.getElementById('calc_width');
+    const qtyInput = document.getElementById('main_qty');
+    const dimInput = document.getElementById('dimensions_input');
+
+    const length = parseFloat(lenInput ? lenInput.value : 0) || 0;
+    const width = parseFloat(widthInput ? widthInput.value : 0) || 0;
+    const qty = parseInt(qtyInput ? qtyInput.value : 1, 10) || 1;
+
+    const areaSingle = Math.round(length * width * 100) / 100;
+    const areaTotal = Math.round(areaSingle * qty * 100) / 100;
+
+    const areaSingleEl = document.getElementById('display-area-single');
+    const areaTotalEl = document.getElementById('display-area-total');
+    if (areaSingleEl) areaSingleEl.innerText = areaSingle > 0 ? areaSingle.toFixed(2) + ' m²' : '0.00 m²';
+    if (areaTotalEl) {
+        if (areaTotal > 0 && qty > 1) {
+            areaTotalEl.innerText = `(${qty} Pcs = ${areaTotal.toFixed(2)} m²)`;
+        } else {
+            areaTotalEl.innerText = '';
+        }
+    }
+
+    const printSummaryBadge = document.getElementById('print-calc-summary-badge');
+    if (printSummaryBadge) {
+        printSummaryBadge.innerText = areaTotal > 0 ? `${areaTotal.toFixed(2)} m² (${qty} Pcs)` : '0.00 m²';
+    }
+
+    if (dimInput) {
+        if (length > 0 && width > 0) {
+            dimInput.value = `${length} x ${width} meter (${areaSingle.toFixed(2)} m²)`;
+        } else {
+            dimInput.value = '';
+        }
+    }
 
     const unitPriceHidden = document.getElementById('main_unit_price');
-    const mainPriceHidden = document.getElementById('main_price');
-    const mainPriceDisplay = document.getElementById('main_price_display');
+    const costPriceDisplay = document.getElementById('main_cost_price_display');
+    const costPriceHidden = document.getElementById('main_cost_price');
+    const printSubtotalDisplay = document.getElementById('print_subtotal_display');
+    const printSubtotalHidden = document.getElementById('print_subtotal');
+    const subtotalHint = document.getElementById('subtotal-calc-hint');
+    const costHint = document.getElementById('cost-calc-hint');
 
-    const unitPrice = parseFloat(unitPriceHidden ? unitPriceHidden.value : 0) || 0;
-    const newSubtotal = qty * unitPrice;
+    const meterSaleRate = parseFloat(unitPriceHidden ? unitPriceHidden.value : 0) || 0;
+    const printSubtotal = Math.round(areaTotal * meterSaleRate);
 
-    if (mainPriceHidden) mainPriceHidden.value = newSubtotal;
-    if (mainPriceDisplay) mainPriceDisplay.value = newSubtotal > 0 ? newSubtotal.toLocaleString('id-ID') : '0';
+    if (printSubtotalHidden) printSubtotalHidden.value = printSubtotal;
+    if (printSubtotalDisplay) printSubtotalDisplay.value = printSubtotal > 0 ? printSubtotal.toLocaleString('id-ID') : '0';
 
-    recalculateAllTotals();
+    if (subtotalHint) {
+        if (length > 0 && width > 0 && meterSaleRate > 0) {
+            subtotalHint.innerHTML = `Hasil cetak: Total ${areaTotal.toFixed(2)} m² &times; Rp ${meterSaleRate.toLocaleString('id-ID')} / m² = <strong>Rp ${printSubtotal.toLocaleString('id-ID')}</strong>.`;
+        } else {
+            subtotalHint.innerText = 'Silakan masukkan ukuran panjang & lebar atau pilih bahan banner di sebelah kiri.';
+        }
+    }
+
+    let rawCost = costPriceDisplay ? costPriceDisplay.value.replace(/\D/g, '') : '';
+    let totalCost = null;
+    if (rawCost && length > 0 && width > 0) {
+        const meterCostRate = parseInt(rawCost, 10);
+        totalCost = Math.round(areaTotal * meterCostRate);
+        const costPerItem = Math.round(totalCost / qty);
+        if (costPriceHidden) costPriceHidden.value = costPerItem;
+
+        if (costHint) {
+            costHint.innerHTML = `Estimasi modal cetak: Total ${areaTotal.toFixed(2)} m² &times; Rp ${meterCostRate.toLocaleString('id-ID')} = <strong>Rp ${totalCost.toLocaleString('id-ID')}</strong>. Boleh dikosongkan jika belum tahu.`;
+        }
+    } else {
+        if (costPriceHidden) costPriceHidden.value = '';
+        if (costHint) {
+            if (rawCost) {
+                const meterCostRate = parseInt(rawCost, 10);
+                costHint.innerText = `Tarif acuan modal: Rp ${meterCostRate.toLocaleString('id-ID')} / m². Terhitung otomatis setelah ukuran diisi. Boleh dikosongkan.`;
+            } else {
+                costHint.innerText = 'Boleh dikosongkan jika nota vendor/maklon belum keluar. Owner bisa melengkapinya nanti.';
+            }
+        }
+    }
+
+    updateAllMainCalculations();
+}
+
+function handlePcsChange() {
+    const qtyInput = document.getElementById('main_qty');
+    const qty = parseInt(qtyInput ? qtyInput.value : 1, 10) || 1;
+
+    const unitPriceDisplay = document.getElementById('main_unit_price_display');
+    const unitPriceHidden = document.getElementById('main_unit_price');
+    const costPriceDisplay = document.getElementById('main_cost_price_display');
+    const costPriceHidden = document.getElementById('main_cost_price');
+    const printSubtotalDisplay = document.getElementById('print_subtotal_display');
+    const printSubtotalHidden = document.getElementById('print_subtotal');
+    const subtotalHint = document.getElementById('subtotal-calc-hint');
+    const costHint = document.getElementById('cost-calc-hint');
+
+    let rawPrice = unitPriceDisplay ? unitPriceDisplay.value.replace(/\D/g, '') : '';
+    const unitPrice = rawPrice ? parseInt(rawPrice, 10) : 0;
+    if (unitPriceHidden) unitPriceHidden.value = unitPrice;
+
+    const printSubtotal = qty * unitPrice;
+    if (printSubtotalHidden) printSubtotalHidden.value = printSubtotal;
+    if (printSubtotalDisplay) printSubtotalDisplay.value = printSubtotal > 0 ? printSubtotal.toLocaleString('id-ID') : '0';
+
+    if (subtotalHint) {
+        if (unitPrice > 0) {
+            subtotalHint.innerHTML = `Hasil cetak: ${qty} Pcs &times; Rp ${unitPrice.toLocaleString('id-ID')} = <strong>Rp ${printSubtotal.toLocaleString('id-ID')}</strong>.`;
+        } else {
+            subtotalHint.innerText = 'Silakan masukkan harga cetak satuan di atas.';
+        }
+    }
+
+    let rawCost = costPriceDisplay ? costPriceDisplay.value.replace(/\D/g, '') : '';
+    let totalCost = null;
+    if (rawCost && unitPrice > 0) {
+        const costPerPcs = parseInt(rawCost, 10);
+        totalCost = qty * costPerPcs;
+        if (costPriceHidden) costPriceHidden.value = costPerPcs;
+
+        if (costHint) {
+            costHint.innerHTML = `Estimasi modal cetak: ${qty} Pcs &times; Rp ${costPerPcs.toLocaleString('id-ID')} = <strong>Rp ${totalCost.toLocaleString('id-ID')}</strong>. Boleh dikosongkan jika belum tahu.`;
+        }
+    } else {
+        if (costPriceHidden) costPriceHidden.value = '';
+        if (costHint) {
+            costHint.innerText = 'Boleh dikosongkan jika nota vendor/maklon belum keluar. Owner bisa melengkapinya nanti.';
+        }
+    }
+
+    updateAllMainCalculations();
+}
+
+function applyBannerPreset(matName, saleRate, costRate) {
+    const matInput = document.getElementById('material_notes_input');
+    if (matInput) matInput.value = matName;
+
+    const unitPriceDisplay = document.getElementById('main_unit_price_display');
+    const unitPriceHidden = document.getElementById('main_unit_price');
+    const costPriceDisplay = document.getElementById('main_cost_price_display');
+    const costPriceHidden = document.getElementById('main_cost_price');
+
+    if (unitPriceDisplay) unitPriceDisplay.value = saleRate.toLocaleString('id-ID');
+    if (unitPriceHidden) unitPriceHidden.value = saleRate;
+
+    if (costPriceDisplay) costPriceDisplay.value = costRate.toLocaleString('id-ID');
+    if (costPriceHidden) costPriceHidden.value = costRate;
+
+    setCalcMode('meter');
+}
+
+function handleMainQtyChange() {
+    const calcModeHidden = document.getElementById('calc_mode');
+    const mode = calcModeHidden ? calcModeHidden.value : 'meter';
+    if (mode === 'meter') {
+        handleMeterDimensionChange();
+    } else {
+        handlePcsChange();
+    }
 }
 
 function handleMainUnitPriceInput() {
     const displayEl = document.getElementById('main_unit_price_display');
     const hiddenEl = document.getElementById('main_unit_price');
-    const qtyInput = document.getElementById('main_qty');
-    const qty = parseInt(qtyInput ? qtyInput.value : 1, 10) || 1;
-
     let rawDigits = displayEl.value.replace(/\D/g, '');
-    let unitPrice = 0;
+    let price = 0;
     if (!rawDigits) {
         displayEl.value = '';
         hiddenEl.value = '0';
     } else {
-        unitPrice = parseInt(rawDigits, 10);
-        displayEl.value = unitPrice.toLocaleString('id-ID');
-        hiddenEl.value = unitPrice;
+        price = parseInt(rawDigits, 10);
+        displayEl.value = price.toLocaleString('id-ID');
+        hiddenEl.value = price;
     }
 
-    const subtotal = qty * unitPrice;
-    const mainPriceHidden = document.getElementById('main_price');
-    const mainPriceDisplay = document.getElementById('main_price_display');
-    if (mainPriceHidden) mainPriceHidden.value = subtotal;
-    if (mainPriceDisplay) mainPriceDisplay.value = subtotal > 0 ? subtotal.toLocaleString('id-ID') : '0';
+    const calcModeHidden = document.getElementById('calc_mode');
+    const mode = calcModeHidden ? calcModeHidden.value : 'meter';
+    if (mode === 'meter') {
+        handleMeterDimensionChange();
+    } else {
+        handlePcsChange();
+    }
+}
 
-    recalculateAllTotals();
+function handleCostPriceInput(inputEl) {
+    let rawDigits = inputEl.value.replace(/\D/g, '');
+    if (!rawDigits) {
+        inputEl.value = '';
+    } else {
+        const num = parseInt(rawDigits, 10);
+        inputEl.value = num.toLocaleString('id-ID');
+    }
+
+    const calcModeHidden = document.getElementById('calc_mode');
+    const mode = calcModeHidden ? calcModeHidden.value : 'meter';
+    if (mode === 'meter') {
+        handleMeterDimensionChange();
+    } else {
+        handlePcsChange();
+    }
+}
+
+function updateLiveProfit(subtotal, totalCost) {
+    const profitTextEl = document.getElementById('live-profit-text');
+    if (!profitTextEl) return;
+
+    if (totalCost === null || isNaN(totalCost) || totalCost <= 0) {
+        profitTextEl.innerHTML = '<span class="text-slate-400 dark:text-slate-500 font-medium italic">Belum diinput (opsional)</span>';
+        return;
+    }
+
+    const profit = Math.round(subtotal - totalCost);
+    const margin = subtotal > 0 ? ((profit / subtotal) * 100).toFixed(1) : '0';
+
+    if (profit >= 0) {
+        profitTextEl.className = 'font-black text-emerald-700 dark:text-emerald-400';
+        profitTextEl.innerText = `Rp ${profit.toLocaleString('id-ID')} (${margin}%)`;
+    } else {
+        profitTextEl.className = 'font-black text-rose-600 dark:text-rose-400';
+        profitTextEl.innerText = `-Rp ${Math.abs(profit).toLocaleString('id-ID')} (${margin}%)`;
+    }
 }
 
 function setupRupiahMask(displayId, hiddenId) {
@@ -960,26 +1442,8 @@ function clearBriefFile(event) {
 document.addEventListener('DOMContentLoaded', function() {
     setupRupiahMask('paid_amount_display', 'paid_amount');
     
-    // Init main price & unit price sync
-    const qtyInput = document.getElementById('main_qty');
-    const qty = parseInt(qtyInput ? qtyInput.value : 1, 10) || 1;
-    const mainPriceHidden = document.getElementById('main_price');
-    const mainUnitPriceHidden = document.getElementById('main_unit_price');
-    const mainUnitPriceDisplay = document.getElementById('main_unit_price_display');
-    const mainPriceDisplay = document.getElementById('main_price_display');
-
-    if (mainPriceHidden && mainUnitPriceHidden) {
-        const subtotal = parseFloat(mainPriceHidden.value) || 0;
-        const unitPrice = parseFloat(mainUnitPriceHidden.value) || 0;
-        if (unitPrice > 0 && subtotal === 0) {
-            mainPriceHidden.value = unitPrice * qty;
-            if (mainPriceDisplay) mainPriceDisplay.value = (unitPrice * qty).toLocaleString('id-ID');
-        } else if (subtotal > 0 && unitPrice === 0) {
-            const calcUnit = Math.round(subtotal / qty);
-            mainUnitPriceHidden.value = calcUnit;
-            if (mainUnitPriceDisplay) mainUnitPriceDisplay.value = calcUnit.toLocaleString('id-ID');
-        }
-    }
+    const initialMode = (document.getElementById('calc_mode')?.value) || 'meter';
+    setCalcMode(initialMode);
 
     @if(old('items'))
         @foreach(old('items') as $oldIt)

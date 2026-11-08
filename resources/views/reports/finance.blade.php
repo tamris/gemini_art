@@ -221,79 +221,78 @@
             </div>
         </div>
 
-        <!-- 4 Executive KPI Cards (2x2 Grid on Mobile for Instant Owner Visibility) -->
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4">
+        <!-- Executive KPI Cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
             
             <!-- Total Pendapatan Operasional (Omset) -->
-            <div class="p-3.5 sm:p-5 bg-emerald-100 dark:bg-[#0c1222] border-2 border-black dark:border-slate-700 rounded-2xl shadow-[3px_3px_0px_0px_#000] sm:shadow-[4px_4px_0px_0px_#000] dark:shadow-[3px_3px_0px_0px_#000000] print-card flex flex-col justify-between">
+            <div class="p-3.5 sm:p-4 bg-emerald-100 dark:bg-[#0c1222] border-2 border-black dark:border-slate-700 rounded-2xl shadow-[3px_3px_0px_0px_#000] dark:shadow-[3px_3px_0px_0px_#000000] print-card flex flex-col justify-between">
                 <div>
-                    <div class="text-[10px] sm:text-xs font-black uppercase text-slate-700 dark:text-emerald-400 mb-1 sm:mb-1.5 flex items-center justify-between">
-                        <span class="truncate">Total Omset Usaha</span>
-                        <div class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-emerald-300 dark:bg-emerald-500/20 border border-black dark:border-emerald-500/50 flex items-center justify-center shrink-0">
-                            <x-icon name="trending-up" class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-emerald-950 dark:text-emerald-300" />
+                    <div class="text-[10px] sm:text-xs font-black uppercase text-slate-800 dark:text-emerald-400 mb-1 flex items-center justify-between">
+                        <span class="truncate uppercase">Total Omset Usaha</span>
+                        <div class="w-6 h-6 rounded-lg bg-emerald-300 dark:bg-emerald-500/20 border border-black dark:border-emerald-500/50 flex items-center justify-center shrink-0">
+                            <x-icon name="trending-up" class="w-3.5 h-3.5 text-slate-950 dark:text-emerald-300" />
                         </div>
                     </div>
-                    <div class="text-base sm:text-2xl font-black text-emerald-950 dark:text-white tracking-tight leading-tight">
+                    <div class="text-base sm:text-2xl font-black text-slate-950 dark:text-white tracking-tight leading-tight">
                         Rp {{ number_format($totalRevenue, 0, ',', '.') }}
                     </div>
                 </div>
-                <div class="mt-2 text-[10px] sm:text-[11px] font-bold text-emerald-800 dark:text-emerald-400 truncate">
-                    <span class="hidden sm:inline">Cetak: Rp {{ number_format($orderRevenue, 0, ',', '.') }} &bull; POS: Rp {{ number_format($retailPosRevenue, 0, ',', '.') }}</span>
-                    <span class="sm:hidden">Ctk: {{ number_format($orderRevenue / 1000, 0) }}k &bull; POS: {{ number_format($retailPosRevenue / 1000, 0) }}k</span>
+                <div class="mt-2 text-[10px] sm:text-xs font-bold text-slate-700 dark:text-emerald-400 truncate">
+                    Cetak: Rp {{ number_format($orderRevenue, 0, ',', '.') }} &bull; POS: Rp {{ number_format($retailPosRevenue, 0, ',', '.') }}
                 </div>
             </div>
 
             <!-- Total Beban Operasional -->
-            <div class="p-3.5 sm:p-5 bg-rose-100 dark:bg-[#0c1222] border-2 border-black dark:border-slate-700 rounded-2xl shadow-[3px_3px_0px_0px_#000] sm:shadow-[4px_4px_0px_0px_#000] dark:shadow-[3px_3px_0px_0px_#000000] print-card flex flex-col justify-between">
+            <div class="p-3.5 sm:p-4 bg-rose-100 dark:bg-[#0c1222] border-2 border-black dark:border-slate-700 rounded-2xl shadow-[3px_3px_0px_0px_#000] dark:shadow-[3px_3px_0px_0px_#000000] print-card flex flex-col justify-between">
                 <div>
-                    <div class="text-[10px] sm:text-xs font-black uppercase text-slate-700 dark:text-rose-400 mb-1 sm:mb-1.5 flex items-center justify-between">
-                        <span class="truncate">Total Beban Operasional</span>
-                        <div class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-rose-300 dark:bg-rose-500/20 border border-black dark:border-rose-500/50 flex items-center justify-center shrink-0">
-                            <x-icon name="trending-down" class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-rose-950 dark:text-rose-300" />
+                    <div class="text-[10px] sm:text-xs font-black uppercase text-slate-800 dark:text-rose-400 mb-1 flex items-center justify-between">
+                        <span class="truncate uppercase">Total Beban Operasional</span>
+                        <div class="w-6 h-6 rounded-lg bg-rose-300 dark:bg-rose-500/20 border border-black dark:border-rose-500/50 flex items-center justify-center shrink-0">
+                            <x-icon name="trending-down" class="w-3.5 h-3.5 text-slate-950 dark:text-rose-300" />
                         </div>
                     </div>
                     <div class="text-base sm:text-2xl font-black text-rose-950 dark:text-white tracking-tight leading-tight">
                         Rp {{ number_format($totalOperatingExpense, 0, ',', '.') }}
                     </div>
                 </div>
-                <div class="mt-2 text-[10px] sm:text-[11px] font-bold text-rose-800 dark:text-rose-400 truncate">
-                    Petty cash & belanja
+                <div class="mt-2 text-[10px] sm:text-xs font-bold text-rose-800 dark:text-rose-400 truncate">
+                    Petty cash, belanja toko, & refund
                 </div>
             </div>
 
-            <!-- Estimasi Laba Bersih Operasional -->
-            <div class="p-3.5 sm:p-5 {{ $netOperatingProfit >= 0 ? 'bg-cyan-100 dark:bg-[#0c1222]' : 'bg-rose-200 dark:bg-[#0c1222]' }} border-2 border-black dark:border-slate-700 rounded-2xl shadow-[3px_3px_0px_0px_#000] sm:shadow-[4px_4px_0px_0px_#000] dark:shadow-[3px_3px_0px_0px_#000000] print-card flex flex-col justify-between">
+            <!-- Laba Bersih Operasional -->
+            <div class="p-3.5 sm:p-4 bg-cyan-100 dark:bg-[#0c1222] border-2 border-black dark:border-slate-700 rounded-2xl shadow-[3px_3px_0px_0px_#000] dark:shadow-[3px_3px_0px_0px_#000000] print-card flex flex-col justify-between">
                 <div>
-                    <div class="text-[10px] sm:text-xs font-black uppercase text-slate-700 dark:text-sky-400 mb-1 sm:mb-1.5 flex items-center justify-between">
-                        <span class="truncate">Laba Bersih Operasional</span>
-                        <span class="px-1.5 py-0.5 rounded-full border border-black dark:border-slate-700 text-[9px] sm:text-[10px] font-black shrink-0 {{ $netOperatingProfit >= 0 ? 'bg-cyan-300 text-cyan-950 dark:bg-cyan-950/60 dark:text-cyan-300' : 'bg-rose-300 text-rose-950 dark:bg-rose-950/60 dark:text-rose-300' }}">
-                            {{ round($profitMargin, 1) }}%
+                    <div class="text-[10px] sm:text-xs font-black uppercase text-slate-800 dark:text-cyan-400 mb-1 flex items-center justify-between">
+                        <span class="truncate uppercase">Laba Bersih Operasional</span>
+                        <span class="px-2 py-0.5 rounded-full border border-black dark:border-slate-700 text-[9px] font-black shrink-0 bg-cyan-300 text-cyan-950 dark:bg-cyan-950/60 dark:text-cyan-300 uppercase">
+                            MARGIN: {{ round($profitMargin) }}%
                         </span>
                     </div>
-                    <div class="text-base sm:text-2xl font-black {{ $netOperatingProfit >= 0 ? 'text-cyan-950 dark:text-white' : 'text-rose-900 dark:text-rose-400' }} tracking-tight leading-tight">
+                    <div class="text-base sm:text-2xl font-black text-cyan-950 dark:text-white tracking-tight leading-tight">
                         {{ $netOperatingProfit >= 0 ? '+' : '' }} Rp {{ number_format($netOperatingProfit, 0, ',', '.') }}
                     </div>
                 </div>
-                <div class="mt-2 text-[10px] sm:text-[11px] font-bold text-slate-700 dark:text-slate-400 truncate">
-                    Omset &minus; beban
+                <div class="mt-2 text-[10px] sm:text-xs font-bold text-slate-700 dark:text-slate-400 truncate">
+                    Omset dikurangi HPP modal & operasional
                 </div>
             </div>
 
             <!-- Piutang Pelanggan (Outstanding) -->
-            <div class="p-3.5 sm:p-5 bg-amber-100 dark:bg-[#0c1222] border-2 border-black dark:border-slate-700 rounded-2xl shadow-[3px_3px_0px_0px_#000] sm:shadow-[4px_4px_0px_0px_#000] dark:shadow-[3px_3px_0px_0px_#000000] print-card flex flex-col justify-between">
+            <div class="p-3.5 sm:p-4 bg-amber-100 dark:bg-[#0c1222] border-2 border-black dark:border-slate-700 rounded-2xl shadow-[3px_3px_0px_0px_#000] dark:shadow-[3px_3px_0px_0px_#000000] print-card flex flex-col justify-between">
                 <div>
-                    <div class="text-[10px] sm:text-xs font-black uppercase text-slate-700 dark:text-amber-400 mb-1 sm:mb-1.5 flex items-center justify-between">
-                        <span class="truncate">Piutang Tertahan</span>
-                        <div class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-amber-300 dark:bg-amber-500/20 border border-black dark:border-amber-500/50 flex items-center justify-center shrink-0">
-                            <x-icon name="clock" class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-950 dark:text-amber-300" />
+                    <div class="text-[10px] sm:text-xs font-black uppercase text-slate-800 dark:text-amber-400 mb-1 flex items-center justify-between">
+                        <span class="truncate uppercase">Piutang Tertahan</span>
+                        <div class="w-6 h-6 rounded-lg bg-amber-300 dark:bg-amber-500/20 border border-black dark:border-amber-500/50 flex items-center justify-center shrink-0">
+                            <x-icon name="clock" class="w-3.5 h-3.5 text-slate-950 dark:text-amber-300" />
                         </div>
                     </div>
                     <div class="text-base sm:text-2xl font-black text-amber-950 dark:text-white tracking-tight leading-tight">
                         Rp {{ number_format($totalReceivables, 0, ',', '.') }}
                     </div>
                 </div>
-                <div class="mt-2 text-[10px] sm:text-[11px] font-bold text-amber-800 dark:text-slate-400 truncate">
-                    {{ $unpaidOrdersCount }} pesanan aktif
+                <div class="mt-2 text-[10px] sm:text-xs font-bold text-amber-800 dark:text-amber-400 truncate">
+                    Dari {{ $unpaidOrdersCount }} pesanan belum lunas / DP
                 </div>
             </div>
 
@@ -356,10 +355,40 @@
                 </div>
             </div>
 
+            <!-- Cost of Goods Sold (COGS / HPP) Section -->
+            <div class="space-y-2 text-xs pt-2">
+                <div class="font-black text-amber-800 dark:text-amber-400 uppercase text-[11px] tracking-wider flex items-center justify-between">
+                    <span>2. BIAYA POKOK PENJUALAN (HPP / MODAL VENDOR)</span>
+                    <span>NOMINAL</span>
+                </div>
+
+                <div class="p-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 space-y-2">
+                    <div class="flex justify-between items-center text-slate-700 dark:text-slate-300">
+                        <span class="font-bold flex items-center gap-1.5">
+                            <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+                            Total Biaya Modal Vendor / Bahan Cetak
+                        </span>
+                        <span class="font-black text-amber-700 dark:text-amber-400">Rp {{ number_format($totalCogs, 0, ',', '.') }}</span>
+                    </div>
+                    @if($incompleteCostOrdersCount > 0)
+                    <div class="p-2 rounded-lg bg-amber-100/70 dark:bg-amber-950/40 border border-amber-300/80 dark:border-amber-700 text-[11px] text-amber-900 dark:text-amber-300 font-semibold flex items-center gap-1.5">
+                        <x-icon name="alert-triangle" class="w-3.5 h-3.5 shrink-0 text-amber-700 dark:text-amber-400" />
+                        <span>Terdapat <strong>{{ $incompleteCostOrdersCount }} pesanan</strong> yang modalnya belum diinput. Lengkapi di detail order agar laba kotor 100% presisi.</span>
+                    </div>
+                    @endif
+                </div>
+
+                <!-- Subtotal Laba Kotor (Gross Profit) -->
+                <div class="flex justify-between items-center px-3 py-2 rounded-xl bg-teal-50 dark:bg-teal-950/40 border border-teal-300 dark:border-teal-700 font-black text-teal-950 dark:text-teal-300">
+                    <span>LABA KOTOR (GROSS PROFIT - {{ $grossProfitMargin }}%)</span>
+                    <span class="text-sm">Rp {{ number_format($grossProfit, 0, ',', '.') }}</span>
+                </div>
+            </div>
+
             <!-- Expense Section -->
             <div class="space-y-2 text-xs pt-2">
                 <div class="font-black text-rose-800 dark:text-rose-400 uppercase text-[11px] tracking-wider flex items-center justify-between">
-                    <span>2. BEBAN & PENGELUARAN OPERASIONAL</span>
+                    <span>3. BEBAN & PENGELUARAN OPERASIONAL</span>
                     <span>NOMINAL</span>
                 </div>
 
@@ -396,15 +425,15 @@
 
             <!-- Net Calculation Summary Box -->
             <div class="pt-2 border-t-2 border-slate-900 dark:border-slate-800">
-                <div class="p-4 rounded-xl border-2 border-black dark:border-slate-700 {{ $netOperatingProfit >= 0 ? 'bg-cyan-100 dark:bg-cyan-950/40' : 'bg-rose-100 dark:bg-rose-950/40' }} shadow-[3px_3px_0px_0px_#000] dark:shadow-[3px_3px_0px_0px_#000000] flex justify-between items-center">
+                <div class="p-4 rounded-xl border-2 border-black dark:border-slate-700 {{ $netRealProfit >= 0 ? 'bg-cyan-100 dark:bg-cyan-950/40' : 'bg-rose-100 dark:bg-rose-950/40' }} shadow-[3px_3px_0px_0px_#000] dark:shadow-[3px_3px_0px_0px_#000000] flex justify-between items-center">
                     <div>
-                        <span class="text-[10px] font-black uppercase tracking-wider block text-slate-700 dark:text-slate-300">HASIL OPERASIONAL BERSIH</span>
+                        <span class="text-[10px] font-black uppercase tracking-wider block text-slate-700 dark:text-slate-300">HASIL OPERASIONAL BERSIH (LABA KOTOR &minus; BEBAN)</span>
                         <span class="text-sm font-black text-slate-900 dark:text-white">
-                            {{ $netOperatingProfit >= 0 ? 'SURPLUS / LABA BERSIH' : 'DEFISIT / RUGI OPERASIONAL' }}
+                            {{ $netRealProfit >= 0 ? 'SURPLUS / LABA BERSIH RIIL' : 'DEFISIT / RUGI OPERASIONAL' }}
                         </span>
                     </div>
-                    <div class="text-xl font-black {{ $netOperatingProfit >= 0 ? 'text-emerald-950 dark:text-emerald-400' : 'text-rose-950 dark:text-rose-400' }}">
-                        {{ $netOperatingProfit >= 0 ? '+' : '' }} Rp {{ number_format($netOperatingProfit, 0, ',', '.') }}
+                    <div class="text-xl font-black {{ $netRealProfit >= 0 ? 'text-emerald-950 dark:text-emerald-400' : 'text-rose-950 dark:text-rose-400' }}">
+                        {{ $netRealProfit >= 0 ? '+' : '' }} Rp {{ number_format($netRealProfit, 0, ',', '.') }}
                     </div>
                 </div>
             </div>
@@ -622,7 +651,7 @@
         </div>
         @else
         <div class="py-8 text-center text-slate-400 dark:text-slate-500 font-semibold text-xs">
-            🎉 Tidak ada tagihan atau piutang yang tertahan untuk kriteria saat ini. Semua pesanan telah lunas!
+            Tidak ada tagihan atau piutang yang tertahan untuk kriteria saat ini. Semua pesanan telah lunas!
         </div>
         @endif
     </div>

@@ -126,10 +126,31 @@ class FinancialReportController extends Controller
         $totalOperatingExpense = $operationalExpense + $refundExpense + $otherExpense;
         $totalCashOut = (float) (clone $baseMovementQuery)->where('type', 'out')->sum('amount');
 
-        // Profit calculations
-        $netOperatingProfit = $totalRevenue - $totalOperatingExpense;
+        // 3.1. HPP (Cost of Goods Sold / Biaya Modal Vendor) Analysis
+        $periodOrdersQuery = Order::query()
+            ->where('work_status', '!=', 'canceled')
+            ->whereBetween('created_at', [$startDate, $endDate]);
+
+        if ($branchId) {
+            $periodOrdersQuery->where('branch_id', $branchId);
+        }
+
+        $totalCogs = (float) (clone $periodOrdersQuery)->whereNotNull('total_cost')->sum('total_cost');
+        $incompleteCostOrdersCount = (int) (clone $periodOrdersQuery)->whereNull('total_cost')->count();
+        $totalOrdersInPeriod = (int) (clone $periodOrdersQuery)->count();
+
+        // Gross Profit (Laba Kotor = Omzet - HPP Modal)
+        $grossProfit = $totalRevenue - $totalCogs;
+        $grossProfitMargin = $totalRevenue > 0 ? round(($grossProfit / $totalRevenue) * 100, 1) : 0;
+
+        // Net Real Profit (Laba Bersih Riil = Laba Kotor - Biaya Operasional)
+        $netRealProfit = $grossProfit - $totalOperatingExpense;
+        $netRealProfitMargin = $totalRevenue > 0 ? round(($netRealProfit / $totalRevenue) * 100, 1) : 0;
+
+        // Sinkronisasi Laba Bersih Operasional agar selalu memperhitungkan HPP secara presisi
+        $netOperatingProfit = $netRealProfit;
+        $profitMargin = $netRealProfitMargin;
         $netCashFlow = $totalCashIn - $totalCashOut;
-        $profitMargin = $totalRevenue > 0 ? ($netOperatingProfit / $totalRevenue) * 100 : 0;
 
         // 4. Payment Channel Breakdown (Kas Masuk per Saluran)
         $cashInCash = (float) (clone $baseMovementQuery)->where('type', 'in')->where('payment_method', 'cash')->sum('amount');
@@ -228,6 +249,13 @@ class FinancialReportController extends Controller
             'otherExpense',
             'totalOperatingExpense',
             'totalCashOut',
+            'totalCogs',
+            'incompleteCostOrdersCount',
+            'totalOrdersInPeriod',
+            'grossProfit',
+            'grossProfitMargin',
+            'netRealProfit',
+            'netRealProfitMargin',
             'netOperatingProfit',
             'netCashFlow',
             'profitMargin',

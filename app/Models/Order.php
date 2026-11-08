@@ -20,6 +20,7 @@ class Order extends Model
         'customer_phone',
         'order_type',
         'total_amount',
+        'total_cost',
         'paid_amount',
         'payment_status',
         'work_status',
@@ -32,6 +33,7 @@ class Order extends Model
     {
         return [
             'total_amount' => 'decimal:2',
+            'total_cost' => 'decimal:2',
             'paid_amount' => 'decimal:2',
             'completed_at' => 'datetime',
         ];
@@ -89,6 +91,59 @@ class Order extends Model
     public function getRemainingAmountAttribute(): float
     {
         return max(0, (float) $this->total_amount - (float) $this->paid_amount);
+    }
+
+    public function getGrossProfitAttribute(): ?float
+    {
+        if ($this->total_cost === null) {
+            return null;
+        }
+
+        return round((float) $this->total_amount - (float) $this->total_cost, 2);
+    }
+
+    public function getGrossProfitMarginAttribute(): ?float
+    {
+        if ($this->total_cost === null || (float) $this->total_amount <= 0) {
+            return null;
+        }
+
+        return round(((float) $this->gross_profit / (float) $this->total_amount) * 100, 1);
+    }
+
+    public function getIsCostCompleteAttribute(): bool
+    {
+        if ($this->total_cost === null) {
+            return false;
+        }
+
+        // If items relation is loaded or exists, check if all items have cost_price
+        $items = $this->relationLoaded('items') ? $this->items : $this->items()->get();
+        if ($items->isEmpty()) {
+            return false;
+        }
+
+        return $items->every(fn($item) => $item->cost_price !== null);
+    }
+
+    public function recalculateTotalCost(): void
+    {
+        $items = $this->relationLoaded('items') ? $this->items : $this->items()->get();
+
+        if ($items->isEmpty()) {
+            $this->total_cost = null;
+            $this->save();
+            return;
+        }
+
+        $allFilled = $items->every(fn($item) => $item->cost_price !== null);
+        if ($allFilled) {
+            $this->total_cost = $items->sum(fn($item) => ((int) $item->qty) * ((float) $item->cost_price));
+        } else {
+            $this->total_cost = null;
+        }
+
+        $this->save();
     }
 
     public static function generateOrderNumber(Branch $branch, string $orderType = 'custom_design'): string

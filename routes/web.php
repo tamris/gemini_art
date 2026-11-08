@@ -41,6 +41,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/orders/{order}/invoice', [OrderController::class, 'printInvoice'])->name('orders.invoice');
     Route::post('/orders/{order}/settle', [OrderController::class, 'settlePayment'])->name('orders.settle');
     Route::post('/orders/{order}/status', [OrderController::class, 'updateStatus'])->name('orders.status');
+    Route::post('/orders/{order}/cost', [OrderController::class, 'updateCost'])->name('orders.cost');
 
     // Fast Retail POS
     Route::get('/pos', [PosController::class, 'index'])->name('pos.index');

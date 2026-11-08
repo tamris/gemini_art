@@ -121,29 +121,18 @@
                 <!-- Alert state for email result -->
                 <div id="dispatch-email-alert" class="hidden p-3 rounded-xl border-2 text-xs font-bold"></div>
 
-                <div class="pt-3 border-t-[1.5px] border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
-                    <a href="#" 
-                       id="dispatch-email-preview-link" 
-                       target="_blank" 
-                       title="Buka pratinjau format email di tab baru"
-                       class="neo-btn bg-sky-100 hover:bg-sky-200 dark:bg-sky-950/40 dark:hover:bg-sky-900/60 dark:text-sky-300 dark:border-sky-800 text-slate-800 text-xs py-2 px-3 font-bold border-slate-900 shadow-[1.5px_1.5px_0px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_0px_#000000] inline-flex items-center justify-center gap-1.5 transition-all">
-                        <x-icon name="eye" class="w-3.5 h-3.5 text-slate-700 dark:text-sky-400" />
-                        <span>Pratinjau Email</span>
-                    </a>
-
-                    <div class="flex items-center justify-end gap-2">
-                        <button type="button" 
-                                onclick="closeVendorDispatchModal()" 
-                                class="neo-btn bg-slate-200 hover:bg-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 dark:text-slate-300 dark:border-slate-700 text-xs py-2 px-4 cursor-pointer font-bold">
-                            Batal
-                        </button>
-                        <button type="submit" 
-                                id="dispatch-email-submit-btn"
-                                class="neo-btn bg-emerald-400 hover:bg-emerald-300 text-xs py-2 px-5 font-black text-slate-950 shadow-[2px_2px_0px_0px_#0f172a] dark:shadow-[2px_2px_0px_0px_#000000] flex items-center gap-2 cursor-pointer">
-                            <x-icon name="send" class="w-3.5 h-3.5" />
-                            <span id="dispatch-email-submit-text">Kirim Email</span>
-                        </button>
-                    </div>
+                <div class="pt-3 border-t-[1.5px] border-slate-200 dark:border-slate-800 flex items-center justify-end gap-2">
+                    <button type="button" 
+                            onclick="closeVendorDispatchModal()" 
+                            class="neo-btn bg-slate-200 hover:bg-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 dark:text-slate-300 dark:border-slate-700 text-xs py-2 px-4 cursor-pointer font-bold">
+                        Batal
+                    </button>
+                    <button type="submit" 
+                            id="dispatch-email-submit-btn"
+                            class="neo-btn bg-emerald-400 hover:bg-emerald-300 text-xs py-2 px-5 font-black text-slate-950 shadow-[2px_2px_0px_0px_#0f172a] dark:shadow-[2px_2px_0px_0px_#000000] flex items-center gap-2 cursor-pointer">
+                        <x-icon name="send" class="w-3.5 h-3.5" />
+                        <span id="dispatch-email-submit-text">Kirim Email</span>
+                    </button>
                 </div>
             </form>
         </div>
@@ -170,9 +159,7 @@
                     </button>
                 </div>
 
-                <p class="text-[11px] text-slate-500 dark:text-slate-400 font-medium mt-2 leading-relaxed">
-                    Cukup salin dan kirimkan link ini ke rekanan percetakan. Satu link ini sudah langsung memuat seluruh berkas cetak, ukuran, bahan, dan jumlah cetak tanpa harus login.
-                </p>
+             
             </div>
 
             <div class="pt-3 border-t-[1.5px] border-slate-200 dark:border-slate-800 flex items-center justify-end">
@@ -199,7 +186,6 @@ function openVendorDispatchModal(data) {
 
     const filesListBox = document.getElementById('dispatch-files-list-box');
     const form = document.getElementById('dispatch-email-form');
-    const previewLink = document.getElementById('dispatch-email-preview-link');
 
     // Always set the single public portal URL:
     const portalUrl = data.shareUrl || (data.files && data.files.length > 0 ? data.files[0].shareUrl : '');
@@ -228,14 +214,6 @@ function openVendorDispatchModal(data) {
         if (form && data.jobId) {
             form.action = '/vendor/dispatch-all/' + data.jobId + '/email';
         }
-        if (previewLink) {
-            if (data.jobId) {
-                previewLink.href = '/vendor/dispatch-all/' + data.jobId + '/preview-email';
-                previewLink.classList.remove('hidden');
-            } else {
-                previewLink.classList.add('hidden');
-            }
-        }
     } else {
         document.getElementById('dispatch-file-name').innerText = data.fileName || '-';
 
@@ -246,15 +224,6 @@ function openVendorDispatchModal(data) {
 
         if (form && data.assetId) {
             form.action = '/vendor/dispatch/' + data.assetId + '/email';
-        }
-
-        if (previewLink) {
-            if (data.assetId) {
-                previewLink.href = '/vendor/dispatch/' + data.assetId + '/preview-email';
-                previewLink.classList.remove('hidden');
-            } else {
-                previewLink.classList.add('hidden');
-            }
         }
     }
 

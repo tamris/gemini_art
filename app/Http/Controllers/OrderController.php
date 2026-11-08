@@ -37,6 +37,13 @@ class OrderController extends Controller
         if ($request->filled('payment_status')) {
             $query->where('payment_status', $request->payment_status);
         }
+        if ($request->filled('cost_status')) {
+            if ($request->cost_status === 'missing') {
+                $query->whereNull('total_cost');
+            } elseif ($request->cost_status === 'complete') {
+                $query->whereNotNull('total_cost');
+            }
+        }
         if ($request->filled('order_type')) {
             $query->where('order_type', $request->order_type);
         }
@@ -85,6 +92,18 @@ class OrderController extends Controller
                 'main_price' => preg_replace('/[^\d]/', '', (string) $request->input('main_price')),
             ]);
         }
+        if ($request->has('design_fee')) {
+            $request->merge([
+                'design_fee' => preg_replace('/[^\d]/', '', (string) $request->input('design_fee')),
+            ]);
+        }
+        if ($request->has('main_cost_price')) {
+            $rawCost = (string) $request->input('main_cost_price');
+            $cleanCost = preg_replace('/[^\d]/', '', $rawCost);
+            $request->merge([
+                'main_cost_price' => ($rawCost !== '' && $cleanCost !== '') ? (float) $cleanCost : null,
+            ]);
+        }
         if ($request->has('main_unit_price')) {
             $request->merge([
                 'main_unit_price' => preg_replace('/[^\d]/', '', (string) $request->input('main_unit_price')),
@@ -106,10 +125,13 @@ class OrderController extends Controller
             $cleanItems = [];
             foreach ($request->input('items') as $it) {
                 if (!empty($it['name'])) {
+                    $rawCost = isset($it['cost_price']) ? (string) $it['cost_price'] : '';
+                    $cleanCost = preg_replace('/[^\d]/', '', $rawCost);
                     $cleanItems[] = [
                         'name' => trim($it['name']),
                         'qty' => max(1, (int) ($it['qty'] ?? 1)),
                         'price' => (float) preg_replace('/[^\d]/', '', (string) ($it['price'] ?? 0)),
+                        'cost_price' => ($rawCost !== '' && $cleanCost !== '') ? (float) $cleanCost : null,
                     ];
                 }
             }
@@ -125,9 +147,11 @@ class OrderController extends Controller
             'brief_notes' => 'nullable|string',
             'deadline_at' => 'nullable|date',
             'designer_id' => 'nullable|exists:users,id',
+            'design_fee' => 'nullable|numeric|min:0',
             'main_qty' => 'nullable|integer|min:1',
             'main_unit' => 'nullable|string|max:30',
             'main_unit_price' => 'nullable|numeric|min:0',
+            'main_cost_price' => 'nullable|numeric|min:0',
             'main_price' => 'nullable|numeric|min:0',
             'total_amount' => 'required|numeric|min:1',
             'paid_amount' => 'required|numeric|min:0',
@@ -137,6 +161,7 @@ class OrderController extends Controller
             'items.*.name' => 'required_with:items|string|max:150',
             'items.*.qty' => 'required_with:items|integer|min:1',
             'items.*.price' => 'required_with:items|numeric|min:0',
+            'items.*.cost_price' => 'nullable|numeric|min:0',
         ];
 
         if ($user->isOwner()) {
@@ -170,6 +195,30 @@ class OrderController extends Controller
                 $paymentStatus = 'partial_dp';
             }
 
+            $mainQty = max(1, (int) ($request->input('main_qty', 1)));
+            $mainUnit = trim((string) $request->input('main_unit', '')) ?: 'Pcs';
+            $mainSubtotal = (float) $mainPrice;
+            $mainUnitPrice = $request->filled('main_unit_price') && (float) $request->input('main_unit_price') > 0
+                ? (float) $request->input('main_unit_price')
+                : ($mainQty > 0 ? round($mainSubtotal / $mainQty, 2) : $mainSubtotal);
+            $mainCostPrice = $request->filled('main_cost_price') ? (float) $request->input('main_cost_price') : null;
+
+            // Determine if full HPP/modal is known upfront
+            $allHaveCost = ($mainCostPrice !== null);
+            $totalCost = ($mainCostPrice !== null) ? ($mainQty * $mainCostPrice) : 0;
+
+            if (!empty($data['items'])) {
+                foreach ($data['items'] as $extra) {
+                    if (!isset($extra['cost_price']) || $extra['cost_price'] === null) {
+                        $allHaveCost = false;
+                    } else {
+                        $totalCost += ((int) $extra['qty']) * ((float) $extra['cost_price']);
+                    }
+                }
+            }
+
+            $orderTotalCost = $allHaveCost ? $totalCost : null;
+
             // SOP: Tiket otomatis masuk ke antrean cabang terkait dengan status in_progress
             $order = Order::create([
                 'branch_id' => $branch->id,
@@ -179,6 +228,7 @@ class OrderController extends Controller
                 'customer_phone' => $data['customer_phone'] ?? null,
                 'order_type' => 'design_printing',
                 'total_amount' => $total,
+                'total_cost' => $orderTotalCost,
                 'paid_amount' => $paid,
                 'payment_status' => $paymentStatus,
                 'work_status' => 'in_progress',
@@ -188,18 +238,12 @@ class OrderController extends Controller
                 'order_id' => $order->id,
                 'designer_id' => $data['designer_id'] ?? null,
                 'title' => $data['title'],
+                'design_fee' => (float) ($data['design_fee'] ?? 0),
                 'dimensions' => $data['dimensions'] ?? null,
                 'material_notes' => $data['material_notes'] ?? null,
                 'brief_notes' => $data['brief_notes'] ?? null,
                 'deadline_at' => !empty($data['deadline_at']) ? Carbon::parse($data['deadline_at']) : null,
             ]);
-
-            $mainQty = max(1, (int) ($request->input('main_qty', 1)));
-            $mainUnit = trim((string) $request->input('main_unit', '')) ?: 'Pcs';
-            $mainSubtotal = (float) $mainPrice;
-            $mainUnitPrice = $request->filled('main_unit_price') && (float) $request->input('main_unit_price') > 0
-                ? (float) $request->input('main_unit_price')
-                : ($mainQty > 0 ? round($mainSubtotal / $mainQty, 2) : $mainSubtotal);
 
             // Save Line Item #1: Main Design & Print service
             OrderItem::create([
@@ -208,6 +252,7 @@ class OrderController extends Controller
                 'qty' => $mainQty,
                 'unit' => $mainUnit,
                 'unit_price' => $mainUnitPrice,
+                'cost_price' => $mainCostPrice,
                 'subtotal' => $mainSubtotal,
             ]);
 
@@ -220,6 +265,7 @@ class OrderController extends Controller
                         'item_name' => $extra['name'],
                         'qty' => $extra['qty'],
                         'unit_price' => $extra['price'],
+                        'cost_price' => $extra['cost_price'] ?? null,
                         'subtotal' => $itemSubtotal,
                     ]);
                 }
@@ -473,5 +519,33 @@ class OrderController extends Controller
         $order->save();
 
         return back()->with('success', "Status order diperbarui menjadi: " . $order->status_label);
+    }
+
+    public function updateCost(Request $request, Order $order)
+    {
+        $user = Auth::user();
+        if (!$user->isOwner() && $order->branch_id !== $user->branch_id) {
+            abort(403, 'Akses ditolak.');
+        }
+
+        $request->validate([
+            'items' => 'required|array',
+            'items.*.id' => 'required|exists:order_items,id',
+        ]);
+
+        foreach ($request->input('items') as $itemData) {
+            $raw = isset($itemData['cost_price']) ? (string) $itemData['cost_price'] : '';
+            $clean = preg_replace('/[^\d]/', '', $raw);
+            $costPrice = ($raw !== '' && $clean !== '') ? (float) $clean : null;
+
+            $order->items()->where('id', $itemData['id'])->update([
+                'cost_price' => $costPrice,
+            ]);
+        }
+
+        $order->load('items');
+        $order->recalculateTotalCost();
+
+        return back()->with('success', "Harga modal (HPP) pesanan {$order->order_number} berhasil diperbarui!");
     }
 }

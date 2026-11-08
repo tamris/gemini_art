@@ -16,6 +16,7 @@ class OrderItem extends Model
         'qty',
         'unit',
         'unit_price',
+        'cost_price',
         'subtotal',
     ];
 
@@ -24,6 +25,7 @@ class OrderItem extends Model
         return [
             'qty' => 'integer',
             'unit_price' => 'decimal:2',
+            'cost_price' => 'decimal:2',
             'subtotal' => 'decimal:2',
         ];
     }
@@ -31,5 +33,23 @@ class OrderItem extends Model
     public function order(): BelongsTo
     {
         return $this->belongsTo(Order::class);
+    }
+
+    public function getTotalCostAttribute(): ?float
+    {
+        if ($this->cost_price === null) {
+            return null;
+        }
+
+        return round(((float) $this->cost_price) * ((int) $this->qty), 2);
+    }
+
+    public function getProfitAttribute(): ?float
+    {
+        if ($this->total_cost === null) {
+            return null;
+        }
+
+        return round(((float) $this->subtotal) - ((float) $this->total_cost), 2);
     }
 }

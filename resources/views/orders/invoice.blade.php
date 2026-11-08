@@ -423,6 +423,9 @@
                     if ($order->designJob->material_notes) {
                         $parts[] = 'Bahan: ' . $order->designJob->material_notes;
                     }
+                    if ((float)($order->designJob->design_fee ?? 0) > 0) {
+                        $parts[] = 'Jasa Desain: Rp ' . number_format($order->designJob->design_fee, 0, ',', '.') . ' • Cetak: Rp ' . number_format(max(0, $it->subtotal - $order->designJob->design_fee), 0, ',', '.');
+                    }
                     $subtext = implode(' • ', $parts);
                 } elseif ($isAddon) {
                     $badge = 'Alat / Tambahan';

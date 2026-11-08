@@ -15,6 +15,7 @@ class DesignJob extends Model
         'order_id',
         'designer_id',
         'title',
+        'design_fee',
         'dimensions',
         'material_notes',
         'brief_notes',
@@ -26,6 +27,7 @@ class DesignJob extends Model
     protected function casts(): array
     {
         return [
+            'design_fee' => 'decimal:2',
             'deadline_at' => 'datetime',
             'revision_count' => 'integer',
         ];

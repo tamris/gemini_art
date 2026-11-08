@@ -174,7 +174,14 @@
                                     <td class="py-2.5 px-3">
                                         <div class="font-black text-slate-900 dark:text-white">{{ $item->item_name }}</div>
                                         @if($idx === 0 && $order->designJob)
-                                            <span class="text-[10px] font-bold text-sky-700 dark:text-sky-400">Layanan Desain & Cetak Utama</span>
+                                            <div class="flex items-center gap-1.5 flex-wrap mt-0.5">
+                                                <span class="text-[10px] font-bold text-sky-700 dark:text-sky-400">Layanan Desain & Cetak</span>
+                                                @if((float)($order->designJob->design_fee ?? 0) > 0)
+                                                    <span class="text-[10px] font-semibold text-slate-500 dark:text-slate-400">
+                                                        (Jasa Desain: Rp {{ number_format($order->designJob->design_fee, 0, ',', '.') }} &bull; Cetak: Rp {{ number_format(max(0, $item->subtotal - $order->designJob->design_fee), 0, ',', '.') }})
+                                                    </span>
+                                                @endif
+                                            </div>
                                         @elseif($order->designJob)
                                             <span class="text-[10px] font-bold text-purple-700 dark:text-purple-400">Alat / Tambahan</span>
                                         @endif
@@ -418,6 +425,7 @@
                 </div>
                 @endif
             </div>
+
 
             <!-- Work Status Control Card -->
             <div class="neo-box p-6 bg-white dark:bg-[#0c1222] border-2 border-black dark:border-slate-700 shadow-[3px_3px_0px_0px_#000] dark:shadow-[3px_3px_0px_0px_#000000] space-y-4">
@@ -704,6 +712,7 @@
 @endif
 
 <script>
+
 function handleWorkStatusChange(val) {
     const revBox = document.getElementById('revision-context-box');
     const cancelBox = document.getElementById('canceled-context-box');
