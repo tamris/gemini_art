@@ -52,6 +52,7 @@ class CashMovement extends Model
             'petty_cash_expense' => 'Pengeluaran Operasional',
             'initial_balance' => 'Modal Kas Awal',
             'order_refund' => 'Pengembalian Dana (Refund DP)',
+            'other_expense' => 'DLL',
             default => $this->category,
         };
     }
@@ -65,6 +66,7 @@ class CashMovement extends Model
             'petty_cash_expense' => 'bg-rose-400 text-black',
             'initial_balance' => 'bg-purple-300 text-black',
             'order_refund' => 'bg-rose-500 text-white',
+            'other_expense' => 'bg-orange-300 text-black',
             default => 'bg-slate-200 text-black',
         };
     }

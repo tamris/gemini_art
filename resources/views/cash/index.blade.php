@@ -20,12 +20,10 @@
             </p> -->
         </div>
         <button type="button" 
-                onclick="document.getElementById('add-expense-modal').showModal()"
-                class="neo-btn bg-rose-300 hover:bg-rose-400 dark:bg-rose-500/20 dark:hover:bg-rose-500/30 dark:border-rose-500/40 dark:text-rose-300 text-xs py-2 px-4 font-black text-black cursor-pointer dark:shadow-[2px_2px_0px_0px_#000000] self-start sm:self-auto">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M20 12H4"/>
-            </svg>
-            <span>Catat Kas Keluar (Petty Cash)</span>
+                onclick="document.getElementById('add-expense-modal').showModal(); if(window.applySmartCashCategories) window.applySmartCashCategories();"
+                class="neo-btn bg-amber-300 hover:bg-amber-400 dark:bg-amber-400 dark:hover:bg-amber-300 dark:text-slate-950 text-xs py-2 px-4 font-black text-black cursor-pointer shadow-[2px_2px_0px_0px_#0f172a] dark:shadow-[2px_2px_0px_0px_#000000] self-start sm:self-auto flex items-center gap-1.5">
+            <x-icon name="plus-circle" class="w-4 h-4" />
+            <span>Catat Mutasi Kas</span>
         </button>
     </div>
 
@@ -123,6 +121,8 @@
                         'order_settlement' => 'Pelunasan Order',
                         'retail_pos' => 'Kasir Ritel POS',
                         'petty_cash_expense' => 'Pengeluaran Operasional',
+                        'order_refund' => 'Pengembalian Dana (Refund)',
+                        'other_expense' => 'DLL',
                         'initial_balance' => 'Modal Kas Awal',
                     ]" 
                 />
@@ -326,6 +326,7 @@
                     <label class="block text-xs font-black uppercase text-black dark:text-slate-300 mb-1">Jenis Mutasi</label>
                     <x-neo-select 
                         name="type" 
+                        id="modal_cash_type"
                         required 
                         value="out"
                         :options="[
@@ -335,14 +336,18 @@
                     />
                 </div>
                 <div>
-                    <label class="block text-xs font-black uppercase text-black dark:text-slate-300 mb-1">Kategori</label>
+                    <label id="modal_cash_category_label" class="block text-xs font-black uppercase text-black dark:text-slate-300 mb-1">Kategori Pengeluaran (-)</label>
                     <x-neo-select 
                         name="category" 
+                        id="modal_cash_category"
                         required 
                         value="petty_cash_expense"
                         :options="[
-                            'petty_cash_expense' => 'Pengeluaran Operasional / Petty Cash',
-                            'initial_balance' => 'Modal Kas Awal',
+                            'petty_cash_expense' => 'Pengeluaran Operasional / Belanja Toko',
+                            'order_refund' => 'Pengembalian Dana (Refund)',
+                            'other_expense' => 'DLL',
+                            'initial_balance' => 'Modal Kas Awal / Tambah Saldo Laci',
+                            'retail_pos' => 'Pemasukan Kasir Ritel POS (Non-Order)',
                         ]" 
                     />
                 </div>
@@ -350,9 +355,9 @@
 
             <div>
                 <label for="cash_amount_display" class="block text-xs font-black uppercase text-black dark:text-slate-300 mb-1">Nominal (Rp) *</label>
-                <div class="flex rounded-xl overflow-hidden border-2 border-black dark:border-slate-700 bg-white dark:bg-slate-900 shadow-[3px_3px_0px_0px_#000] dark:shadow-[3px_3px_0px_0px_#000000] focus-within:shadow-[4px_4px_0px_0px_#000] dark:focus-within:shadow-[4px_4px_0px_0px_#000000] focus-within:ring-2 focus-within:ring-black dark:focus-within:ring-amber-400 transition-all">
-                    <span class="inline-flex items-center px-3.5 bg-amber-300 dark:bg-slate-800 border-r-2 border-black dark:border-slate-700 text-xs font-black text-black dark:text-amber-400 select-none">
-                        Rp
+                <div class="flex h-10 w-full rounded-xl overflow-hidden border-[1.5px] border-slate-300 dark:border-slate-600 bg-white dark:bg-[#0c1222] shadow-[1.5px_1.5px_0px_0px_#e2e8f0] dark:shadow-[2px_2px_0px_0px_#334155] focus-within:border-slate-800 dark:focus-within:border-amber-400 focus-within:shadow-[2.5px_2.5px_0px_0px_#0f172a] dark:focus-within:shadow-[2.5px_2.5px_0px_0px_#475569] transition-all">
+                    <span id="cash_amount_prefix" class="h-full inline-flex items-center justify-center px-3.5 bg-rose-100 text-rose-900 dark:bg-rose-950/80 dark:text-rose-300 border-r-[1.5px] border-slate-300 dark:border-slate-600 text-xs font-black select-none whitespace-nowrap shrink-0 transition-colors">
+                        - Rp
                     </span>
                     <input type="text" 
                            id="cash_amount_display" 
@@ -360,7 +365,7 @@
                            placeholder="0" 
                            required 
                            autocomplete="off"
-                           class="w-full px-3 py-2 text-sm font-black text-black dark:text-white bg-transparent focus:outline-none placeholder:text-slate-300 dark:placeholder:text-slate-600 tracking-wide">
+                           class="w-full h-full px-3 text-xs sm:text-sm font-bold text-slate-900 dark:text-white bg-transparent focus:outline-none placeholder:text-slate-400 dark:placeholder:text-slate-500 tracking-wide">
                 </div>
                 <input type="hidden" name="amount" id="cash_amount" value="">
                 <span class="text-[10px] text-slate-500 dark:text-slate-400 font-semibold mt-1 block">Otomatis terformat rupiah (contoh: 50.000).</span>
@@ -382,15 +387,15 @@
 
             <div>
                 <label class="block text-xs font-black uppercase text-black dark:text-slate-300 mb-1">Keterangan Pengeluaran / Pemasukan</label>
-                <input type="text" name="notes" placeholder="Misal: Beli lakban jilid & air galon cabang" required class="neo-input text-xs">
+                <input type="text" id="modal_cash_notes" name="notes" placeholder="Misal: Beli lakban jilid & air galon cabang" required class="neo-input text-xs">
             </div>
 
             <div class="pt-3 border-t-2 border-black dark:border-slate-800 flex justify-end gap-2">
-                <button type="button" onclick="document.getElementById('add-expense-modal').close()" class="neo-btn bg-slate-200 hover:bg-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 dark:text-slate-200 dark:border-slate-700 text-xs py-2 px-4 cursor-pointer">
+                <button type="button" onclick="document.getElementById('add-expense-modal').close()" class="neo-btn bg-slate-200 hover:bg-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 dark:text-slate-200 dark:border-slate-700 text-xs py-2 px-4 cursor-pointer font-bold">
                     Batal
                 </button>
-                <button type="submit" class="neo-btn bg-emerald-400 hover:bg-emerald-300 dark:bg-emerald-500 dark:hover:bg-emerald-400 text-black dark:text-slate-950 text-xs py-2 px-4 font-black cursor-pointer dark:border-slate-700">
-                    Simpan Mutasi Kas
+                <button type="submit" id="modal_cash_submit_btn" class="neo-btn bg-rose-400 hover:bg-rose-300 text-black text-xs py-2 px-4 font-black cursor-pointer dark:border-slate-700 transition-colors shadow-[2px_2px_0px_0px_#0f172a] dark:shadow-[2px_2px_0px_0px_#000000]">
+                    <span id="modal_cash_submit_text">Catat Kas Keluar (-)</span>
                 </button>
             </div>
         </form>
@@ -399,7 +404,94 @@
 
 @push('scripts')
 <script>
+function applySmartCashCategories() {
+    const typeSelect = document.getElementById('modal_cash_type');
+    const catSelect = document.getElementById('modal_cash_category');
+    if (!typeSelect || !catSelect) return;
+
+    const catWrapper = catSelect.closest('.neo-select-wrapper');
+    if (!catWrapper) return;
+
+    const catLabel = document.getElementById('modal_cash_category_label');
+    const amountPrefix = document.getElementById('cash_amount_prefix');
+    const notesInput = document.getElementById('modal_cash_notes');
+    const submitBtn = document.getElementById('modal_cash_submit_btn');
+    const submitText = document.getElementById('modal_cash_submit_text');
+
+    const outCategories = ['petty_cash_expense', 'order_refund', 'other_expense'];
+    const inCategories = ['initial_balance', 'retail_pos'];
+
+    const type = typeSelect.value;
+    const isOut = (type === 'out');
+    const allowed = isOut ? outCategories : inCategories;
+    const defaultVal = isOut ? 'petty_cash_expense' : 'initial_balance';
+
+    // 1. Update Category Header Label
+    if (catLabel) {
+        catLabel.textContent = isOut ? 'Kategori Pengeluaran (-)' : 'Kategori Pemasukan (+)';
+    }
+
+    // 2. Update Amount Prefix Badge Styling
+    if (amountPrefix) {
+        if (isOut) {
+            amountPrefix.textContent = '- Rp';
+            amountPrefix.className = 'h-full inline-flex items-center justify-center px-3.5 bg-rose-100 text-rose-900 dark:bg-rose-950/80 dark:text-rose-300 border-r-[1.5px] border-slate-300 dark:border-slate-600 text-xs font-black select-none whitespace-nowrap shrink-0 transition-colors';
+        } else {
+            amountPrefix.textContent = '+ Rp';
+            amountPrefix.className = 'h-full inline-flex items-center justify-center px-3.5 bg-emerald-100 text-emerald-900 dark:bg-emerald-950/80 dark:text-emerald-300 border-r-[1.5px] border-slate-300 dark:border-slate-600 text-xs font-black select-none whitespace-nowrap shrink-0 transition-colors';
+        }
+    }
+
+    // 3. Update Notes Placeholder
+    if (notesInput) {
+        notesInput.placeholder = isOut 
+            ? 'Misal: Beli lakban jilid, air galon, listrik, bensin operasional' 
+            : 'Misal: Modal uang kembalian kasir shift pagi, tambahan kas laci';
+    }
+
+    // 4. Update Submit Button
+    if (submitBtn && submitText) {
+        if (isOut) {
+            submitBtn.className = 'neo-btn bg-rose-400 hover:bg-rose-300 text-black text-xs py-2 px-4 font-black cursor-pointer dark:border-slate-700 transition-colors shadow-[2px_2px_0px_0px_#0f172a] dark:shadow-[2px_2px_0px_0px_#000000]';
+            submitText.textContent = 'Catat Kas Keluar (-)';
+        } else {
+            submitBtn.className = 'neo-btn bg-emerald-400 hover:bg-emerald-300 text-black dark:text-slate-950 text-xs py-2 px-4 font-black cursor-pointer dark:border-slate-700 transition-colors shadow-[2px_2px_0px_0px_#0f172a] dark:shadow-[2px_2px_0px_0px_#000000]';
+            submitText.textContent = 'Catat Kas Masuk (+)';
+        }
+    }
+
+    // 5. Filter Custom Neo-Select Options in Dropdown Menu
+    const optElements = catWrapper.querySelectorAll('.neo-select-option');
+    optElements.forEach(opt => {
+        const val = opt.dataset.value;
+        const isAllowed = allowed.includes(val);
+        opt.style.display = isAllowed ? 'flex' : 'none';
+    });
+
+    // 6. Filter Native Select Options
+    const nativeOpts = catSelect.querySelectorAll('option');
+    nativeOpts.forEach(opt => {
+        const isAllowed = allowed.includes(opt.value);
+        opt.disabled = !isAllowed;
+        opt.hidden = !isAllowed;
+    });
+
+    // 7. Ensure valid selection
+    if (!allowed.includes(catSelect.value)) {
+        catSelect.value = defaultVal;
+    }
+    catSelect.dispatchEvent(new Event('change', { bubbles: true }));
+}
+window.applySmartCashCategories = applySmartCashCategories;
+
 document.addEventListener('DOMContentLoaded', function() {
+    const typeSelect = document.getElementById('modal_cash_type');
+    if (typeSelect) {
+        typeSelect.addEventListener('change', applySmartCashCategories);
+        // Delay slightly to let neo-select finish its server hydration/binding
+        setTimeout(applySmartCashCategories, 50);
+    }
+
     const displayEl = document.getElementById('cash_amount_display');
     const hiddenEl = document.getElementById('cash_amount');
     if (!displayEl || !hiddenEl) return;

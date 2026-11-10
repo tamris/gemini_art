@@ -110,7 +110,7 @@
 
                     <div>
                         <label class="block text-xs font-black uppercase text-black dark:text-slate-300 mb-1">Kode Cabang (Maks 10 Huruf, Unik) *</label>
-                        <input type="text" name="code" value="{{ old('code', $b->code) }}" required maxlength="10" class="neo-input text-xs font-mono font-bold uppercase">
+                        <input type="text" name="code" value="{{ old('code', $b->code) }}" required maxlength="10" oninput="this.value = this.value.toUpperCase()" class="neo-input text-xs font-mono font-bold uppercase">
                         <span class="text-[10px] text-slate-500 dark:text-slate-400 font-medium">Digunakan untuk format order (e.g. ORD-{{ $b->code }}-...) dan direktori storage cloud.</span>
                     </div>
 
@@ -162,7 +162,7 @@
 
             <div>
                 <label class="block text-xs font-black uppercase text-black dark:text-slate-300 mb-1">Kode Cabang (Maks 10 Huruf, Unik)</label>
-                <input type="text" name="code" required placeholder="Contoh: CBC" maxlength="10" class="neo-input text-xs font-mono font-bold uppercase">
+                <input type="text" name="code" required placeholder="Contoh: CBC" maxlength="10" oninput="this.value = this.value.toUpperCase()" class="neo-input text-xs font-mono font-bold uppercase">
                 <span class="text-[10px] text-slate-500 dark:text-slate-400 font-medium">Digunakan untuk format order (e.g. ORD-CBC-...) dan direktori storage.</span>
             </div>
 

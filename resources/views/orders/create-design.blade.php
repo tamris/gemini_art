@@ -464,13 +464,11 @@
                                     <x-icon name="palette" class="w-3.5 h-3.5 text-sky-600 dark:text-sky-400" />
                                     <span>Biaya Jasa Desain</span>
                                 </label>
-                                <span class="text-[9px] font-black text-sky-800 dark:text-sky-300 bg-sky-200/70 dark:bg-sky-900/60 border border-sky-300 dark:border-sky-700 px-2 py-0.5 rounded">
-                                    Murni Jasa (Tanpa Modal Bahan)
-                                </span>
+                               
                             </div>
 
-                            <div class="flex rounded-xl overflow-hidden border-[1.5px] border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-[1.5px_1.5px_0px_0px_#e2e8f0] dark:shadow-[1.5px_1.5px_0px_0px_#000000] focus-within:border-sky-600 dark:focus-within:border-sky-400 transition-all">
-                                <span class="inline-flex items-center px-3 bg-sky-100 dark:bg-sky-900/60 text-sky-900 dark:text-sky-300 border-r-[1.5px] border-slate-300 dark:border-slate-700 text-xs font-black select-none">
+                            <div class="flex h-10 rounded-xl overflow-hidden border-[1.5px] border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-[1.5px_1.5px_0px_0px_#e2e8f0] dark:shadow-[1.5px_1.5px_0px_0px_#000000] focus-within:border-sky-600 dark:focus-within:border-sky-400 transition-all">
+                                <span class="h-full inline-flex items-center justify-center px-3.5 bg-sky-100 dark:bg-sky-900/60 text-sky-900 dark:text-sky-300 border-r-[1.5px] border-slate-300 dark:border-slate-700 text-xs font-black select-none whitespace-nowrap shrink-0">
                                     Rp
                                 </span>
                                 <input type="text" 
@@ -480,37 +478,9 @@
                                        placeholder="0"
                                        oninput="handleDesignFeeInput(this)"
                                        autocomplete="off"
-                                       class="w-full px-3 py-2 text-sm font-black text-slate-900 dark:text-white bg-transparent focus:outline-none placeholder:text-slate-300 dark:placeholder:text-slate-500 tracking-wide">
+                                       class="w-full h-full px-3 text-xs sm:text-sm font-bold text-slate-900 dark:text-white bg-transparent focus:outline-none placeholder:text-slate-300 dark:placeholder:text-slate-500 tracking-wide">
                             </div>
                             <input type="hidden" id="design_fee" name="design_fee" value="{{ old('design_fee', '0') }}">
-
-                            <!-- Presets Cepat Biaya Desain -->
-                            <div class="grid grid-cols-4 gap-1.5 pt-1">
-                                <button type="button" 
-                                        data-amount="0"
-                                        onclick="setDesignFeePreset(0)" 
-                                        class="btn-design-preset py-1 px-1 rounded-lg border border-sky-400 bg-sky-100 dark:bg-sky-950/80 text-[10px] font-black text-sky-950 dark:text-sky-200 hover:bg-sky-200 text-center transition-all cursor-pointer shadow-[0.5px_0.5px_0px_0px_#0369a1] truncate">
-                                    Bawa File (Rp 0)
-                                </button>
-                                <button type="button" 
-                                        data-amount="15000"
-                                        onclick="setDesignFeePreset(15000)" 
-                                        class="btn-design-preset py-1 px-1 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-[10px] font-bold text-slate-700 dark:text-slate-300 hover:bg-sky-100 dark:hover:bg-sky-950/60 text-center transition-all cursor-pointer truncate">
-                                    Ringan (15k)
-                                </button>
-                                <button type="button" 
-                                        data-amount="25000"
-                                        onclick="setDesignFeePreset(25000)" 
-                                        class="btn-design-preset py-1 px-1 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-[10px] font-bold text-slate-700 dark:text-slate-300 hover:bg-sky-100 dark:hover:bg-sky-950/60 text-center transition-all cursor-pointer truncate">
-                                    Baru (25k)
-                                </button>
-                                <button type="button" 
-                                        data-amount="50000"
-                                        onclick="setDesignFeePreset(50000)" 
-                                        class="btn-design-preset py-1 px-1 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-[10px] font-bold text-slate-700 dark:text-slate-300 hover:bg-sky-100 dark:hover:bg-sky-950/60 text-center transition-all cursor-pointer truncate">
-                                    Custom (50k)
-                                </button>
-                            </div>
                         </div>
 
                         <!-- 2. BIAYA CETAK & PRODUKSI (DARI KALKULATOR) -->
@@ -520,9 +490,9 @@
                                     <x-icon name="printer" class="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
                                     <span>Biaya Cetak & Modal Bahan</span>
                                 </span>
-                                <span id="print-calc-summary-badge" class="text-[10px] font-bold text-slate-500 dark:text-slate-400">
+                                <!-- <span id="print-calc-summary-badge" class="text-[10px] font-bold text-slate-500 dark:text-slate-400">
                                     0.00 m²
-                                </span>
+                                </span> -->
                             </div>
 
                             <!-- Tarif Cetak per Meter / per Pcs -->
@@ -584,7 +554,7 @@
                             <div class="pt-3 border-t border-slate-200 dark:border-slate-800 space-y-2">
                                 <div class="flex items-center justify-between mb-0.5">
                                     <label for="main_cost_price_display" id="label-cost-price" class="block text-xs font-black uppercase text-slate-800 dark:text-slate-300 tracking-wider">
-                                        Tarif Modal Cetak / HPP per Meter (m²)
+                                        Tarif Modal Cetak
                                     </label>
                                     <span class="text-[10px] font-black text-amber-700 dark:text-amber-400 bg-amber-100 dark:bg-amber-950/60 border border-amber-300 dark:border-amber-800/80 px-1.5 py-0.5 rounded">
                                         Opsional
@@ -607,9 +577,7 @@
                                        id="main_cost_price" 
                                        name="main_cost_price" 
                                        value="{{ old('main_cost_price', '0') }}">
-                                <p id="cost-calc-hint" class="text-[10px] text-slate-400 dark:text-slate-500">
-                                    Tarif acuan modal: Rp 14.500 / m². Terhitung otomatis setelah ukuran diisi. Boleh dikosongkan.
-                                </p>
+                               
                             </div>
                         </div>
 
@@ -926,24 +894,6 @@ function recalculateAllTotals() {
     calculateRemaining();
 }
 
-function setDesignFeePreset(amount) {
-    const feeDisplay = document.getElementById('design_fee_display');
-    const feeHidden = document.getElementById('design_fee');
-    if (feeDisplay) feeDisplay.value = amount > 0 ? amount.toLocaleString('id-ID') : '0';
-    if (feeHidden) feeHidden.value = amount;
-
-    document.querySelectorAll('.btn-design-preset').forEach(btn => {
-        const val = parseInt(btn.getAttribute('data-amount'), 10);
-        if (val === amount) {
-            btn.className = 'btn-design-preset py-1 px-1 rounded-lg border border-sky-400 bg-sky-100 dark:bg-sky-950/80 text-[10px] font-black text-sky-950 dark:text-sky-200 hover:bg-sky-200 text-center transition-all cursor-pointer shadow-[0.5px_0.5px_0px_0px_#0369a1] truncate';
-        } else {
-            btn.className = 'btn-design-preset py-1 px-1 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-[10px] font-bold text-slate-700 dark:text-slate-300 hover:bg-sky-100 dark:hover:bg-sky-950/60 text-center transition-all cursor-pointer truncate';
-        }
-    });
-
-    updateAllMainCalculations();
-}
-
 function handleDesignFeeInput(displayEl) {
     let rawDigits = displayEl.value.replace(/\D/g, '');
     const feeHidden = document.getElementById('design_fee');
@@ -1042,10 +992,10 @@ function setCalcMode(mode) {
             btnPcs.className = 'py-2 px-3 rounded-lg border-[1.5px] border-slate-300 dark:border-slate-700 font-bold text-xs flex items-center justify-center gap-1.5 cursor-pointer transition-all bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:border-slate-800';
         }
         if (labelUnitPrice) {
-            labelUnitPrice.innerHTML = 'Tarif Cetak per Meter (m²) <span class="text-rose-500">*</span>';
+            labelUnitPrice.innerHTML = 'Tarif Cetak per Meter<span class="text-rose-500">*</span>';
         }
         if (labelCostPrice) {
-            labelCostPrice.innerText = 'Tarif Modal Cetak / HPP per Meter (m²)';
+            labelCostPrice.innerText = 'Tarif Modal Cetak';
         }
         handleMeterDimensionChange();
     } else {

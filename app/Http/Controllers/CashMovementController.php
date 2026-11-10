@@ -7,6 +7,7 @@ use App\Models\CashMovement;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
 class CashMovementController extends Controller
 {
@@ -69,19 +70,32 @@ class CashMovementController extends Controller
             ]);
         }
 
+        $validCategories = $request->input('type') === 'out'
+            ? ['petty_cash_expense', 'order_refund', 'other_expense']
+            : ['initial_balance', 'retail_pos', 'order_settlement', 'order_dp'];
+
         $rules = [
             'type' => 'required|in:in,out',
             'amount' => 'required|numeric|min:1',
             'payment_method' => 'required|in:cash,qris,transfer',
-            'category' => 'required|in:petty_cash_expense,initial_balance,order_settlement,order_dp,retail_pos',
+            'category' => ['required', Rule::in($validCategories)],
             'notes' => 'required|string|max:255',
+        ];
+
+        $messages = [
+            'amount.required' => 'Nominal mutasi kas wajib diisi.',
+            'amount.min' => 'Nominal mutasi kas minimal Rp 1.',
+            'category.required' => 'Kategori mutasi kas wajib dipilih.',
+            'category.in' => 'Kategori yang dipilih tidak sesuai dengan jenis mutasi kas (Masuk/Keluar).',
+            'notes.required' => 'Keterangan mutasi kas wajib diisi.',
+            'branch_id.required' => 'Cabang wajib dipilih.',
         ];
 
         if ($user->isOwner()) {
             $rules['branch_id'] = 'required|exists:branches,id';
         }
 
-        $data = $request->validate($rules);
+        $data = $request->validate($rules, $messages);
         $branchId = $user->isOwner() ? $data['branch_id'] : $user->branch_id;
 
         CashMovement::create([

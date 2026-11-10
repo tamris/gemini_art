@@ -33,11 +33,21 @@ class BranchController extends Controller
             abort(403);
         }
 
+        if ($request->filled('code')) {
+            $request->merge(['code' => strtoupper(trim((string) $request->code))]);
+        }
+
         $data = $request->validate([
             'name' => 'required|string|max:100',
-            'code' => 'required|string|max:10|uppercase|unique:branches,code',
+            'code' => 'required|string|max:10|unique:branches,code',
             'address' => 'nullable|string',
             'phone' => 'nullable|string|max:20',
+        ], [
+            'name.required' => 'Nama cabang wajib diisi.',
+            'name.max' => 'Nama cabang maksimal 100 karakter.',
+            'code.required' => 'Kode cabang wajib diisi.',
+            'code.max' => 'Kode cabang maksimal 10 karakter.',
+            'code.unique' => 'Kode cabang sudah digunakan oleh cabang lain.',
         ]);
 
         Branch::create($data);
@@ -52,11 +62,21 @@ class BranchController extends Controller
             abort(403, 'Hanya Owner yang dapat mengedit cabang.');
         }
 
+        if ($request->filled('code')) {
+            $request->merge(['code' => strtoupper(trim((string) $request->code))]);
+        }
+
         $data = $request->validate([
             'name' => 'required|string|max:100',
-            'code' => ['required', 'string', 'max:10', 'uppercase', Rule::unique('branches', 'code')->ignore($branch->id)],
+            'code' => ['required', 'string', 'max:10', Rule::unique('branches', 'code')->ignore($branch->id)],
             'address' => 'nullable|string',
             'phone' => 'nullable|string|max:20',
+        ], [
+            'name.required' => 'Nama cabang wajib diisi.',
+            'name.max' => 'Nama cabang maksimal 100 karakter.',
+            'code.required' => 'Kode cabang wajib diisi.',
+            'code.max' => 'Kode cabang maksimal 10 karakter.',
+            'code.unique' => 'Kode cabang sudah digunakan oleh cabang lain.',
         ]);
 
         $branch->update($data);

@@ -322,6 +322,28 @@ class PrintingManagementSystemTest extends TestCase
         $this->assertEquals(25000, (float) $mv->amount);
     }
 
+    public function test_cash_movement_manual_other_expense_dll(): void
+    {
+        $cashier = User::where('email', 'kasir.solo@geminiart.test')->first();
+
+        $response = $this->actingAs($cashier)->post(route('cash.store'), [
+            'type' => 'out',
+            'category' => 'other_expense',
+            'amount' => 45000,
+            'payment_method' => 'cash',
+            'notes' => 'Iuran kebersihan lingkungan & sampah',
+        ]);
+
+        $response->assertSessionHas('success');
+
+        $mv = CashMovement::where('notes', 'Iuran kebersihan lingkungan & sampah')->first();
+        $this->assertNotNull($mv);
+        $this->assertEquals('out', $mv->type);
+        $this->assertEquals('other_expense', $mv->category);
+        $this->assertEquals('DLL', $mv->category_label);
+        $this->assertEquals(45000, (float) $mv->amount);
+    }
+
     public function test_operational_routes_render_successfully_for_owner_and_cashier(): void
     {
         $owner = User::where('role', 'owner')->first();
@@ -478,6 +500,23 @@ class PrintingManagementSystemTest extends TestCase
         $this->assertEquals('Gemini Art - Cabang Solo Baru', $branch->name);
         $this->assertEquals('Jl. Slamet Riyadi No. 999, Surakarta', $branch->address);
         $this->assertEquals('0812-9999-8888', $branch->phone);
+    }
+
+    public function test_owner_can_update_branch_with_lowercase_code_and_it_auto_uppercases(): void
+    {
+        $owner = User::where('role', 'owner')->first();
+        $branch = Branch::where('code', 'CBA')->first();
+
+        $response = $this->actingAs($owner)->put(route('branches.update', $branch->id), [
+            'name' => 'Gemini Art - Cabang Keturen Baru',
+            'code' => 'ktr', // input huruf kecil
+        ]);
+
+        $response->assertSessionHas('success');
+
+        $branch->refresh();
+        $this->assertEquals('Gemini Art - Cabang Keturen Baru', $branch->name);
+        $this->assertEquals('KTR', $branch->code);
     }
 
     public function test_non_owner_cannot_update_branch(): void
