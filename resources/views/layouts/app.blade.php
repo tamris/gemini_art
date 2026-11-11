@@ -740,11 +740,149 @@
         if (statusEl) {
             statusEl.innerHTML = `
                 <span class="w-2 h-2 rounded-full bg-amber-500 animate-ping"></span>
-                <span>Mengunggah file ke cloud storage...</span>
+                <span>Mengunggah file ke server...</span>
             `;
         }
     }
     window.resetUploadForm = resetUploadForm;
+
+    @php
+        $parseIniSize = function ($val) {
+            $val = trim((string) $val);
+            if ($val === '' || $val === '0' || $val === '-1') return 0;
+            $last = strtolower($val[strlen($val) - 1]);
+            $num = (int) $val;
+            return match ($last) {
+                'g' => $num * 1073741824,
+                'm' => $num * 1048576,
+                'k' => $num * 1024,
+                default => $num,
+            };
+        };
+        $postMaxBytes = $parseIniSize(ini_get('post_max_size'));
+        $uploadMaxBytes = $parseIniSize(ini_get('upload_max_filesize'));
+        $serverLimit = ($postMaxBytes > 0 && $uploadMaxBytes > 0)
+            ? min($postMaxBytes, $uploadMaxBytes)
+            : max($postMaxBytes, $uploadMaxBytes);
+        $ajaxUploadChunkBytes = $serverLimit > 0
+            ? max(262144, min(1048576, (int) floor($serverLimit * 0.65)))
+            : 1048576;
+    @endphp
+    window.__ajaxUploadChunkBytes = {{ $ajaxUploadChunkBytes }};
+
+    function parseAjaxXhrError(xhr) {
+        let errMsg = 'Terjadi kesalahan saat mengunggah (HTTP ' + xhr.status + ').';
+        try {
+            const res = JSON.parse(xhr.responseText);
+            if (res.message) errMsg = res.message;
+            if (res.errors) errMsg = Object.values(res.errors).flat().join(', ');
+        } catch (e) {}
+        return errMsg;
+    }
+
+    function generateChunkUploadId() {
+        if (window.crypto && typeof window.crypto.randomUUID === 'function') {
+            return window.crypto.randomUUID().replace(/-/g, '');
+        }
+        return Date.now().toString(36) + Math.random().toString(36).slice(2, 10);
+    }
+
+    function sendUploadXhr(url, formData, csrfToken, onProgress) {
+        return new Promise((resolve, reject) => {
+            const xhr = new XMLHttpRequest();
+            if (onProgress) {
+                xhr.upload.addEventListener('progress', onProgress);
+            }
+            xhr.addEventListener('load', () => {
+                if (xhr.status >= 200 && xhr.status < 300) {
+                    resolve(xhr);
+                } else {
+                    const err = new Error(parseAjaxXhrError(xhr));
+                    err.status = xhr.status;
+                    reject(err);
+                }
+            });
+            xhr.addEventListener('error', () => {
+                const err = new Error('Koneksi internet terputus atau gagal menghubungi server storage.');
+                err.isNetworkError = true;
+                reject(err);
+            });
+            xhr.open('POST', url);
+            xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+            xhr.setRequestHeader('Accept', 'application/json');
+            if (csrfToken) {
+                xhr.setRequestHeader('X-CSRF-TOKEN', csrfToken);
+            }
+            xhr.send(formData);
+        });
+    }
+
+    async function runChunkedUpload({ form, files, chunkBytes, csrfToken, onProgressBytes, onAssembling }) {
+        const baseFields = [];
+        const rawFormData = new FormData(form);
+        for (const [key, value] of rawFormData.entries()) {
+            if (!(value instanceof File)) {
+                baseFields.push([key, value]);
+            }
+        }
+
+        let completedBytes = 0;
+
+        for (let fileIdx = 0; fileIdx < files.length; fileIdx++) {
+            const file = files[fileIdx];
+            const uploadId = generateChunkUploadId();
+            const totalChunks = Math.max(1, Math.ceil(file.size / chunkBytes));
+            const isLastFile = (fileIdx === files.length - 1);
+
+            for (let chunkIdx = 0; chunkIdx < totalChunks; chunkIdx++) {
+                const start = chunkIdx * chunkBytes;
+                const end = Math.min(file.size, start + chunkBytes);
+                const blob = file.slice(start, end);
+                const isLastChunkOfBatch = isLastFile && (chunkIdx === totalChunks - 1);
+
+                const fd = new FormData();
+                baseFields.forEach(([k, v]) => fd.append(k, v));
+                fd.append('chunk_upload', '1');
+                fd.append('upload_id', uploadId);
+                fd.append('chunk_index', String(chunkIdx));
+                fd.append('total_chunks', String(totalChunks));
+                fd.append('original_name', file.name);
+                fd.append('file_size', String(file.size));
+                fd.append('is_last_file_in_batch', isLastChunkOfBatch ? '1' : '0');
+                fd.append('uploaded_files_count', String(files.length));
+                fd.append('chunk', blob, 'chunk.part');
+
+                let attempt = 0;
+                const maxAttempts = 3;
+                while (true) {
+                    attempt++;
+                    try {
+                        await sendUploadXhr(form.action, fd, csrfToken, (event) => {
+                            if (event.lengthComputable && event.total > 0) {
+                                const ratio = Math.min(1, event.loaded / event.total);
+                                const currentLoaded = Math.round(blob.size * ratio);
+                                onProgressBytes(completedBytes + currentLoaded);
+                                if (isLastChunkOfBatch && ratio >= 1 && onAssembling) {
+                                    onAssembling();
+                                }
+                            }
+                        });
+                        break;
+                    } catch (err) {
+                        const retryable = err.isNetworkError || (err.status >= 500 && err.status < 600);
+                        if (retryable && attempt < maxAttempts) {
+                            await new Promise(r => setTimeout(r, 1000 * attempt));
+                            continue;
+                        }
+                        throw err;
+                    }
+                }
+
+                completedBytes += blob.size;
+                onProgressBytes(completedBytes);
+            }
+        }
+    }
 
     function initAjaxUploads() {
         if (window.__ajaxUploadDelegated) return;
@@ -757,7 +895,7 @@
             }
         });
 
-        document.addEventListener('submit', function(e) {
+        document.addEventListener('submit', async function(e) {
             const form = e.target.closest('form[data-ajax-upload]');
             if (!form) return;
 
@@ -808,45 +946,22 @@
             if (percentEl) percentEl.innerText = '0%';
             if (barEl) barEl.style.width = '0%';
 
-            const formData = new FormData(form);
-            const xhr = new XMLHttpRequest();
+            function updateProgressUI(loadedBytes) {
+                const clamped = Math.min(totalBytes, Math.max(0, loadedBytes));
+                const percent = totalBytes > 0 ? Math.min(100, Math.round((clamped / totalBytes) * 100)) : 100;
+                if (barEl) barEl.style.width = percent + '%';
+                if (percentEl) percentEl.innerText = percent + '%';
+                if (bytesEl) bytesEl.innerText = `${formatBytes(clamped)} / ${totalFormatted}`;
+            }
 
-            xhr.upload.addEventListener('progress', (event) => {
-                if (event.lengthComputable) {
-                    const percent = Math.round((event.loaded / event.total) * 100);
-                    if (barEl) barEl.style.width = percent + '%';
-                    if (percentEl) percentEl.innerText = percent + '%';
-                    if (bytesEl) bytesEl.innerText = `${formatBytes(event.loaded)} / ${totalFormatted}`;
-
-                    if (percent >= 100 && statusEl) {
-                        statusEl.innerHTML = `
-                            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
-                            <span>Menyimpan berkas & memperbarui tiket...</span>
-                        `;
-                    }
+            function setAssemblingStatus() {
+                if (statusEl) {
+                    statusEl.innerHTML = `
+                        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+                        <span>Menyimpan berkas & memperbarui tiket...</span>
+                    `;
                 }
-            });
-
-            xhr.addEventListener('load', () => {
-                if (xhr.status >= 200 && xhr.status < 300) {
-                    if (modal) {
-                        modal.close();
-                    }
-                    window.location.reload();
-                } else {
-                    let errMsg = 'Terjadi kesalahan saat mengunggah (HTTP ' + xhr.status + ').';
-                    try {
-                        const res = JSON.parse(xhr.responseText);
-                        if (res.message) errMsg = res.message;
-                        if (res.errors) errMsg = Object.values(res.errors).flat().join(', ');
-                    } catch(e) {}
-                    showError(errMsg);
-                }
-            });
-
-            xhr.addEventListener('error', () => {
-                showError('Koneksi internet terputus atau gagal menghubungi server storage.');
-            });
+            }
 
             function showError(msg) {
                 closeBtns.forEach(btn => btn.style.pointerEvents = 'auto');
@@ -857,7 +972,7 @@
                 if (statusEl) {
                     statusEl.innerHTML = `
                         <span class="w-2 h-2 rounded-full bg-rose-500"></span>
-                        <span class="text-rose-900 font-bold">Proses terhenti karena kesalahan.</span>
+                        <span class="text-rose-900 dark:text-rose-400 font-bold">Proses terhenti karena kesalahan.</span>
                     `;
                 }
                 if (retryBtn) {
@@ -867,14 +982,37 @@
                 }
             }
 
-            xhr.open('POST', form.action);
-            xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-            xhr.setRequestHeader('Accept', 'application/json');
             const csrfMeta = document.querySelector('meta[name="csrf-token"]');
-            if (csrfMeta) {
-                xhr.setRequestHeader('X-CSRF-TOKEN', csrfMeta.content);
+            const csrfToken = csrfMeta ? csrfMeta.content : null;
+            const chunkBytes = window.__ajaxUploadChunkBytes || 1048576;
+
+            try {
+                if (totalBytes > chunkBytes) {
+                    await runChunkedUpload({
+                        form,
+                        files,
+                        chunkBytes,
+                        csrfToken,
+                        onProgressBytes: updateProgressUI,
+                        onAssembling: setAssemblingStatus,
+                    });
+                } else {
+                    await sendUploadXhr(form.action, new FormData(form), csrfToken, (event) => {
+                        if (event.lengthComputable && event.total > 0) {
+                            const ratio = Math.min(1, event.loaded / event.total);
+                            updateProgressUI(Math.round(totalBytes * ratio));
+                            if (ratio >= 1) setAssemblingStatus();
+                        }
+                    });
+                }
+
+                if (modal) {
+                    modal.close();
+                }
+                window.location.reload();
+            } catch (err) {
+                showError(err.message || 'Terjadi kesalahan saat mengunggah berkas.');
             }
-            xhr.send(formData);
         });
 
         // Auto reset when dialog closes

@@ -247,6 +247,97 @@ class PrintingManagementSystemTest extends TestCase
         $response->assertSessionHas('success');
     }
 
+    public function test_designer_chunked_upload_assembles_file_and_updates_status(): void
+    {
+        Storage::fake('local');
+
+        $designer = User::where('email', 'desain.solo@geminiart.test')->first();
+        $order = Order::where('branch_id', $designer->branch_id)
+            ->where('work_status', 'in_progress')
+            ->first();
+        $job = $order->designJob;
+
+        $part0 = str_repeat('A', 1024);
+        $part1 = str_repeat('B', 1024);
+        $part2 = str_repeat('C', 512);
+        $fullContent = $part0 . $part1 . $part2;
+        $uploadId = 'chunkedbanner001';
+
+        $commonPayload = [
+            'chunk_upload' => '1',
+            'upload_id' => $uploadId,
+            'total_chunks' => '3',
+            'original_name' => 'banner_workshop_final.tif',
+            'file_size' => (string) strlen($fullContent),
+            'file_type' => 'final_print',
+            'uploaded_files_count' => '1',
+        ];
+
+        $res0 = $this->actingAs($designer)->postJson(route('workdesk.upload', $job->id), array_merge($commonPayload, [
+            'chunk_index' => '0',
+            'is_last_file_in_batch' => '0',
+            'chunk' => UploadedFile::fake()->createWithContent('chunk.part', $part0),
+        ]));
+        $res0->assertOk()->assertJson(['success' => true, 'completed' => false]);
+
+        $res1 = $this->actingAs($designer)->postJson(route('workdesk.upload', $job->id), array_merge($commonPayload, [
+            'chunk_index' => '1',
+            'is_last_file_in_batch' => '0',
+            'chunk' => UploadedFile::fake()->createWithContent('chunk.part', $part1),
+        ]));
+        $res1->assertOk()->assertJson(['success' => true, 'completed' => false]);
+
+        $res2 = $this->actingAs($designer)->postJson(route('workdesk.upload', $job->id), array_merge($commonPayload, [
+            'chunk_index' => '2',
+            'is_last_file_in_batch' => '1',
+            'chunk' => UploadedFile::fake()->createWithContent('chunk.part', $part2),
+        ]));
+        $res2->assertOk()->assertJson(['success' => true, 'completed' => true]);
+        $res2->assertSessionHas('success');
+
+        $order->refresh();
+        $this->assertEquals('ready_to_print', $order->work_status);
+
+        $asset = DesignAsset::where('design_job_id', $job->id)
+            ->where('file_name', 'print_banner_workshop_final.tif')
+            ->first();
+        $this->assertNotNull($asset);
+        $this->assertEquals(strlen($fullContent), $asset->file_size);
+
+        $disk = config('filesystems.archive_disk', 'public');
+        Storage::disk($disk)->assertExists($asset->file_path);
+        $this->assertEquals($fullContent, Storage::disk($disk)->get($asset->file_path));
+
+        // Temp chunk directory must be cleaned up
+        Storage::disk('local')->assertMissing("chunks/{$job->id}_{$designer->id}_{$uploadId}/part_0");
+    }
+
+    public function test_chunked_upload_rejects_missing_intermediate_chunks(): void
+    {
+        Storage::fake('local');
+
+        $designer = User::where('email', 'desain.solo@geminiart.test')->first();
+        $order = Order::where('branch_id', $designer->branch_id)->first();
+        $job = $order->designJob;
+
+        $response = $this->actingAs($designer)->postJson(route('workdesk.upload', $job->id), [
+            'chunk_upload' => '1',
+            'upload_id' => 'brokenchunk01',
+            'chunk_index' => '1',
+            'total_chunks' => '2',
+            'original_name' => 'broken_file.pdf',
+            'file_size' => '2048',
+            'file_type' => 'final_print',
+            'chunk' => UploadedFile::fake()->createWithContent('chunk.part', str_repeat('Z', 1024)),
+        ]);
+
+        $response->assertStatus(422)
+            ->assertJson([
+                'success' => false,
+                'message' => 'Potongan berkas tidak lengkap. Silakan coba unggah ulang.',
+            ]);
+    }
+
     public function test_cashier_settlement_updates_to_paid_and_completed(): void
     {
         $cashier = User::where('email', 'kasir.solo@geminiart.test')->first();
