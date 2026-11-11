@@ -351,7 +351,7 @@
                                 </div>
                             </div>
 
-                            <div class="sm:col-span-2">
+                            <!-- <div class="sm:col-span-2">
                                 <div class="flex items-center justify-between mb-1">
                                     <label for="brief_file" class="block text-xs font-black uppercase text-slate-800 dark:text-slate-300 tracking-wider cursor-pointer">
                                         File Acuan / Sketsa
@@ -387,7 +387,7 @@
                                         </div>
                                     </label>
                                 </div>
-                            </div>
+                            </div> -->
                         </div>
 
                         <div>

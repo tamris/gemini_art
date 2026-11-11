@@ -218,36 +218,6 @@
             z-index: 0;
         }
 
-        .preview-bar {
-            position: relative;
-            z-index: 10;
-            max-width: 36rem;
-            width: 100%;
-            margin-bottom: 0.9rem;
-            padding: 0.65rem 1rem;
-            background-color: var(--amber-solid);
-            color: #0f172a;
-            border: 1.5px solid #0f172a;
-            border-radius: 0.85rem;
-            box-shadow: 2.5px 2.5px 0 0 #0f172a;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 0.75rem;
-            font-size: 0.75rem;
-            font-weight: 800;
-        }
-
-        .preview-bar a {
-            color: #0f172a;
-            background: #ffffff;
-            border: 1.5px solid #0f172a;
-            padding: 0.3rem 0.65rem;
-            border-radius: 0.5rem;
-            text-decoration: none;
-            white-space: nowrap;
-        }
-
         .card {
             position: relative;
             z-index: 10;
@@ -528,13 +498,6 @@
 <body>
     <div class="glow-top" aria-hidden="true"></div>
     <div class="glow-bottom" aria-hidden="true"></div>
-
-    @if(!empty($isPreview))
-    <div class="preview-bar" role="status">
-        <span>PRATINJAU HALAMAN MAINTENANCE (503) — Hanya terlihat oleh Owner</span>
-        <a href="{{ route('maintenance.index') }}">Kembali ke Panel</a>
-    </div>
-    @endif
 
     <main class="card" role="main" aria-labelledby="maintenance-heading">
         <header class="brand-row">

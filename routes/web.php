@@ -6,7 +6,6 @@ use App\Http\Controllers\BranchController;
 use App\Http\Controllers\CashMovementController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FinancialReportController;
-use App\Http\Controllers\MaintenanceController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PosController;
 use App\Http\Controllers\WorkdeskController;
@@ -81,10 +80,4 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
     Route::post('/users/{user}/reset-password', [UserController::class, 'resetPassword'])->name('users.reset-password');
     Route::post('/users/{user}/toggle-status', [UserController::class, 'toggleStatus'])->name('users.toggle-status');
-
-    // Maintenance Mode Control (Owner only)
-    Route::get('/maintenance', [MaintenanceController::class, 'index'])->name('maintenance.index');
-    Route::get('/maintenance/preview', [MaintenanceController::class, 'preview'])->name('maintenance.preview');
-    Route::post('/maintenance/down', [MaintenanceController::class, 'activate'])->name('maintenance.down');
-    Route::post('/maintenance/up', [MaintenanceController::class, 'deactivate'])->name('maintenance.up');
 });

@@ -184,22 +184,6 @@
                     </div>
                     <span>Kelola Staf</span>
                 </a>
-
-                <!-- Mode Maintenance Server -->
-                <a href="{{ route('maintenance.index') }}" 
-                   class="group flex items-center justify-between gap-2 px-3 py-2 rounded-xl text-xs font-black border-[1.5px] transition-all {{ request()->routeIs('maintenance.*') ? 'bg-amber-300 border-slate-800 dark:border-slate-500 shadow-[2px_2px_0px_0px_#0f172a] dark:shadow-[2px_2px_0px_0px_#334155] text-slate-900' : 'border-transparent text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800/80 hover:text-slate-900 dark:hover:text-white' }}">
-                    <div class="flex items-center gap-3 min-w-0">
-                        <div class="w-7 h-7 rounded-lg border-[1.5px] border-slate-800 dark:border-slate-700 flex items-center justify-center text-slate-900 shrink-0 transition-transform group-hover:scale-105 {{ request()->routeIs('maintenance.*') ? 'bg-white keep-white dark:border-slate-500 shadow-[1px_1px_0px_0px_#0f172a] dark:shadow-[1px_1px_0px_0px_#334155]' : 'bg-amber-200 dark:bg-slate-800 dark:text-slate-400 group-hover:dark:text-amber-400 group-hover:dark:border-amber-400/50' }}">
-                            <x-icon name="wrench" class="w-4 h-4" />
-                        </div>
-                        <span class="truncate">Mode Maintenance</span>
-                    </div>
-                    @if(app()->maintenanceMode()->active())
-                    <span class="px-1.5 py-0.5 rounded bg-amber-400 text-slate-950 border border-slate-900 text-[9px] font-black uppercase shrink-0">
-                        AKTIF
-                    </span>
-                    @endif
-                </a>
             </div>
             @endif
 
@@ -326,39 +310,6 @@
 
         <!-- Main Workspace Area (Full-Width Fluid Responsive) -->
         <main class="flex-1 w-full px-3.5 sm:px-6 lg:px-8 py-4 sm:py-6">
-
-            @if(app()->maintenanceMode()->active())
-            <div class="mb-5 p-3.5 bg-amber-200 dark:bg-amber-500/20 border-[1.5px] border-slate-900 dark:border-amber-500/60 rounded-xl shadow-[2.5px_2.5px_0px_0px_#0f172a] dark:shadow-[2.5px_2.5px_0px_0px_#000000] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                <div class="flex items-center gap-2.5 min-w-0">
-                    <div class="w-8 h-8 rounded-lg bg-amber-300 border-[1.5px] border-slate-900 shadow-[1px_1px_0px_0px_#0f172a] flex items-center justify-center text-slate-950 shrink-0">
-                        <x-icon name="wrench" class="w-4 h-4" stroke-width="2.5" />
-                    </div>
-                    <div class="min-w-0">
-                        <p class="font-black text-xs sm:text-sm text-slate-950 dark:text-amber-200 leading-tight">
-                            MODE MAINTENANCE SEDANG AKTIF
-                        </p>
-                        <p class="text-[11px] font-bold text-slate-800 dark:text-amber-300/90 mt-0.5">
-                            Pengunjung &amp; staf melihat halaman 503. Anda mengakses sistem melalui sesi bypass.
-                        </p>
-                    </div>
-                </div>
-                @if(Auth::user()->isOwner())
-                <div class="flex items-center gap-2 shrink-0">
-                    <a href="{{ route('maintenance.index') }}"
-                       class="px-3 py-1.5 rounded-lg border-[1.5px] border-slate-900 bg-white hover:bg-slate-100 text-slate-900 font-black text-xs shadow-[1.5px_1.5px_0px_0px_#0f172a]">
-                        Pengaturan
-                    </a>
-                    <form method="POST" action="{{ route('maintenance.up') }}" class="inline">
-                        @csrf
-                        <button type="submit"
-                                class="px-3 py-1.5 rounded-lg border-[1.5px] border-slate-900 bg-emerald-400 hover:bg-emerald-500 text-slate-950 font-black text-xs shadow-[1.5px_1.5px_0px_0px_#0f172a] cursor-pointer">
-                            Online-kan Sekarang
-                        </button>
-                    </form>
-                </div>
-                @endif
-            </div>
-            @endif
 
             <!-- Flash Notifications -->
             @if(session('success'))
