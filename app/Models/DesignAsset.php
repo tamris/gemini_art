@@ -30,13 +30,27 @@ class DesignAsset extends Model
             }
         });
 
-        static::deleting(function (DesignAsset $asset) {
-            try {
-                if ($asset->file_path && $asset->disk && Storage::disk($asset->disk)->exists($asset->file_path)) {
-                    Storage::disk($asset->disk)->delete($asset->file_path);
+        static::deleted(function (DesignAsset $asset) {
+            if (empty($asset->file_path)) {
+                return;
+            }
+
+            $disksToCheck = array_unique(array_filter([
+                $asset->disk ?: config('filesystems.archive_disk', 'public'),
+                'public',
+            ]));
+
+            foreach ($disksToCheck as $disk) {
+                try {
+                    if ($disk === 'r2' && empty(config('filesystems.disks.r2.bucket'))) {
+                        continue;
+                    }
+                    if (Storage::disk($disk)->exists($asset->file_path)) {
+                        Storage::disk($disk)->delete($asset->file_path);
+                    }
+                } catch (\Throwable $e) {
+                    \Illuminate\Support\Facades\Log::warning("Failed to delete physical file for asset {$asset->id} on disk {$disk}: " . $e->getMessage());
                 }
-            } catch (\Throwable $e) {
-                \Illuminate\Support\Facades\Log::warning("Failed to delete physical file for asset {$asset->id}: " . $e->getMessage());
             }
         });
     }

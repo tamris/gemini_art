@@ -63,6 +63,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/archive', [ArchiveController::class, 'index'])->name('archive.index');
     Route::get('/archive/{asset}/download', [ArchiveController::class, 'download'])->name('archive.download');
     Route::get('/archive/{asset}/preview', [ArchiveController::class, 'preview'])->name('archive.preview');
+    Route::delete('/archive/{asset}', [ArchiveController::class, 'destroy'])->name('archive.destroy');
     Route::post('/vendor/dispatch/{asset}/email', [VendorShareController::class, 'sendEmail'])->name('vendor.dispatch.email');
     Route::post('/vendor/dispatch-all/{job}/email', [VendorShareController::class, 'sendJobEmail'])->name('vendor.dispatch.job.email');
     Route::get('/vendor/dispatch/{asset}/preview-email', [VendorShareController::class, 'previewEmail'])->name('vendor.dispatch.preview-email');

@@ -270,26 +270,6 @@
                         </div>
 
                         <div class="flex items-center gap-2 shrink-0 flex-wrap">
-                            @if($asset->file_type === 'final_print')
-                            <!-- Kirim ke Percetakan Button -->
-                            <button type="button" 
-                                    onclick="openVendorDispatchModal({
-                                        assetId: {{ $asset->id }},
-                                        fileName: '{{ addslashes($asset->file_name) }}',
-                                        orderNumber: '{{ addslashes($order->order_number) }}',
-                                        jobTitle: '{{ addslashes($order->designJob->title ?? $order->customer_name) }}',
-                                        dimensions: '{{ addslashes($order->designJob->dimensions ?? '') }}',
-                                        materialNotes: '{{ addslashes($order->designJob->material_notes ?? '') }}',
-                                        briefNotes: '{{ addslashes($order->designJob->brief_notes ?? '') }}',
-                                        qty: {{ $order->items->first()?->qty ?? 1 }},
-                                        shareUrl: '{{ $asset->share_url }}'
-                                    })"
-                                    title="Kirim Berkas ke Percetakan Rekanan (WA / Email / Link)"
-                                    class="w-8 h-8 rounded-lg border-[1.5px] border-slate-900 dark:border-slate-700 bg-amber-300 hover:bg-amber-400 text-slate-950 shadow-[1.5px_1.5px_0px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_0px_#000000] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none flex items-center justify-center shrink-0 cursor-pointer transition-all">
-                                <x-icon name="send" class="w-4 h-4 text-slate-900" />
-                            </button>
-                            @endif
-
                             <!-- Preview Button (Eye Icon) -->
                             <button type="button" 
                                     onclick="openFilePreview('{{ route('archive.preview', $asset->id) }}', '{{ addslashes($asset->file_name) }}', '{{ $asset->formatted_size }}', '{{ $asset->file_type_badge }}', '{{ str_ends_with(strtolower($asset->file_name), '.pdf') ? 'pdf' : ($asset->is_image ? 'image' : 'other') }}', '{{ route('archive.download', $asset->id) }}')"
@@ -304,6 +284,26 @@
                                class="w-8 h-8 rounded-lg border-[1.5px] border-slate-900 dark:border-slate-700 bg-emerald-300 hover:bg-emerald-400 dark:bg-emerald-500/20 dark:hover:bg-emerald-500/30 dark:border-emerald-500/50 dark:text-emerald-300 text-slate-950 shadow-[1.5px_1.5px_0px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_0px_#000000] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none flex items-center justify-center shrink-0 transition-all">
                                 <x-icon name="download" class="w-4 h-4 text-slate-950 dark:text-emerald-300" />
                             </a>
+
+                            @if(!$order->isLocked())
+                            @php
+                                $willRevertStatus = $asset->file_type === 'final_print'
+                                    && $order->work_status === 'ready_to_print'
+                                    && $finalPrintAssets->count() <= 1;
+                            @endphp
+                            <!-- Delete Asset Button -->
+                            <button type="button"
+                                    onclick="openDeleteAssetModal({
+                                        action: '{{ route('archive.destroy', $asset->id) }}',
+                                        fileName: '{{ addslashes($asset->file_name) }}',
+                                        fileSize: '{{ $asset->formatted_size }}',
+                                        willRevertStatus: {{ $willRevertStatus ? 'true' : 'false' }}
+                                    })"
+                                    title="Hapus Berkas (Jika Salah Unggah)"
+                                    class="w-8 h-8 rounded-lg border-[1.5px] border-slate-900 dark:border-slate-700 bg-rose-300 hover:bg-rose-400 dark:bg-rose-500/20 dark:hover:bg-rose-500/30 dark:border-rose-500/50 dark:text-rose-300 text-slate-950 shadow-[1.5px_1.5px_0px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_0px_#000000] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none flex items-center justify-center shrink-0 cursor-pointer transition-all">
+                                <x-icon name="trash2" class="w-4 h-4 text-slate-950 dark:text-rose-300" />
+                            </button>
+                            @endif
                         </div>
                     </div>
                     @empty

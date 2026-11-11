@@ -281,4 +281,209 @@ class MultiDesignUploadTest extends TestCase
         $response->assertSee('spanduk_belakang.pdf');
         $response->assertSee('Download Berkas');
     }
+
+    public function test_orders_show_replaces_per_file_send_with_delete_and_hides_when_locked(): void
+    {
+        $asset = DesignAsset::create([
+            'design_job_id' => $this->job->id,
+            'uploaded_by' => $this->designer->id,
+            'file_type' => 'final_print',
+            'file_path' => 'designs/banner_toko.pdf',
+            'file_name' => 'banner_toko.pdf',
+            'file_size' => 2048,
+        ]);
+
+        // Unlocked order: shows Kirim Berkas (All) + delete button trigger, no per-row assetId dispatch
+        $response = $this->actingAs($this->designer)->get(route('orders.show', $this->order->id));
+        $response->assertOk();
+        $response->assertSee('Kirim Berkas (All)');
+        $response->assertSee('dispatchAllAssets()');
+        $response->assertSee('Hapus Berkas (Jika Salah Unggah)');
+        $response->assertSee("action: '" . route('archive.destroy', $asset->id) . "'", false);
+        $response->assertDontSee("assetId: {$asset->id}");
+
+        // Locked order: hides delete trigger (preview/download stay available)
+        $this->order->update(['work_status' => 'completed']);
+        $lockedResponse = $this->actingAs($this->owner)->get(route('orders.show', $this->order->id));
+        $lockedResponse->assertOk();
+        $lockedResponse->assertDontSee('Hapus Berkas (Jika Salah Unggah)');
+        $lockedResponse->assertDontSee("action: '" . route('archive.destroy', $asset->id) . "'", false);
+    }
+
+    public function test_authorized_staff_can_delete_asset_and_removes_physical_file(): void
+    {
+        Storage::disk('public')->put('designs/salah_upload.pdf', 'dummy-pdf-content');
+
+        $asset = DesignAsset::create([
+            'design_job_id' => $this->job->id,
+            'uploaded_by' => $this->designer->id,
+            'disk' => 'public',
+            'file_type' => 'preview_proof',
+            'file_path' => 'designs/salah_upload.pdf',
+            'file_name' => 'salah_upload.pdf',
+            'file_size' => 1024,
+        ]);
+
+        Storage::disk('public')->assertExists('designs/salah_upload.pdf');
+
+        $response = $this->actingAs($this->designer)
+            ->deleteJson(route('archive.destroy', $asset->id));
+
+        $response->assertOk()
+            ->assertJson([
+                'success' => true,
+                'status_reverted' => false,
+            ]);
+
+        $this->assertDatabaseMissing('design_assets', ['id' => $asset->id]);
+        Storage::disk('public')->assertMissing('designs/salah_upload.pdf');
+    }
+
+    public function test_deleting_last_final_print_asset_reverts_ready_to_print_order_to_in_progress(): void
+    {
+        $this->order->update(['work_status' => 'ready_to_print']);
+        Storage::disk('public')->put('designs/sole_final.pdf', 'final-content');
+
+        $asset = DesignAsset::create([
+            'design_job_id' => $this->job->id,
+            'uploaded_by' => $this->designer->id,
+            'disk' => 'public',
+            'file_type' => 'final_print',
+            'file_path' => 'designs/sole_final.pdf',
+            'file_name' => 'sole_final.pdf',
+            'file_size' => 4096,
+        ]);
+
+        $response = $this->actingAs($this->designer)
+            ->deleteJson(route('archive.destroy', $asset->id));
+
+        $response->assertOk()
+            ->assertJson([
+                'success' => true,
+                'status_reverted' => true,
+            ]);
+
+        $this->assertDatabaseMissing('design_assets', ['id' => $asset->id]);
+        Storage::disk('public')->assertMissing('designs/sole_final.pdf');
+        $this->assertSame('in_progress', $this->order->fresh()->work_status);
+    }
+
+    public function test_deleting_one_of_multiple_final_print_or_preview_keeps_ready_to_print_status(): void
+    {
+        $this->order->update(['work_status' => 'ready_to_print']);
+        Storage::disk('public')->put('designs/final_1.pdf', 'one');
+        Storage::disk('public')->put('designs/final_2.pdf', 'two');
+        Storage::disk('public')->put('designs/preview.jpg', 'prev');
+
+        $final1 = DesignAsset::create([
+            'design_job_id' => $this->job->id,
+            'uploaded_by' => $this->designer->id,
+            'disk' => 'public',
+            'file_type' => 'final_print',
+            'file_path' => 'designs/final_1.pdf',
+            'file_name' => 'final_1.pdf',
+            'file_size' => 1024,
+        ]);
+
+        DesignAsset::create([
+            'design_job_id' => $this->job->id,
+            'uploaded_by' => $this->designer->id,
+            'disk' => 'public',
+            'file_type' => 'final_print',
+            'file_path' => 'designs/final_2.pdf',
+            'file_name' => 'final_2.pdf',
+            'file_size' => 1024,
+        ]);
+
+        $preview = DesignAsset::create([
+            'design_job_id' => $this->job->id,
+            'uploaded_by' => $this->designer->id,
+            'disk' => 'public',
+            'file_type' => 'preview_proof',
+            'file_path' => 'designs/preview.jpg',
+            'file_name' => 'preview.jpg',
+            'file_size' => 512,
+        ]);
+
+        // Deleting 1 of 2 final_print assets keeps ready_to_print
+        $res1 = $this->actingAs($this->designer)
+            ->deleteJson(route('archive.destroy', $final1->id));
+        $res1->assertOk()->assertJson(['success' => true, 'status_reverted' => false]);
+        $this->assertSame('ready_to_print', $this->order->fresh()->work_status);
+
+        // Deleting preview_proof keeps ready_to_print
+        $res2 = $this->actingAs($this->designer)
+            ->deleteJson(route('archive.destroy', $preview->id));
+        $res2->assertOk()->assertJson(['success' => true, 'status_reverted' => false]);
+        $this->assertSame('ready_to_print', $this->order->fresh()->work_status);
+    }
+
+    public function test_cross_branch_staff_cannot_delete_asset(): void
+    {
+        $otherBranch = Branch::create([
+            'name' => 'Cabang Lain',
+            'code' => 'KMT',
+            'address' => 'Jl. Lain No. 2',
+            'phone' => '08129999999',
+        ]);
+
+        $otherDesigner = User::create([
+            'name' => 'Other Designer',
+            'email' => 'other.designer@example.com',
+            'password' => Hash::make('secret123'),
+            'role' => 'designer',
+            'branch_id' => $otherBranch->id,
+        ]);
+
+        Storage::disk('public')->put('designs/branch_protected.pdf', 'protected');
+
+        $asset = DesignAsset::create([
+            'design_job_id' => $this->job->id,
+            'uploaded_by' => $this->designer->id,
+            'disk' => 'public',
+            'file_type' => 'final_print',
+            'file_path' => 'designs/branch_protected.pdf',
+            'file_name' => 'branch_protected.pdf',
+            'file_size' => 1024,
+        ]);
+
+        $response = $this->actingAs($otherDesigner)
+            ->deleteJson(route('archive.destroy', $asset->id));
+
+        $response->assertForbidden();
+        $this->assertDatabaseHas('design_assets', ['id' => $asset->id]);
+        Storage::disk('public')->assertExists('designs/branch_protected.pdf');
+    }
+
+    public function test_cannot_delete_asset_when_order_is_locked(): void
+    {
+        Storage::disk('public')->put('designs/locked_final.pdf', 'locked-content');
+
+        $asset = DesignAsset::create([
+            'design_job_id' => $this->job->id,
+            'uploaded_by' => $this->designer->id,
+            'disk' => 'public',
+            'file_type' => 'final_print',
+            'file_path' => 'designs/locked_final.pdf',
+            'file_name' => 'locked_final.pdf',
+            'file_size' => 2048,
+        ]);
+
+        // Completed order blocks JSON delete (422)
+        $this->order->update(['work_status' => 'completed']);
+        $jsonRes = $this->actingAs($this->owner)
+            ->deleteJson(route('archive.destroy', $asset->id));
+        $jsonRes->assertStatus(422)
+            ->assertJson(['success' => false]);
+        $this->assertDatabaseHas('design_assets', ['id' => $asset->id]);
+        Storage::disk('public')->assertExists('designs/locked_final.pdf');
+
+        // Canceled order blocks standard HTTP delete (session error)
+        $this->order->update(['work_status' => 'canceled']);
+        $httpRes = $this->actingAs($this->owner)
+            ->delete(route('archive.destroy', $asset->id));
+        $httpRes->assertSessionHas('error');
+        $this->assertDatabaseHas('design_assets', ['id' => $asset->id]);
+        Storage::disk('public')->assertExists('designs/locked_final.pdf');
+    }
 }

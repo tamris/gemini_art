@@ -434,6 +434,9 @@
     <!-- Global Vendor Dispatch Modal -->
     <x-vendor-dispatch-modal />
 
+    <!-- Global Delete Asset Confirmation Modal -->
+    <x-delete-asset-modal />
+
     <!-- Global File Preview Modal (Soft Neo-Brutalism Lightbox) -->
     <dialog id="file-preview-modal" closedby="any" class="p-0 bg-transparent max-w-4xl w-full m-auto border-none outline-none overflow-visible">
         <div class="neo-box p-5 bg-white dark:bg-[#0c1222] w-full mx-auto shadow-[6px_6px_0px_0px_#0f172a] dark:shadow-[6px_6px_0px_0px_#000000] rounded-2xl border-2 border-slate-900 dark:border-slate-700 overflow-hidden flex flex-col max-h-[90vh]">

@@ -203,16 +203,39 @@
                 </div>
 
                 <!-- Secondary Action Links -->
-                <div class="flex items-center justify-between px-1 pt-0.5 text-xs">
-                    <button type="button" 
-                            onclick="openFilePreview('{{ route('archive.preview', $asset->id) }}', '{{ addslashes($asset->file_name) }}', '{{ $asset->formatted_size }}', '{{ $asset->file_type_badge }}', '{{ str_ends_with(strtolower($asset->file_name), '.pdf') ? 'pdf' : ($asset->is_image ? 'image' : 'other') }}', '{{ route('archive.download', $asset->id) }}')"
-                            class="text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white font-bold flex items-center gap-1 cursor-pointer transition-colors">
-                        <x-icon name="eye" class="w-3.5 h-3.5 text-slate-500 dark:text-slate-400" />
-                        <span>Pratinjau</span>
-                    </button>
+                <div class="flex items-center justify-between gap-2 px-1 pt-0.5 text-xs">
+                    <div class="flex items-center gap-3">
+                        <button type="button" 
+                                onclick="openFilePreview('{{ route('archive.preview', $asset->id) }}', '{{ addslashes($asset->file_name) }}', '{{ $asset->formatted_size }}', '{{ $asset->file_type_badge }}', '{{ str_ends_with(strtolower($asset->file_name), '.pdf') ? 'pdf' : ($asset->is_image ? 'image' : 'other') }}', '{{ route('archive.download', $asset->id) }}')"
+                                class="text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white font-bold flex items-center gap-1 cursor-pointer transition-colors">
+                            <x-icon name="eye" class="w-3.5 h-3.5 text-slate-500 dark:text-slate-400" />
+                            <span>Pratinjau</span>
+                        </button>
+
+                        @if($asset->designJob?->order && !$asset->designJob->order->isLocked())
+                        @php
+                            $archiveOrder = $asset->designJob->order;
+                            $archiveFinalCount = $asset->designJob->assets->where('file_type', 'final_print')->count();
+                            $archiveWillRevert = $asset->file_type === 'final_print'
+                                && $archiveOrder->work_status === 'ready_to_print'
+                                && $archiveFinalCount <= 1;
+                        @endphp
+                        <button type="button"
+                                onclick="openDeleteAssetModal({
+                                    action: '{{ route('archive.destroy', $asset->id) }}',
+                                    fileName: '{{ addslashes($asset->file_name) }}',
+                                    fileSize: '{{ $asset->formatted_size }}',
+                                    willRevertStatus: {{ $archiveWillRevert ? 'true' : 'false' }}
+                                })"
+                                class="text-rose-600 dark:text-rose-400 hover:text-rose-800 dark:hover:text-rose-300 font-bold flex items-center gap-1 cursor-pointer transition-colors">
+                            <x-icon name="trash2" class="w-3.5 h-3.5" />
+                            <span>Hapus</span>
+                        </button>
+                        @endif
+                    </div>
 
                     <a href="{{ route('orders.show', $asset->designJob->order_id ?? 0) }}" 
-                       class="text-blue-600 dark:text-sky-400 hover:text-blue-800 dark:hover:text-sky-300 font-bold flex items-center gap-1 hover:underline transition-colors">
+                       class="text-blue-600 dark:text-sky-400 hover:text-blue-800 dark:hover:text-sky-300 font-bold flex items-center gap-1 hover:underline transition-colors shrink-0">
                         <span>Buka Tiket &rarr;</span>
                     </a>
                 </div>
