@@ -213,4 +213,16 @@ class Order extends Model
             default => 'bg-slate-200 text-black',
         };
     }
+
+    /**
+     * Resolve vendor email dispatch status for design/printing orders.
+     */
+    public function getEmailDispatchStateAttribute(): ?array
+    {
+        if ($this->order_type !== 'design_printing' || !$this->designJob) {
+            return null;
+        }
+
+        return $this->designJob->resolveEmailDispatchState($this);
+    }
 }

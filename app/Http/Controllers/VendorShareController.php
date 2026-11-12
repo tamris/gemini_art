@@ -82,6 +82,14 @@ class VendorShareController extends Controller
                 new VendorPrintDispatchMail($asset, $request->notes, $user->name)
             );
 
+            if ($asset->file_type === 'final_print' && $asset->designJob) {
+                $asset->designJob->recordVendorEmailDispatch(
+                    $request->vendor_email,
+                    $user?->id,
+                    [$asset->id]
+                );
+            }
+
             $msg = "Email order cetak berhasil dikirimkan ke {$request->vendor_email}!";
 
             if ($request->expectsJson() || $request->ajax()) {
@@ -141,6 +149,12 @@ class VendorShareController extends Controller
         try {
             Mail::to($request->vendor_email)->send(
                 new VendorPrintDispatchMail($assets->first(), $request->notes, $user->name, $assets)
+            );
+
+            $job->recordVendorEmailDispatch(
+                $request->vendor_email,
+                $user?->id,
+                $assets->pluck('id')->all()
             );
 
             $count = $assets->count();

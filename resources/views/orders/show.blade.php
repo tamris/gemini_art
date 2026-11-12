@@ -19,6 +19,7 @@
                 <span class="px-2 py-0.5 rounded-full border-[1.5px] border-slate-800 text-xs font-black shadow-[1px_1px_0px_0px_#0f172a] dark:shadow-[1px_1px_0px_0px_#000000] {{ $order->payment_status_badge_class }}">
                     {{ $order->payment_status_label }}
                 </span>
+                <x-email-dispatch-badge id="vendor-email-status-header" :state="$order->email_dispatch_state" />
             </div>
             <div class="text-xs text-slate-500 dark:text-slate-400 font-semibold mt-1">
                 Dibuat pada {{ $order->created_at->format('d F Y, H:i') }} oleh {{ $order->creator->name }}
@@ -202,8 +203,8 @@
             <!-- Design Assets Section (SOP 3 & Cloud Storage Sync) -->
             @if($order->order_type === 'design_printing' && $order->designJob)
             <div class="neo-box p-6 bg-white dark:bg-[#0c1222] border-2 border-black dark:border-slate-700 shadow-[3px_3px_0px_0px_#000] dark:shadow-[3px_3px_0px_0px_#000000] space-y-4">
-                <div class="flex items-center justify-between pb-3 border-b-[1.5px] border-slate-800 dark:border-slate-800">
-                    <div>
+                <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-3 pb-3 border-b-[1.5px] border-slate-800 dark:border-slate-800">
+                    <div class="min-w-0 flex-1">
                         <h2 class="font-black text-base text-slate-900 dark:text-white flex items-center gap-2.5">
                             <div class="w-7 h-7 bg-emerald-300 border-[1.5px] border-slate-800 rounded-lg flex items-center justify-center text-slate-900 shadow-[1px_1px_0px_0px_#0f172a]">
                                 <x-icon name="cloud" class="w-4 h-4" />
@@ -215,7 +216,7 @@
                         </span>
                     </div>
 
-                    <div class="flex items-center gap-2 flex-wrap">
+                    <div class="flex items-center gap-2 shrink-0 flex-wrap sm:flex-nowrap">
                         @php
                             $finalPrintAssets = $order->designJob ? $order->designJob->assets->where('file_type', 'final_print') : collect();
                         @endphp
@@ -223,16 +224,16 @@
                         <button type="button" 
                                 onclick="dispatchAllAssets()"
                                 title="Kirim Semua Berkas Siap Cetak ke Percetakan Rekanan (WhatsApp / Email / Link)"
-                                class="neo-btn bg-amber-300 hover:bg-amber-400 text-slate-950 text-xs py-1.5 px-3 font-black flex items-center gap-1.5 cursor-pointer shadow-[1.5px_1.5px_0px_0px_#0f172a] dark:border-slate-800 dark:shadow-[1.5px_1.5px_0px_0px_#000000]">
-                            <x-icon name="send" class="w-3.5 h-3.5 text-slate-900" />
-                            <span>Kirim Berkas (All)</span>
+                                class="neo-btn bg-amber-300 hover:bg-amber-400 text-slate-950 text-xs py-1.5 px-3 font-black flex items-center gap-1.5 whitespace-nowrap cursor-pointer shadow-[1.5px_1.5px_0px_0px_#0f172a] dark:border-slate-800 dark:shadow-[1.5px_1.5px_0px_0px_#000000]">
+                            <x-icon name="send" class="w-3.5 h-3.5 text-slate-900 shrink-0" />
+                            <span>Kirim Berkas</span>
                         </button>
                         @endif
 
                         <button type="button" 
                                 onclick="if(window.resetUploadForm) window.resetUploadForm(document.querySelector('#upload-modal form')); document.getElementById('upload-modal').showModal()"
-                                class="neo-btn bg-emerald-400 hover:bg-emerald-300 text-slate-950 text-xs py-1.5 px-3 font-black flex items-center gap-1.5 cursor-pointer shadow-[1.5px_1.5px_0px_0px_#0f172a] dark:border-slate-800 dark:shadow-[1.5px_1.5px_0px_0px_#000000]">
-                            <x-icon name="plus" class="w-3.5 h-3.5 stroke-[2.5]" />
+                                class="neo-btn bg-emerald-400 hover:bg-emerald-300 text-slate-950 text-xs py-1.5 px-3 font-black flex items-center gap-1.5 whitespace-nowrap cursor-pointer shadow-[1.5px_1.5px_0px_0px_#0f172a] dark:border-slate-800 dark:shadow-[1.5px_1.5px_0px_0px_#000000]">
+                            <x-icon name="plus" class="w-3.5 h-3.5 stroke-[2.5] shrink-0" />
                             <span>Unggah File</span>
                         </button>
                     </div>
@@ -594,6 +595,58 @@
                 </form>
                 @endif
             </div>
+
+            @php $emailState = $order->email_dispatch_state; @endphp
+            @if($order->order_type === 'design_printing' && $emailState && ($emailState['status'] ?? 'none') !== 'none')
+            <!-- Vendor Email Dispatch History Card -->
+            <div class="neo-box p-6 bg-white dark:bg-[#0c1222] border-2 border-black dark:border-slate-700 shadow-[3px_3px_0px_0px_#000] dark:shadow-[3px_3px_0px_0px_#000000] space-y-4">
+                <div class="flex items-center justify-between gap-2 pb-2 border-b-[1.5px] border-slate-800 dark:border-slate-800">
+                    <h2 class="font-black text-base text-slate-900 dark:text-white">
+                        Riwayat Kirim Email
+                    </h2>
+                    <x-email-dispatch-badge :state="$emailState" compact />
+                </div>
+
+                @if($emailState['status'] === 'needs_resend' && !empty($emailState['detail']))
+                <div class="p-3 bg-amber-50 dark:bg-amber-950/40 border-[1.5px] border-amber-600 dark:border-amber-500/60 rounded-xl text-xs space-y-1">
+                    <div class="font-black text-amber-950 dark:text-amber-200 flex items-center gap-1.5">
+                        <x-icon name="alert-triangle" class="w-4 h-4 text-amber-700 dark:text-amber-400 shrink-0" />
+                        <span>Perlu Kirim Ulang ke Percetakan</span>
+                    </div>
+                    <p class="text-amber-900 dark:text-amber-300 font-medium leading-relaxed">
+                        {{ $emailState['detail'] }}
+                    </p>
+                </div>
+                @endif
+
+                @if(!empty($emailState['sent_at']))
+                <div class="space-y-2 text-xs">
+                    <div class="flex items-center justify-between gap-2 py-1 border-b border-slate-200 dark:border-slate-800">
+                        <span class="text-slate-500 dark:text-slate-400 font-medium shrink-0">Tujuan Email</span>
+                        <span class="font-bold text-slate-900 dark:text-slate-100 truncate">{{ $emailState['sent_to'] }}</span>
+                    </div>
+                    <div class="flex items-center justify-between gap-2 py-1 border-b border-slate-200 dark:border-slate-800">
+                        <span class="text-slate-500 dark:text-slate-400 font-medium shrink-0">Waktu Terakhir</span>
+                        <span class="font-bold text-slate-900 dark:text-slate-100">{{ $emailState['sent_at']->format('d M Y, H:i') }} WIB</span>
+                    </div>
+                    @if(!empty($emailState['sent_by']))
+                    <div class="flex items-center justify-between gap-2 py-1 border-b border-slate-200 dark:border-slate-800">
+                        <span class="text-slate-500 dark:text-slate-400 font-medium shrink-0">Dikirim Oleh</span>
+                        <span class="font-bold text-slate-900 dark:text-slate-100">{{ $emailState['sent_by'] }}</span>
+                    </div>
+                    @endif
+                    <div class="flex items-center justify-between gap-2 py-1">
+                        <span class="text-slate-500 dark:text-slate-400 font-medium shrink-0">Total Kirim</span>
+                        <span class="font-black text-slate-900 dark:text-slate-100">{{ $emailState['sent_count'] }}x kirim</span>
+                    </div>
+                </div>
+                @else
+                <div class="p-3 bg-slate-50 dark:bg-slate-900 border-[1.5px] border-slate-300 dark:border-slate-700 rounded-xl text-xs text-slate-600 dark:text-slate-300 font-medium leading-relaxed">
+                    {{ $emailState['detail'] }}
+                </div>
+                @endif
+            </div>
+            @endif
 
         </div>
 

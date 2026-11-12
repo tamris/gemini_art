@@ -178,9 +178,12 @@
 
                         <!-- Work Status -->
                         <td class="py-3.5 px-4 whitespace-nowrap">
-                            <span class="px-2.5 py-1 rounded-full border border-black text-[10px] font-black {{ $order->status_color_class }}">
-                                {{ $order->status_label }}
-                            </span>
+                            <div class="flex flex-col items-start gap-1.5">
+                                <span class="px-2.5 py-1 rounded-full border border-black text-[10px] font-black {{ $order->status_color_class }}">
+                                    {{ $order->status_label }}
+                                </span>
+                                <x-email-dispatch-badge :state="$order->email_dispatch_state" variant="inline" short />
+                            </div>
                         </td>
 
                         <!-- Payment Status -->

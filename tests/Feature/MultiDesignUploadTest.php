@@ -153,7 +153,8 @@ class MultiDesignUploadTest extends TestCase
 
         $response = $this->actingAs($this->owner)->get(route('orders.show', $this->order->id));
         $response->assertOk();
-        $response->assertDontSee('Kirim Berkas (All)');
+        $response->assertDontSee('Kirim Berkas');
+        $response->assertDontSee('onclick="dispatchAllAssets()"', false);
 
         // 2. When final_print is added, button should appear
         DesignAsset::create([
@@ -167,7 +168,7 @@ class MultiDesignUploadTest extends TestCase
 
         $response2 = $this->actingAs($this->owner)->get(route('orders.show', $this->order->id));
         $response2->assertOk();
-        $response2->assertSee('Kirim Berkas (All)');
+        $response2->assertSee('Kirim Berkas');
         $response2->assertSee('dispatchAllAssets()');
     }
 
@@ -293,10 +294,10 @@ class MultiDesignUploadTest extends TestCase
             'file_size' => 2048,
         ]);
 
-        // Unlocked order: shows Kirim Berkas (All) + delete button trigger, no per-row assetId dispatch
+        // Unlocked order: shows Kirim Berkas + delete button trigger, no per-row assetId dispatch
         $response = $this->actingAs($this->designer)->get(route('orders.show', $this->order->id));
         $response->assertOk();
-        $response->assertSee('Kirim Berkas (All)');
+        $response->assertSee('Kirim Berkas');
         $response->assertSee('dispatchAllAssets()');
         $response->assertSee('Hapus Berkas (Jika Salah Unggah)');
         $response->assertSee("action: '" . route('archive.destroy', $asset->id) . "'", false);

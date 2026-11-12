@@ -236,12 +236,12 @@
 
                 <div class="flex items-center gap-1.5 shrink-0">
                     <!-- Switch button -->
-                    <button type="button" 
+                    <!-- <button type="button" 
                             onclick="document.getElementById('quick-switch-modal').showModal()"
                             title="Ganti Akun Role"
                             class="p-1.5 bg-amber-300 hover:bg-amber-400 border border-slate-800 dark:border-slate-500 rounded-lg text-slate-900 shadow-[1px_1px_0px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_0px_#334155] active:translate-x-[1px] active:translate-y-[1px] cursor-pointer">
                         <x-icon name="refresh-cw" class="w-3.5 h-3.5" />
-                    </button>
+                    </button> -->
 
                     <!-- Logout button -->
                     <form method="POST" action="{{ route('logout') }}" class="inline">

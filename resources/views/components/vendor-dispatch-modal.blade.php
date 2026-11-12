@@ -377,6 +377,9 @@ function handleDispatchEmailSubmit(e) {
 
             setTimeout(() => {
                 closeVendorDispatchModal();
+                if (document.getElementById('vendor-email-status-header')) {
+                    window.location.reload();
+                }
             }, 1200);
         } else {
             alertBox.className = 'p-3 rounded-xl border-2 border-rose-900 bg-rose-100 text-rose-950 text-xs font-bold block';

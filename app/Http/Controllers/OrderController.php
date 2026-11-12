@@ -20,8 +20,14 @@ class OrderController extends Controller
     public function index(Request $request)
     {
         $user = Auth::user();
-        $query = Order::with(['branch', 'creator', 'designJob.designer', 'items'])
-            ->latest();
+        $query = Order::with([
+            'branch',
+            'creator',
+            'designJob.designer',
+            'designJob.finalPrintAssets:id,design_job_id,file_type,created_at',
+            'designJob.emailSender:id,name',
+            'items',
+        ])->latest();
 
         // Branch restriction
         if (!$user->isOwner()) {
@@ -322,6 +328,7 @@ class OrderController extends Controller
             'branch',
             'creator',
             'designJob.designer',
+            'designJob.emailSender:id,name',
             'designJob.assets.uploader',
             'items',
             'cashMovements.user',

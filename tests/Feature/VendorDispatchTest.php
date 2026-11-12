@@ -154,4 +154,167 @@ class VendorDispatchTest extends TestCase
         $sharePage->assertSee('0.56 x 0.56 m (0.31 m²)');
         $sharePage->assertDontSee('Min. 1 m²');
     }
+
+    public function test_order_badges_show_pending_only_when_final_print_exists_and_hide_for_retail_or_no_final_print(): void
+    {
+        $orderWithFinal = $this->asset->designJob->order;
+
+        // Retail POS order -> no email badge
+        $retailOrder = Order::create([
+            'branch_id' => $orderWithFinal->branch_id,
+            'user_id' => $this->owner->id,
+            'order_number' => 'ORD-KRT-202610-0091',
+            'customer_name' => 'Walk-in Retail',
+            'order_type' => 'retail_pos',
+            'total_amount' => 15000,
+            'paid_amount' => 15000,
+            'payment_status' => 'paid',
+            'work_status' => 'completed',
+        ]);
+
+        // Design printing order with no final_print asset -> no email badge
+        $draftOrder = Order::create([
+            'branch_id' => $orderWithFinal->branch_id,
+            'user_id' => $this->owner->id,
+            'order_number' => 'ORD-KRT-202610-0092',
+            'customer_name' => 'Draft Order',
+            'order_type' => 'design_printing',
+            'total_amount' => 25000,
+            'paid_amount' => 25000,
+            'payment_status' => 'paid',
+            'work_status' => 'in_progress',
+        ]);
+        DesignJob::create([
+            'order_id' => $draftOrder->id,
+            'title' => 'Draft Only',
+        ]);
+
+        $this->assertEquals('pending', $orderWithFinal->fresh()->email_dispatch_state['status']);
+        $this->assertNull($retailOrder->fresh()->email_dispatch_state);
+        $this->assertEquals('none', $draftOrder->fresh()->email_dispatch_state['status']);
+
+        $indexResponse = $this->actingAs($this->owner)->get(route('orders.index'));
+        $indexResponse->assertOk();
+        $indexResponse->assertSee('Belum Email');
+
+        $draftShow = $this->actingAs($this->owner)->get(route('orders.show', $draftOrder));
+        $draftShow->assertOk();
+        $draftShow->assertDontSee('Belum Kirim Email');
+        $draftShow->assertDontSee('Email Terkirim');
+    }
+
+    public function test_sending_job_email_records_dispatch_metadata_and_shows_email_terkirim_badge(): void
+    {
+        Mail::fake();
+
+        $job = $this->asset->designJob;
+        $order = $job->order;
+
+        $response = $this->actingAs($this->owner)->postJson(route('vendor.dispatch.job.email', $job->id), [
+            'vendor_email' => 'cetak@percetakan.test',
+            'notes' => 'Cetak 2x finishing mata ayam.',
+        ]);
+
+        $response->assertOk()->assertJson(['success' => true]);
+        Mail::assertSent(VendorPrintDispatchMail::class, 1);
+
+        $job->refresh();
+        $this->assertNotNull($job->vendor_email_sent_at);
+        $this->assertSame('cetak@percetakan.test', $job->vendor_email_sent_to);
+        $this->assertSame($this->owner->id, $job->vendor_email_sent_by);
+        $this->assertSame(1, $job->vendor_email_sent_count);
+        $this->assertSame([$this->asset->id], $job->vendor_email_sent_asset_ids);
+
+        $indexResponse = $this->actingAs($this->owner)->get(route('orders.index'));
+        $indexResponse->assertOk();
+        $indexResponse->assertSee('Terkirim');
+        $indexResponse->assertDontSee('Belum Email');
+
+        $showResponse = $this->actingAs($this->owner)->get(route('orders.show', $order));
+        $showResponse->assertOk();
+        $showResponse->assertSee('Email Terkirim');
+        $showResponse->assertSee('cetak@percetakan.test');
+    }
+
+    public function test_failed_vendor_email_send_does_not_mark_order_as_sent(): void
+    {
+        Mail::shouldReceive('to')
+            ->once()
+            ->with('gagal@percetakan.test')
+            ->andThrow(new \RuntimeException('SMTP connection refused'));
+
+        $job = $this->asset->designJob;
+        $order = $job->order;
+
+        $response = $this->actingAs($this->owner)->postJson(route('vendor.dispatch.job.email', $job->id), [
+            'vendor_email' => 'gagal@percetakan.test',
+        ]);
+
+        $response->assertStatus(500)->assertJson(['success' => false]);
+
+        $job->refresh();
+        $this->assertNull($job->vendor_email_sent_at);
+        $this->assertNull($job->vendor_email_sent_to);
+        $this->assertSame(0, $job->vendor_email_sent_count);
+        $this->assertSame('pending', $order->fresh()->email_dispatch_state['status']);
+    }
+
+    public function test_option_a_triggers_needs_resend_on_new_file_revision_or_file_deletion_until_resent(): void
+    {
+        Mail::fake();
+
+        $job = $this->asset->designJob;
+        $order = $job->order;
+
+        // 1. Initial send -> sent
+        $this->actingAs($this->owner)->postJson(route('vendor.dispatch.job.email', $job->id), [
+            'vendor_email' => 'cetak@percetakan.test',
+        ])->assertOk();
+        $this->assertSame('sent', $order->fresh()->email_dispatch_state['status']);
+
+        // 2. Order switches to revision -> Revisi · Kirim Ulang
+        $order->update(['work_status' => 'revision']);
+        $revState = $order->fresh()->email_dispatch_state;
+        $this->assertSame('needs_resend', $revState['status']);
+        $this->assertSame('revision', $revState['reason']);
+        $this->assertSame('Revisi · Kirim Ulang', $revState['label']);
+
+        $showRevision = $this->actingAs($this->owner)->get(route('orders.show', $order));
+        $showRevision->assertOk()->assertSee('Revisi · Kirim Ulang');
+
+        // 3. New final_print uploaded (and status becomes ready_to_print) -> File Baru · Kirim Ulang
+        $order->update(['work_status' => 'ready_to_print']);
+        Storage::disk('public')->put('designs/spanduk_v2.jpg', 'fake-image-v2');
+        $newAsset = DesignAsset::create([
+            'design_job_id' => $job->id,
+            'uploaded_by' => $this->owner->id,
+            'file_name' => 'spanduk_v2.jpg',
+            'file_path' => 'designs/spanduk_v2.jpg',
+            'file_size' => 2048,
+            'file_type' => 'final_print',
+            'share_token' => 'test-token-v2-' . uniqid(),
+            'share_expires_at' => now()->addDays(7),
+        ]);
+
+        $newFileState = $order->fresh()->email_dispatch_state;
+        $this->assertSame('needs_resend', $newFileState['status']);
+        $this->assertSame('new_file', $newFileState['reason']);
+        $this->assertSame('File Baru · Kirim Ulang', $newFileState['label']);
+
+        // 4. Resend all files -> Email Terkirim again & count increments to 2
+        $this->actingAs($this->owner)->postJson(route('vendor.dispatch.job.email', $job->id), [
+            'vendor_email' => 'cetak@percetakan.test',
+        ])->assertOk();
+
+        $job->refresh();
+        $this->assertSame(2, $job->vendor_email_sent_count);
+        $this->assertSame('sent', $order->fresh()->email_dispatch_state['status']);
+
+        // 5. Delete one sent final_print file -> File Dihapus · Kirim Ulang
+        $newAsset->delete();
+        $deletedState = $order->fresh()->email_dispatch_state;
+        $this->assertSame('needs_resend', $deletedState['status']);
+        $this->assertSame('file_deleted', $deletedState['reason']);
+        $this->assertSame('File Dihapus · Kirim Ulang', $deletedState['label']);
+    }
 }
