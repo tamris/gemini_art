@@ -344,5 +344,75 @@ class OrderStatusWorkflowTest extends TestCase
         $response->assertSee('DP 50rb');
         $response->assertSee('DP 100rb');
     }
+
+    public function test_create_design_dimension_inputs_use_001_step_increment(): void
+    {
+        $response = $this->actingAs($this->cashier)
+            ->get(route('orders.create-design'));
+
+        $response->assertOk();
+        $response->assertDontSee('step="0.05"', false);
+        $response->assertSee('id="calc_length"', false);
+        $response->assertSee('id="calc_width"', false);
+        $response->assertSee('step="0.01"', false);
+    }
+
+    public function test_create_design_form_includes_flexible_minimum_1m2_controls(): void
+    {
+        $response = $this->actingAs($this->cashier)
+            ->get(route('orders.create-design'));
+
+        $response->assertOk();
+        $response->assertSee('name="calc_length"', false);
+        $response->assertSee('name="calc_width"', false);
+        $response->assertSee('<input type="hidden" name="min_area_enabled" value="0">', false);
+        $response->assertSee('id="min_area_enabled"', false);
+        $response->assertSee('id="min_area_scope"', false);
+        $response->assertSee('value="total"', false);
+        $response->assertSee('value="per_item"', false);
+        $response->assertSee('Minimal Hitung 1 m²');
+        $response->assertSee('computeBillableMeterArea', false);
+        $response->assertSee('applyComputedPrintSubtotal', false);
+        $response->assertDontSee('compactWithMin', false);
+        $response->assertDontSee(', Min. 1 m²', false);
+        $response->assertDontSee('· Min. 1 m²', false);
+        $response->assertDontSee('(Luas asli)', false);
+    }
+
+    public function test_create_design_validation_redirect_preserves_min_area_preferences(): void
+    {
+        $postResponse = $this->actingAs($this->cashier)
+            ->from(route('orders.create-design'))
+            ->post(route('orders.store-design'), [
+                'title' => 'Stiker Mini',
+                'calc_mode' => 'meter',
+                'calc_length' => '0.4',
+                'calc_width' => '0.4',
+                'min_area_enabled' => '0',
+                'min_area_scope' => 'per_item',
+                'main_qty' => '1',
+                'main_unit_price' => '20000',
+                'print_subtotal' => '3200',
+                'total_amount' => '3200',
+                'paid_amount' => '0',
+                'payment_method' => 'cash',
+                // Intentionally omit required customer_name to trigger validation redirect
+            ]);
+
+        $postResponse->assertRedirect(route('orders.create-design'));
+        $postResponse->assertSessionHasErrors(['customer_name']);
+
+        $redirected = $this->actingAs($this->cashier)
+            ->get(route('orders.create-design'));
+
+        $redirected->assertOk();
+        $redirected->assertSee('value="0.4"', false);
+        $redirected->assertSee('const hasOldSubtotal = true;', false);
+        $redirected->assertSee('<option value="per_item" selected>', false);
+
+        // Ensure min_area_enabled=0 renders unchecked when returning with old input
+        $html = $redirected->getContent();
+        $this->assertMatchesRegularExpression('/id="min_area_enabled"(?![^>]*\bchecked\b)[^>]*>/', $html);
+    }
 }
 

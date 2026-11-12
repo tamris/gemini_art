@@ -71,4 +71,18 @@ class DesignJob extends Model
     {
         return $this->hasMany(DesignAsset::class)->where('file_type', 'brief_ref');
     }
+
+    /**
+     * Return physical print dimensions without billing minimum-area annotations.
+     */
+    public function getCleanDimensionsAttribute(): ?string
+    {
+        if ($this->dimensions === null) {
+            return null;
+        }
+
+        $cleaned = preg_replace('/\s*[,·]?\s*Min\.\s*1\s*m²/ui', '', $this->dimensions);
+
+        return trim((string) preg_replace('/\s{2,}/', ' ', (string) $cleaned));
+    }
 }

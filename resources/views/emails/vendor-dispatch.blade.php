@@ -57,7 +57,7 @@
                                 </tr>
                                 <tr>
                                     <td style="color: #64748b; font-weight: 600;">Ukuran / Dimensi:</td>
-                                    <td style="color: #0f172a; font-weight: 800; font-family: monospace;">{{ $job->dimensions ?: 'Sesuai file asli' }}</td>
+                                    <td style="color: #0f172a; font-weight: 800; font-family: monospace;">{{ $job->clean_dimensions ?: 'Sesuai file asli' }}</td>
                                 </tr>
                                 <tr>
                                     <td style="color: #64748b; font-weight: 600;">Bahan & Finishing:</td>

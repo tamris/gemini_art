@@ -96,7 +96,7 @@
                 <div class="p-3.5 bg-slate-50 dark:bg-slate-900 border-[1.5px] border-slate-900 dark:border-slate-700 rounded-xl space-y-1 shadow-[1.5px_1.5px_0px_0px_#0f172a] dark:shadow-[1.5px_1.5px_0px_0px_#000000]">
                     <span class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider block">Ukuran / Dimensi</span>
                     <span class="text-sm font-black text-slate-900 dark:text-white font-mono">
-                        {{ $job->dimensions ?: 'Sesuai file asli' }}
+                        {{ $job->clean_dimensions ?: 'Sesuai file asli' }}
                     </span>
                 </div>
 
@@ -231,7 +231,7 @@
         let text = `ORDER CETAK: {{ $order->order_number }}\n`;
         text += `Pekerjaan: {{ $job->title ?: $order->customer_name }}\n`;
         text += `Jumlah Cetak: {{ $order->items->first()?->qty ?? 1 }} Pcs\n`;
-        text += `Ukuran: {{ $job->dimensions ?: 'Sesuai file asli' }}\n`;
+        text += `Ukuran: {{ $job->clean_dimensions ?: 'Sesuai file asli' }}\n`;
         text += `Bahan: {{ $job->material_notes ?: 'Standar' }}\n`;
         @if($job->deadline_at)
         text += `Deadline: {{ $job->deadline_at->translatedFormat('d M Y, H:i') }} WIB\n`;

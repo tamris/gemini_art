@@ -182,7 +182,7 @@
                                 fileName: '{{ addslashes($asset->file_name) }}',
                                 orderNumber: '{{ addslashes($asset->designJob->order->order_number ?? '') }}',
                                 jobTitle: '{{ addslashes($asset->designJob->title ?? $asset->designJob->order->customer_name ?? '') }}',
-                                dimensions: '{{ addslashes($asset->designJob->dimensions ?? '') }}',
+                                dimensions: '{{ addslashes($asset->designJob->clean_dimensions ?? '') }}',
                                 materialNotes: '{{ addslashes($asset->designJob->material_notes ?? '') }}',
                                 briefNotes: '{{ addslashes($asset->designJob->brief_notes ?? '') }}',
                                 shareUrl: '{{ $asset->share_url }}'

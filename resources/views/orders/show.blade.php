@@ -758,7 +758,7 @@ function dispatchAllAssets() {
         jobId: {{ $order->designJob ? $order->designJob->id : 'null' }},
         orderNumber: '{{ addslashes($order->order_number) }}',
         jobTitle: '{{ addslashes($order->designJob->title ?? $order->customer_name) }}',
-        dimensions: '{{ addslashes($order->designJob->dimensions ?? '') }}',
+        dimensions: '{{ addslashes($order->designJob->clean_dimensions ?? '') }}',
         materialNotes: '{{ addslashes($order->designJob->material_notes ?? '') }}',
         briefNotes: '{{ addslashes($order->designJob->brief_notes ?? '') }}',
         qty: {{ $order->items->first()?->qty ?? 1 }},

@@ -137,4 +137,21 @@ class VendorDispatchTest extends TestCase
         $response->assertSee(route('vendor.share.download', $this->asset->share_token));
         $response->assertSee(route('vendor.share.preview', $this->asset->share_token));
     }
+
+    public function test_vendor_email_and_share_portal_hide_min_area_billing_note_and_show_actual_size(): void
+    {
+        $this->asset->designJob->update([
+            'dimensions' => '0.56 x 0.56 m (0.31 m², Min. 1 m²)',
+        ]);
+
+        $emailPreview = $this->actingAs($this->owner)->get(route('vendor.dispatch.preview-email', $this->asset->id));
+        $emailPreview->assertOk();
+        $emailPreview->assertSee('0.56 x 0.56 m (0.31 m²)');
+        $emailPreview->assertDontSee('Min. 1 m²');
+
+        $sharePage = $this->get(route('vendor.share', $this->shareToken));
+        $sharePage->assertOk();
+        $sharePage->assertSee('0.56 x 0.56 m (0.31 m²)');
+        $sharePage->assertDontSee('Min. 1 m²');
+    }
 }

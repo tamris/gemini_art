@@ -160,39 +160,71 @@
                             <!-- Panel Mode Meteran: Input Panjang & Lebar Otomatis -->
                             <div id="panel-mode-meter" class="space-y-3 pt-2.5 border-t border-amber-200 dark:border-slate-800">
                                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 items-end">
+                                    @foreach([
+                                        ['id' => 'calc_length', 'label' => 'Panjang (Meter)'],
+                                        ['id' => 'calc_width', 'label' => 'Lebar / Tinggi (Meter)'],
+                                    ] as $dimField)
                                     <div>
-                                        <label class="block text-xs font-black uppercase text-slate-800 dark:text-slate-300 mb-1 tracking-wider truncate">
-                                            Panjang (Meter)
+                                        <label for="{{ $dimField['id'] }}" class="block text-xs font-black uppercase text-slate-800 dark:text-slate-300 mb-1 tracking-wider truncate">
+                                            {{ $dimField['label'] }}
                                         </label>
                                         <input type="number" 
-                                               id="calc_length" 
-                                               step="0.05" 
+                                               id="{{ $dimField['id'] }}" 
+                                               name="{{ $dimField['id'] }}"
+                                               step="0.01" 
                                                min="0" 
-                                               value="{{ old('calc_length', '') }}" 
+                                               inputmode="decimal"
+                                               value="{{ old($dimField['id'], '') }}" 
                                                placeholder="0" 
                                                oninput="handleMeterDimensionChange()"
                                                class="w-full h-10 neo-input text-xs font-black bg-white dark:bg-slate-950 text-center">
                                     </div>
-                                    <div>
-                                        <label class="block text-xs font-black uppercase text-slate-800 dark:text-slate-300 mb-1 tracking-wider truncate">
-                                            Lebar / Tinggi (Meter)
-                                        </label>
-                                        <input type="number" 
-                                               id="calc_width" 
-                                               step="0.05" 
-                                               min="0" 
-                                               value="{{ old('calc_width', '') }}" 
-                                               placeholder="0" 
-                                               oninput="handleMeterDimensionChange()"
-                                               class="w-full h-10 neo-input text-xs font-black bg-white dark:bg-slate-950 text-center">
-                                    </div>
+                                    @endforeach
                                     <div>
                                         <label class="block text-xs font-black uppercase text-slate-800 dark:text-slate-300 mb-1 tracking-wider truncate">
                                             Total Luas Hitung
                                         </label>
-                                        <div class="w-full h-10 px-3.5 rounded-xl border-[1.5px] border-slate-300 dark:border-slate-700 bg-amber-50/90 dark:bg-amber-950/40 flex items-center justify-between shadow-[1.5px_1.5px_0px_0px_#e2e8f0] dark:shadow-[1.5px_1.5px_0px_0px_#000000]">
-                                            <span id="display-area-single" class="text-xs font-black text-slate-900 dark:text-amber-200">0.00 m²</span>
-                                            <span id="display-area-total" class="text-[10px] font-bold text-amber-700 dark:text-amber-400"></span>
+                                        <div class="w-full h-10 px-3 rounded-xl border-[1.5px] border-slate-300 dark:border-slate-700 bg-amber-50/90 dark:bg-amber-950/40 flex items-center justify-between gap-2 shadow-[1.5px_1.5px_0px_0px_#e2e8f0] dark:shadow-[1.5px_1.5px_0px_0px_#000000]">
+                                            <span id="display-area-single" class="text-xs font-black text-slate-900 dark:text-amber-200 whitespace-nowrap">0.00 m²</span>
+                                            <span id="display-area-total" class="text-[10px] font-bold text-amber-800 dark:text-amber-400 truncate text-right"></span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Pengaturan Fleksibel Minimal 1 m² -->
+                                <div class="p-2.5 sm:px-3 sm:py-2 bg-white/90 dark:bg-slate-950/70 border-[1.5px] border-amber-300/90 dark:border-slate-700 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 shadow-[1.5px_1.5px_0px_0px_#e2e8f0] dark:shadow-[1.5px_1.5px_0px_0px_#000000]">
+                                    <div class="flex items-center min-w-0">
+                                        <input type="hidden" name="min_area_enabled" value="0">
+                                        <label for="min_area_enabled" class="inline-flex items-center gap-2.5 min-h-[44px] -my-1.5 py-1 cursor-pointer select-none">
+                                            <input type="checkbox"
+                                                   id="min_area_enabled"
+                                                   name="min_area_enabled"
+                                                   value="1"
+                                                   aria-describedby="min-area-help"
+                                                   {{ old('min_area_enabled', '1') == '1' ? 'checked' : '' }}
+                                                   class="neo-checkbox">
+                                            <span class="flex flex-col">
+                                                <span class="text-xs font-black text-slate-900 dark:text-slate-100 leading-tight">
+                                                    Minimal Hitung 1 m²
+                                                </span>
+                                                <span id="min-area-help" class="text-[10px] font-semibold text-slate-600 dark:text-slate-400 leading-snug">
+                                                    Order &lt; 1 m² otomatis dibulatkan ke 1.00 m² (matikan untuk luas asli).
+                                                </span>
+                                            </span>
+                                        </label>
+                                    </div>
+
+                                    <div class="flex items-center gap-2 w-full sm:w-auto shrink-0">
+                                        <label for="min_area_scope" class="text-[10px] font-black uppercase tracking-wider text-slate-600 dark:text-slate-400 whitespace-nowrap">
+                                            Basis:
+                                        </label>
+                                        <div class="flex-1 sm:w-40">
+                                            <select id="min_area_scope"
+                                                    name="min_area_scope"
+                                                    class="neo-select disabled:opacity-45 disabled:cursor-not-allowed">
+                                                <option value="total" {{ old('min_area_scope', 'total') === 'total' ? 'selected' : '' }}>Per Total Order</option>
+                                                <option value="per_item" {{ old('min_area_scope') === 'per_item' ? 'selected' : '' }}>Per Pcs / Desain</option>
+                                            </select>
                                         </div>
                                     </div>
                                 </div>
@@ -963,7 +995,7 @@ function updateAllMainCalculations() {
     recalculateAllTotals();
 }
 
-function setCalcMode(mode) {
+function setCalcMode(mode, options = {}) {
     const calcModeHidden = document.getElementById('calc_mode');
     const mainUnitHidden = document.getElementById('main_unit');
     const btnMeter = document.getElementById('btn-mode-meter');
@@ -997,7 +1029,7 @@ function setCalcMode(mode) {
         if (labelCostPrice) {
             labelCostPrice.innerText = 'Tarif Modal Cetak';
         }
-        handleMeterDimensionChange();
+        handleMeterDimensionChange(options);
     } else {
         if (mainUnitHidden) mainUnitHidden.value = 'Pcs';
         if (panelMeter) panelMeter.classList.add('hidden');
@@ -1019,79 +1051,164 @@ function setCalcMode(mode) {
         if (labelCostPrice) {
             labelCostPrice.innerText = 'Modal Cetak Satuan / HPP (Pcs)';
         }
-        handlePcsChange();
+        handlePcsChange(options);
     }
 }
 
-function handleMeterDimensionChange() {
+/**
+ * Enable or disable the minimum-area scope selector based on the toggle state.
+ */
+function syncMinAreaControls() {
+    const minEnabledEl = document.getElementById('min_area_enabled');
+    const minScopeEl = document.getElementById('min_area_scope');
+    if (minScopeEl) {
+        minScopeEl.disabled = !(minEnabledEl ? minEnabledEl.checked : true);
+    }
+}
+
+/**
+ * Compute real print area and billable m2 after optional 1 m2 minimum rule.
+ */
+function computeBillableMeterArea(length, width, qty, minEnabled, minScope) {
+    const hasDimensions = length > 0 && width > 0;
+    const areaSingle = Math.round(length * width * 100) / 100;
+    const areaTotal = Math.round(areaSingle * qty * 100) / 100;
+
+    if (!hasDimensions) {
+        return { hasDimensions: false, areaSingle: 0, areaTotal: 0, billableArea: 0, isMinApplied: false };
+    }
+
+    if (!minEnabled) {
+        return { hasDimensions: true, areaSingle, areaTotal, billableArea: areaTotal, isMinApplied: false };
+    }
+
+    if (minScope === 'per_item') {
+        const isMinApplied = areaSingle < 1;
+        const billableSingle = Math.max(1, areaSingle);
+        const billableArea = Math.round(billableSingle * qty * 100) / 100;
+        return { hasDimensions: true, areaSingle, areaTotal, billableArea, isMinApplied };
+    }
+
+    const isMinApplied = areaTotal < 1;
+    const billableArea = Math.max(1, areaTotal);
+    return { hasDimensions: true, areaSingle, areaTotal, billableArea, isMinApplied };
+}
+
+/**
+ * Sync computed print subtotal while preserving manual negotiations on validation reload.
+ */
+function applyComputedPrintSubtotal(computedSubtotal, preserveSubtotal, autoHintHtml) {
+    const printSubtotalDisplay = document.getElementById('print_subtotal_display');
+    const printSubtotalHidden = document.getElementById('print_subtotal');
+    const subtotalHint = document.getElementById('subtotal-calc-hint');
+
+    let activeSubtotal = computedSubtotal;
+    let isManualOverride = false;
+
+    if (preserveSubtotal && printSubtotalHidden && printSubtotalHidden.value !== '') {
+        const existingSubtotal = parseFloat(printSubtotalHidden.value) || 0;
+        if (existingSubtotal !== computedSubtotal) {
+            activeSubtotal = existingSubtotal;
+            isManualOverride = true;
+        }
+    }
+
+    if (!isManualOverride) {
+        if (printSubtotalHidden) printSubtotalHidden.value = activeSubtotal;
+        if (printSubtotalDisplay) printSubtotalDisplay.value = activeSubtotal > 0 ? activeSubtotal.toLocaleString('id-ID') : '0';
+    }
+
+    if (subtotalHint) {
+        subtotalHint.innerHTML = isManualOverride
+            ? '<span class="text-amber-600 dark:text-amber-400 font-bold">★ Subtotal cetak disesuaikan manual (Nego deal).</span>'
+            : autoHintHtml;
+    }
+
+    return activeSubtotal;
+}
+
+function handleMeterDimensionChange(options = {}) {
+    const preserveSubtotal = options && options.preserveSubtotal === true;
     const lenInput = document.getElementById('calc_length');
     const widthInput = document.getElementById('calc_width');
     const qtyInput = document.getElementById('main_qty');
     const dimInput = document.getElementById('dimensions_input');
+    const minEnabledEl = document.getElementById('min_area_enabled');
+    const minScopeEl = document.getElementById('min_area_scope');
+
+    syncMinAreaControls();
 
     const length = parseFloat(lenInput ? lenInput.value : 0) || 0;
     const width = parseFloat(widthInput ? widthInput.value : 0) || 0;
     const qty = parseInt(qtyInput ? qtyInput.value : 1, 10) || 1;
+    const minEnabled = minEnabledEl ? minEnabledEl.checked : true;
+    const minScope = minScopeEl ? minScopeEl.value : 'total';
 
-    const areaSingle = Math.round(length * width * 100) / 100;
-    const areaTotal = Math.round(areaSingle * qty * 100) / 100;
+    const { hasDimensions, areaSingle, areaTotal, billableArea, isMinApplied } = computeBillableMeterArea(
+        length,
+        width,
+        qty,
+        minEnabled,
+        minScope
+    );
 
     const areaSingleEl = document.getElementById('display-area-single');
     const areaTotalEl = document.getElementById('display-area-total');
-    if (areaSingleEl) areaSingleEl.innerText = areaSingle > 0 ? areaSingle.toFixed(2) + ' m²' : '0.00 m²';
+    if (areaSingleEl) {
+        areaSingleEl.innerText = hasDimensions ? areaSingle.toFixed(2) + ' m²' : '0.00 m²';
+    }
     if (areaTotalEl) {
-        if (areaTotal > 0 && qty > 1) {
-            areaTotalEl.innerText = `(${qty} Pcs = ${areaTotal.toFixed(2)} m²)`;
-        } else {
-            areaTotalEl.innerText = '';
-        }
+        areaTotalEl.innerText = (hasDimensions && qty > 1)
+            ? `(${qty} Pcs = ${areaTotal.toFixed(2)} m²)`
+            : '';
     }
 
     const printSummaryBadge = document.getElementById('print-calc-summary-badge');
     if (printSummaryBadge) {
-        printSummaryBadge.innerText = areaTotal > 0 ? `${areaTotal.toFixed(2)} m² (${qty} Pcs)` : '0.00 m²';
+        printSummaryBadge.innerText = hasDimensions ? `${areaTotal.toFixed(2)} m² (${qty} Pcs)` : '0.00 m²';
     }
 
-    if (dimInput) {
-        if (length > 0 && width > 0) {
-            dimInput.value = `${length} x ${width} meter (${areaSingle.toFixed(2)} m²)`;
-        } else {
-            dimInput.value = '';
-        }
+    if (dimInput && (!preserveSubtotal || !dimInput.value)) {
+        dimInput.value = hasDimensions
+            ? `${length} x ${width} meter (${areaSingle.toFixed(2)} m²)`.slice(0, 50)
+            : '';
     }
 
     const unitPriceHidden = document.getElementById('main_unit_price');
     const costPriceDisplay = document.getElementById('main_cost_price_display');
     const costPriceHidden = document.getElementById('main_cost_price');
-    const printSubtotalDisplay = document.getElementById('print_subtotal_display');
-    const printSubtotalHidden = document.getElementById('print_subtotal');
-    const subtotalHint = document.getElementById('subtotal-calc-hint');
     const costHint = document.getElementById('cost-calc-hint');
 
     const meterSaleRate = parseFloat(unitPriceHidden ? unitPriceHidden.value : 0) || 0;
-    const printSubtotal = Math.round(areaTotal * meterSaleRate);
+    const computedSubtotal = Math.round(billableArea * meterSaleRate);
 
-    if (printSubtotalHidden) printSubtotalHidden.value = printSubtotal;
-    if (printSubtotalDisplay) printSubtotalDisplay.value = printSubtotal > 0 ? printSubtotal.toLocaleString('id-ID') : '0';
-
-    if (subtotalHint) {
-        if (length > 0 && width > 0 && meterSaleRate > 0) {
-            subtotalHint.innerHTML = `Hasil cetak: Total ${areaTotal.toFixed(2)} m² &times; Rp ${meterSaleRate.toLocaleString('id-ID')} / m² = <strong>Rp ${printSubtotal.toLocaleString('id-ID')}</strong>.`;
+    let hintHtml = 'Silakan masukkan ukuran panjang & lebar atau pilih bahan banner di sebelah kiri.';
+    if (hasDimensions && meterSaleRate > 0) {
+        const previewTotal = computedSubtotal.toLocaleString('id-ID');
+        const rateText = meterSaleRate.toLocaleString('id-ID');
+        if (isMinApplied) {
+            const minModeText = minScope === 'per_item' ? `${qty} pcs &times; min. 1.00 m²` : 'min. 1.00 m²';
+            hintHtml = `Luas asli ${areaTotal.toFixed(2)} m² &rarr; Terhitung <strong>${billableArea.toFixed(2)} m²</strong> (${minModeText}) &times; Rp ${rateText} = <strong>Rp ${previewTotal}</strong>.`;
+        } else if (!minEnabled && areaTotal < 1) {
+            hintHtml = `Hitungan luas asli: ${areaTotal.toFixed(2)} m² &times; Rp ${rateText} / m² = <strong>Rp ${previewTotal}</strong> (Min. 1 m² nonaktif).`;
         } else {
-            subtotalHint.innerText = 'Silakan masukkan ukuran panjang & lebar atau pilih bahan banner di sebelah kiri.';
+            hintHtml = `Hasil cetak: Total ${billableArea.toFixed(2)} m² &times; Rp ${rateText} / m² = <strong>Rp ${previewTotal}</strong>.`;
         }
     }
+    applyComputedPrintSubtotal(computedSubtotal, preserveSubtotal, hintHtml);
 
     let rawCost = costPriceDisplay ? costPriceDisplay.value.replace(/\D/g, '') : '';
     let totalCost = null;
-    if (rawCost && length > 0 && width > 0) {
+    if (rawCost && hasDimensions) {
         const meterCostRate = parseInt(rawCost, 10);
+        // Material HPP stays tied to real physical area even when minimum selling rule applies.
         totalCost = Math.round(areaTotal * meterCostRate);
         const costPerItem = Math.round(totalCost / qty);
         if (costPriceHidden) costPriceHidden.value = costPerItem;
 
         if (costHint) {
-            costHint.innerHTML = `Estimasi modal cetak: Total ${areaTotal.toFixed(2)} m² &times; Rp ${meterCostRate.toLocaleString('id-ID')} = <strong>Rp ${totalCost.toLocaleString('id-ID')}</strong>. Boleh dikosongkan jika belum tahu.`;
+            const costAreaLabel = isMinApplied ? `Luas bahan asli ${areaTotal.toFixed(2)} m²` : `Total ${areaTotal.toFixed(2)} m²`;
+            costHint.innerHTML = `Estimasi modal cetak: ${costAreaLabel} &times; Rp ${meterCostRate.toLocaleString('id-ID')} = <strong>Rp ${totalCost.toLocaleString('id-ID')}</strong>. Boleh dikosongkan jika belum tahu.`;
         }
     } else {
         if (costPriceHidden) costPriceHidden.value = '';
@@ -1108,7 +1225,8 @@ function handleMeterDimensionChange() {
     updateAllMainCalculations();
 }
 
-function handlePcsChange() {
+function handlePcsChange(options = {}) {
+    const preserveSubtotal = options && options.preserveSubtotal === true;
     const qtyInput = document.getElementById('main_qty');
     const qty = parseInt(qtyInput ? qtyInput.value : 1, 10) || 1;
 
@@ -1116,26 +1234,17 @@ function handlePcsChange() {
     const unitPriceHidden = document.getElementById('main_unit_price');
     const costPriceDisplay = document.getElementById('main_cost_price_display');
     const costPriceHidden = document.getElementById('main_cost_price');
-    const printSubtotalDisplay = document.getElementById('print_subtotal_display');
-    const printSubtotalHidden = document.getElementById('print_subtotal');
-    const subtotalHint = document.getElementById('subtotal-calc-hint');
     const costHint = document.getElementById('cost-calc-hint');
 
     let rawPrice = unitPriceDisplay ? unitPriceDisplay.value.replace(/\D/g, '') : '';
     const unitPrice = rawPrice ? parseInt(rawPrice, 10) : 0;
     if (unitPriceHidden) unitPriceHidden.value = unitPrice;
 
-    const printSubtotal = qty * unitPrice;
-    if (printSubtotalHidden) printSubtotalHidden.value = printSubtotal;
-    if (printSubtotalDisplay) printSubtotalDisplay.value = printSubtotal > 0 ? printSubtotal.toLocaleString('id-ID') : '0';
-
-    if (subtotalHint) {
-        if (unitPrice > 0) {
-            subtotalHint.innerHTML = `Hasil cetak: ${qty} Pcs &times; Rp ${unitPrice.toLocaleString('id-ID')} = <strong>Rp ${printSubtotal.toLocaleString('id-ID')}</strong>.`;
-        } else {
-            subtotalHint.innerText = 'Silakan masukkan harga cetak satuan di atas.';
-        }
-    }
+    const computedSubtotal = qty * unitPrice;
+    const hintHtml = unitPrice > 0
+        ? `Hasil cetak: ${qty} Pcs &times; Rp ${unitPrice.toLocaleString('id-ID')} = <strong>Rp ${computedSubtotal.toLocaleString('id-ID')}</strong>.`
+        : 'Silakan masukkan harga cetak satuan di atas.';
+    applyComputedPrintSubtotal(computedSubtotal, preserveSubtotal, hintHtml);
 
     let rawCost = costPriceDisplay ? costPriceDisplay.value.replace(/\D/g, '') : '';
     let totalCost = null;
@@ -1391,9 +1500,19 @@ function clearBriefFile(event) {
 
 document.addEventListener('DOMContentLoaded', function() {
     setupRupiahMask('paid_amount_display', 'paid_amount');
-    
+
+    const minAreaCheckbox = document.getElementById('min_area_enabled');
+    const minAreaScopeSelect = document.getElementById('min_area_scope');
+    if (minAreaCheckbox) {
+        minAreaCheckbox.addEventListener('change', () => handleMeterDimensionChange());
+    }
+    if (minAreaScopeSelect) {
+        minAreaScopeSelect.addEventListener('change', () => handleMeterDimensionChange());
+    }
+
+    const hasOldSubtotal = @json(old('print_subtotal') !== null);
     const initialMode = (document.getElementById('calc_mode')?.value) || 'meter';
-    setCalcMode(initialMode);
+    setCalcMode(initialMode, { preserveSubtotal: hasOldSubtotal });
 
     @if(old('items'))
         @foreach(old('items') as $oldIt)
